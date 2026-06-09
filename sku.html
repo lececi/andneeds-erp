@@ -194,9 +194,13 @@ input:focus,select:focus{border-color:var(--text);}
 .g-C{background:#FBF5EB;color:#B8962B;}
 .g-D{background:#F3EFEA;color:#6B6560;}
 .g-적자{background:#8C3A2A;color:#fff;}
-.plat-disabled{display:flex;gap:6px;margin-bottom:16px;align-items:center;flex-wrap:wrap;opacity:0.55;}
-.plat-disabled .plat-filter-btn{cursor:default;}
 .code-cell{font-variant-numeric:tabular-nums;color:var(--text-2);white-space:nowrap;}
+.status-row{display:flex;gap:18px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--text-2);margin-top:14px;}
+.status-row b{color:var(--text);font-weight:500;}
+.dot-on{color:#2B6CB8;}.dot-off{color:var(--text-3);}
+.fee-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:20px;font-size:12px;color:var(--text-2);}
+.fee-row input{width:72px;text-align:right;}
+.sub-note{font-size:12px;color:var(--text-3);margin:6px 0 10px;}
 @media(max-width:768px){.sec-head input[type=text]{width:100%;}.sec-head select{flex:1;}}
 </style>
 </head>
@@ -239,71 +243,70 @@ input:focus,select:focus{border-color:var(--text);}
       </div>
       <span class="topbar-title">손익관리 · 상품 성과 분석</span>
     </div>
-    <div style="font-size:12px;color:var(--text-3);" id="topRight">원가 마스터 기준</div>
+    <div style="font-size:12px;color:var(--text-3);" id="topRight">파일을 올려주세요</div>
   </div>
 
   <main>
-    <div class="sec-head"><span class="sec-title">원가 마스터 업로드</span></div>
+    <div class="sec-head"><span class="sec-title">파일 업로드</span></div>
     <div class="upload-area" id="dropZone">
-      <div id="uploadIdle">
-        <div style="font-size:13px;color:var(--text-2);margin-bottom:6px;">시즌별 생산정보 엑셀(원가·판매가)을 올려주세요</div>
-        <div style="font-size:12px;color:var(--text-3);margin-bottom:16px;">파일을 끌어다 놓거나 버튼으로 선택 · 시트별 시즌 자동 인식</div>
-        <button class="btn-primary" onclick="document.getElementById('fileInput').click()">엑셀 파일 선택</button>
-      </div>
-      <div id="uploadDone" style="display:none;font-size:13px;color:var(--text-2);">
-        <span id="uploadInfo"></span>
-        <button class="upload-btn" style="margin-left:12px;" onclick="document.getElementById('fileInput').click()">다른 파일 올리기</button>
+      <div style="font-size:13px;color:var(--text-2);margin-bottom:6px;">원가표 · 매출 파일을 올려주세요 <span style="color:var(--text-3);">(파일 종류 자동 인식)</span></div>
+      <div style="font-size:12px;color:var(--text-3);margin-bottom:16px;">① 시즌별 생산정보(원가·판매가) &nbsp;②&nbsp; 29CM 주문상품 내역 &nbsp;·&nbsp; 끌어다 놓거나 버튼으로</div>
+      <button class="btn-primary" onclick="document.getElementById('fileInput').click()">파일 선택</button>
+      <div class="status-row" id="statusRow">
+        <span><span id="costDot" class="dot-off">●</span> 원가표 <b id="costStat">미등록</b></span>
+        <span><span id="salesDot" class="dot-off">●</span> 매출 <b id="salesStat">미등록</b></span>
+        <span id="savedNote" class="dot-on" style="display:none;">✓ 이 브라우저에 저장됨</span>
+        <button class="upload-btn" id="clearBtn" style="display:none;" onclick="clearAll()">전체 지우기</button>
       </div>
     </div>
 
+    <div class="fee-row" id="feeRow" style="display:none;">
+      <span>29CM 기본 수수료율 <input type="number" id="feeBase" value="30" min="0" max="100" step="0.5" onchange="recompute()">%</span>
+      <span style="color:var(--text-3);">할인 10%마다 −1% 자동 적용 · 주문별 적용 후 평균 <b id="effRate" style="color:var(--text);">—</b></span>
+      <button class="upload-btn" style="margin-left:auto;" onclick="resetSales()">매출 초기화</button>
+    </div>
+
     <div class="metrics" id="metrics">
-      <div class="metric-card"><div class="metric-label">총 매출</div><div class="metric-value">—</div><div class="metric-sub">매출 데이터 연결 시</div></div>
-      <div class="metric-card"><div class="metric-label">총 순이익</div><div class="metric-value">—</div><div class="metric-sub">매출 데이터 연결 시</div></div>
-      <div class="metric-card"><div class="metric-label">평균 마진율</div><div class="metric-value">—</div><div class="metric-sub">엑셀 업로드 필요</div></div>
-      <div class="metric-card"><div class="metric-label">적자 상품</div><div class="metric-value">—</div><div class="metric-sub">판매가 &lt; 원가</div></div>
+      <div class="metric-card"><div class="metric-label">총 매출</div><div class="metric-value">—</div><div class="metric-sub">매출 파일 업로드 시</div></div>
+      <div class="metric-card"><div class="metric-label">총 순이익</div><div class="metric-value">—</div><div class="metric-sub">매출 + 원가 필요</div></div>
+      <div class="metric-card"><div class="metric-label">평균 마진율</div><div class="metric-value">—</div><div class="metric-sub">파일 업로드 필요</div></div>
+      <div class="metric-card"><div class="metric-label">적자 상품</div><div class="metric-value">—</div><div class="metric-sub">순이익 &lt; 0</div></div>
       <div class="metric-card highlight"><div class="metric-label">A등급 상품</div><div class="metric-value">—</div><div class="metric-sub">마진율 기준</div></div>
     </div>
 
     <div class="sec-head">
-      <span class="sec-title">SKU 손익 · 상품 단위</span>
+      <span class="sec-title" id="tableTitle">SKU 손익 · 상품 단위</span>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-        <select id="fSeason" onchange="renderTable()"><option value="">전체 시즌</option></select>
-        <select id="fCat" onchange="renderTable()"><option value="">전체 카테고리</option></select>
-        <select id="fSort" onchange="renderTable()">
-          <option value="mr_asc">마진율 낮은순</option>
-          <option value="mr_desc">마진율 높은순</option>
-          <option value="price_desc">판매가 높은순</option>
-          <option value="cost_desc">원가 높은순</option>
-        </select>
-        <input type="text" id="fSearch" placeholder="상품명·코드 검색" oninput="renderTable()">
+        <select id="fSeason" onchange="renderMain()"><option value="">전체 시즌</option></select>
+        <select id="fCat" onchange="renderMain()"><option value="">전체 카테고리</option></select>
+        <select id="fSort" onchange="renderMain()"></select>
+        <input type="text" id="fSearch" placeholder="상품명·코드 검색" oninput="renderMain()">
       </div>
-    </div>
-
-    <div class="plat-disabled">
-      <span style="font-size:11px;color:var(--text-3);letter-spacing:0.06em;">플랫폼</span>
-      <button class="plat-filter-btn" disabled>전체</button>
-      <button class="plat-filter-btn" disabled>29CM</button>
-      <button class="plat-filter-btn" disabled>무신사</button>
-      <button class="plat-filter-btn" disabled>자사몰</button>
-      <span style="font-size:11px;color:var(--text-3);">← 매출 데이터 연결 후 사용</span>
     </div>
 
     <div class="table-card">
       <table>
-        <thead><tr>
-          <th>상품코드</th><th>상품명</th><th>시즌</th><th>카테고리</th>
-          <th class="num">컬러</th><th class="num">원가</th><th class="num">판매가</th>
-          <th class="num">개당 마진</th><th class="num">마진율</th><th class="num">배수</th><th>등급</th>
-        </tr></thead>
-        <tbody id="tbody"><tr><td colspan="11" class="loading">엑셀을 올리면 상품별 손익이 표시됩니다.</td></tr></tbody>
+        <thead><tr id="thead"></tr></thead>
+        <tbody id="tbody"><tr><td class="loading">먼저 원가표(시즌별 생산정보) 엑셀을 올려주세요.</td></tr></tbody>
       </table>
     </div>
 
-    <div style="font-size:11px;color:var(--text-3);line-height:1.7;">
-      · 마진율 = (판매가 − 원가) ÷ 판매가 · 현재는 <b>원가 기준</b> 마진이에요 (플랫폼 수수료·할인 미반영).<br>
-      · 등급 기준(조절 가능): A 마진율 76%↑ · B 72~76% · C 68~72% · D 68%↓ · 적자 판매가≤원가.<br>
-      · 카테고리는 상품코드에서 자동 인식해요(JK 자켓·TS 티셔츠 등). 다른 이름을 원하면 알려주세요.<br>
-      · 다음 단계: 플랫폼 매출 파일을 연결하면 총매출·총순이익·실제 적자 상품이 채워져요.
+    <div id="unmatchedSection" style="display:none;">
+      <div class="sec-head"><span class="sec-title">원가 미등록 — 판매됐지만 원가표에 없는 상품</span></div>
+      <div class="sub-note" id="unmatchedNote"></div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>상품명</th><th>29CM 상품번호</th><th class="num">판매수량</th><th class="num">실판매액</th></tr></thead>
+          <tbody id="tbodyUnmatched"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="font-size:11px;color:var(--text-3);line-height:1.7;margin-top:6px;">
+      · 순이익 = 실판매액 − 수수료 − (개당원가×수량) · 수수료 = 기본 30%에서 주문 할인 10%마다 −1% (주문별 자동 계산) · 배송비 미반영.<br>
+      · 매출↔원가는 <b>상품명</b>으로 자동 연결해요. 이름이 다르면 "원가 미등록"에 들어가요. 숫자가 이상하면 상품명이 잘못 연결된 건 아닌지 확인해주세요.<br>
+      · 등급(조절 가능): 손익 기준 A 마진율 40%↑ · B 28~40% · C 18~28% · D 18%↓ · 적자 순이익&lt;0.<br>
+      · 취소·취소준비중 주문은 자동 제외돼요. 다른 플랫폼(무신사·자사몰)은 파일 샘플을 주시면 추가할게요.
     </div>
   </main>
 </div>
@@ -315,28 +318,51 @@ input:focus,select:focus{border-color:var(--text);}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 const CAT={JK:'자켓',TS:'티셔츠',BL:'블라우스',SK:'스커트',KN:'니트',SH:'셔츠',HD:'후드',PT:'팬츠',OP:'원피스',BA:'가방',HT:'모자'};
-const GRADE_A=76, GRADE_B=72, GRADE_C=68;   // 마진율(%) 등급 기준 — 필요하면 숫자만 바꾸면 돼요
-let RAW=[];
+const GA1=76,GB1=72,GC1=68;       // 원가마진 등급(매출 없을 때)
+const GA2=40,GB2=28,GC2=18;       // 손익마진 등급(매출 있을 때)
+const FEE_DEF={'29CM':33,'무신사':30,'자사몰':0};
+const DEFAULT_METRICS=
+ '<div class="metric-card"><div class="metric-label">총 매출</div><div class="metric-value">—</div><div class="metric-sub">파일 업로드 시</div></div>'+
+ '<div class="metric-card"><div class="metric-label">총 순이익</div><div class="metric-value">—</div><div class="metric-sub">매출 + 원가 필요</div></div>'+
+ '<div class="metric-card"><div class="metric-label">평균 마진율</div><div class="metric-value">—</div><div class="metric-sub">파일 업로드 필요</div></div>'+
+ '<div class="metric-card"><div class="metric-label">적자 상품</div><div class="metric-value">—</div><div class="metric-sub">순이익 &lt; 0</div></div>'+
+ '<div class="metric-card highlight"><div class="metric-label">A등급 상품</div><div class="metric-value">—</div><div class="metric-sub">마진율 기준</div></div>';
+
+let COST={};        // normName -> {code,name,season,cat,cost,price}
+let COSTROWS=[];    // 원가표 상품 목록(시즌별)
+let SALESFILES={};  // filename -> {platform, rows:[{name,num,qty,net}]}
 
 function num(v){ if(v==null) return 0; const n=parseFloat(String(v).replace(/[^0-9.\-]/g,'')); return isNaN(n)?0:n; }
 function esc(s){ return String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
 function won(n){ return Math.round(n).toLocaleString('ko-KR')+'원'; }
 function val(id){ return document.getElementById(id).value; }
+function norm(x){ x=String(x==null?'':x).toLowerCase(); x=x.replace(/\[[^\]]*\]/g,'').replace(/\([^\)]*\)/g,''); return x.replace(/[^a-z0-9가-힣]/g,''); }
 function catOf(code){ const m=String(code).match(/^[A-Za-z]{2}\d{3,4}([A-Za-z]{2})/); if(!m) return '기타'; const c=m[1].toUpperCase(); return CAT[c]||c; }
-function gradeOf(mr,price,cost){ if(price<=0) return 'D'; if(mr<=0) return '적자'; if(mr>=GRADE_A) return 'A'; if(mr>=GRADE_B) return 'B'; if(mr>=GRADE_C) return 'C'; return 'D'; }
+function grade1(mr){ if(mr<=0) return '적자'; if(mr>=GA1) return 'A'; if(mr>=GB1) return 'B'; if(mr>=GC1) return 'C'; return 'D'; }
+function grade2(mr){ if(mr<0) return '적자'; if(mr>=GA2) return 'A'; if(mr>=GB2) return 'B'; if(mr>=GC2) return 'C'; return 'D'; }
+function hasSales(){ return Object.keys(SALESFILES).length>0; }
 
-function parse(buf){
-  const wb=XLSX.read(buf,{type:'array'});
-  const out=[];
+function detectType(wb){
+  for(const sn of wb.SheetNames){
+    const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:null});
+    const flat=rows.slice(0,3).flat().map(c=>String(c==null?'':c).replace(/\s/g,''));
+    const has=kw=>flat.some(h=>h.includes(kw));
+    if(has('주문번호')&&(has('실판매액')||has('판매액'))) return 'sales29';
+    if(has('사전원가')||(has('상품코드')&&has('판매가'))) return 'cost';
+  }
+  return 'unknown';
+}
+
+function parseCost(wb){
+  COST={}; COSTROWS=[];
   wb.SheetNames.forEach(sn=>{
     const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:null});
     let hi=rows.findIndex(r=>r&&r.some(c=>String(c).replace(/\s/g,'').includes('상품코드')));
     if(hi<0) return;
     const hdr=rows[hi].map(c=>String(c==null?'':c).replace(/\s/g,'').replace(/\n/g,''));
     const find=kw=>hdr.findIndex(h=>h.includes(kw));
-    const iCode=find('상품코드'), iName=find('상품명');
-    let iColor=find('컬러코드'); if(iColor<0) iColor=find('컬러명');
-    let iCost=hdr.findIndex(h=>h.includes('원가')); const iPrice=find('판매가');
+    const iCode=find('상품코드'), iName=find('상품명'); let iColor=find('컬러코드'); if(iColor<0) iColor=find('컬러명');
+    const iCost=hdr.findIndex(h=>h.includes('원가')), iPrice=find('판매가');
     if(iCode<0||iPrice<0) return;
     const g={};
     for(let r=hi+1;r<rows.length;r++){
@@ -346,86 +372,234 @@ function parse(buf){
       if(!g[key]) g[key]={season:sn,code:String(code).trim(),name:iName>=0&&row[iName]?String(row[iName]).trim():'',cost:0,price:0,colors:new Set()};
       const cc=iColor>=0?row[iColor]:null; if(cc!=null&&String(cc).trim()!=='') g[key].colors.add(String(cc).trim());
       const c=num(iCost>=0?row[iCost]:0), p=num(row[iPrice]);
-      if(c>g[key].cost) g[key].cost=c;
-      if(p>g[key].price) g[key].price=p;
+      if(c>g[key].cost) g[key].cost=c; if(p>g[key].price) g[key].price=p;
     }
     Object.values(g).forEach(o=>{
-      const margin=o.price-o.cost;
-      const mr=o.price>0?margin/o.price*100:0;
-      out.push({season:o.season,code:o.code,name:o.name,cat:catOf(o.code),colors:o.colors.size||1,
-        cost:o.cost,price:o.price,margin,mr,mult:o.cost>0?o.price/o.cost:0,grade:gradeOf(mr,o.price,o.cost)});
+      const margin=o.price-o.cost, mr=o.price>0?margin/o.price*100:0, cat=catOf(o.code);
+      COSTROWS.push({season:o.season,code:o.code,name:o.name,cat,colors:o.colors.size||1,cost:o.cost,price:o.price,margin,mr,mult:o.cost>0?o.price/o.cost:0,grade:grade1(mr)});
+      const nk=norm(o.name);
+      if(nk && !COST[nk]) COST[nk]={code:o.code,name:o.name,season:o.season,cat,cost:o.cost,price:o.price};
     });
   });
-  RAW=out;
 }
 
+function parse29CM(wb){
+  const out=[];
+  const sn=wb.SheetNames[0];
+  const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:null});
+  let hi=rows.findIndex(r=>r&&r.some(c=>String(c).replace(/\s/g,'').includes('주문번호')));
+  if(hi<0) return out;
+  const hdr=rows[hi].map(c=>String(c==null?'':c).replace(/\s/g,''));
+  const find=kw=>hdr.findIndex(h=>h.includes(kw));
+  const iStat=find('주문상태'), iName=find('상품명'), iNum=find('상품번호'), iQty=find('수량');
+  let iNet=find('실판매액'); let iGross=hdr.findIndex(h=>h==='판매액'); if(iGross<0) iGross=find('판매액'); if(iNet<0) iNet=iGross;
+  for(let r=hi+1;r<rows.length;r++){
+    const row=rows[r]; if(!row) continue;
+    const st=String(row[iStat]==null?'':row[iStat]);
+    if(st.includes('취소')) continue;
+    const q=num(row[iQty]); if(q<=0) continue;
+    const nm=iName>=0?String(row[iName]==null?'':row[iName]).trim():'';
+    if(!nm) continue;
+    out.push({name:nm,num:iNum>=0?String(row[iNum]==null?'':row[iNum]).trim():'',qty:q,net:num(row[iNet]),gross:num(iGross>=0?row[iGross]:row[iNet])});
+  }
+  return out;
+}
+
+function findCost(k){
+  if(COST[k]) return COST[k];
+  for(const ck in COST){ if(ck.length>=5 && (ck.indexOf(k)>=0 || k.indexOf(ck)>=0)) return COST[ck]; }
+  return null;
+}
+
+function computeJoin(){
+  const base=num(val('feeBase'));
+  const prod={}; let totalRev=0, feeBaseSum=0, weighted=0;
+  Object.values(SALESFILES).forEach(f=>f.rows.forEach(r=>{
+    const k=norm(r.name);
+    if(!prod[k]) prod[k]={key:k,name:r.name,num:r.num,qty:0,net:0,fee:0};
+    const disc = r.gross>0 ? (r.gross-r.net)/r.gross*100 : 0;
+    let red = Math.floor(disc/10); if(red<0) red=0;
+    let rate = base-red; if(rate<0) rate=0;
+    prod[k].qty+=r.qty; prod[k].net+=r.net; prod[k].fee+=r.net*rate/100;
+    totalRev+=r.net; feeBaseSum+=r.net; weighted+=r.net*rate;
+  }));
+  const effRate = feeBaseSum>0 ? weighted/feeBaseSum : base;
+  const matched=[], unmatched=[];
+  Object.values(prod).forEach(a=>{
+    const c=findCost(a.key);
+    if(c && c.cost>0){
+      const settle=a.net-a.fee, costsum=c.cost*a.qty, profit=settle-costsum;
+      const mr=a.net>0?profit/a.net*100:0;
+      matched.push({name:c.name||a.name,code:c.code,season:c.season,cat:c.cat,qty:a.qty,net:a.net,fee:a.fee,costunit:c.cost,costsum,profit,mr,grade:grade2(mr)});
+    } else unmatched.push(a);
+  });
+  return {matched,unmatched,totalRev,effRate};
+}
+
+function setSortOptions(sales){
+  const o=sales
+    ? [['profit_asc','순이익 낮은순'],['profit_desc','순이익 높은순'],['mr_asc','마진율 낮은순'],['mr_desc','마진율 높은순'],['rev_desc','매출 높은순']]
+    : [['mr_asc','마진율 낮은순'],['mr_desc','마진율 높은순'],['price_desc','판매가 높은순'],['cost_desc','원가 높은순']];
+  const cur=val('fSort');
+  document.getElementById('fSort').innerHTML=o.map(x=>`<option value="${x[0]}"${x[0]===cur?' selected':''}>${x[1]}</option>`).join('');
+}
 function fillFilters(){
-  const seasons=[...new Set(RAW.map(d=>d.season))];
-  const cats=[...new Set(RAW.map(d=>d.cat))].sort();
+  const seasons=[...new Set(COSTROWS.map(d=>d.season))];
+  const cats=[...new Set(COSTROWS.map(d=>d.cat))].sort();
   document.getElementById('fSeason').innerHTML='<option value="">전체 시즌</option>'+seasons.map(s=>`<option>${esc(s)}</option>`).join('');
   document.getElementById('fCat').innerHTML='<option value="">전체 카테고리</option>'+cats.map(c=>`<option>${esc(c)}</option>`).join('');
 }
 
 function renderKPIs(){
-  const n=RAW.length;
-  const valid=RAW.filter(d=>d.price>0);
-  const avg=valid.length?valid.reduce((s,d)=>s+d.mr,0)/valid.length:0;
-  const loss=RAW.filter(d=>d.price>0&&d.mr<=0).length;
-  const a=RAW.filter(d=>d.grade==='A').length;
   const m=document.getElementById('metrics');
-  m.innerHTML=
-   '<div class="metric-card"><div class="metric-label">총 매출</div><div class="metric-value">—</div><div class="metric-sub">매출 데이터 연결 시</div></div>'+
-   '<div class="metric-card"><div class="metric-label">총 순이익</div><div class="metric-value">—</div><div class="metric-sub">매출 데이터 연결 시</div></div>'+
-   '<div class="metric-card"><div class="metric-label">평균 마진율</div><div class="metric-value">'+avg.toFixed(1)+'%</div><div class="metric-sub">상품 '+n+'개 · 원가마진</div></div>'+
-   '<div class="metric-card"><div class="metric-label">적자 상품</div><div class="metric-value'+(loss>0?' neg':'')+'">'+loss+'개</div><div class="metric-sub">판매가 &lt; 원가</div></div>'+
-   '<div class="metric-card highlight"><div class="metric-label">A등급 상품</div><div class="metric-value">'+a+'개</div><div class="metric-sub">마진율 '+GRADE_A+'% 이상</div></div>';
+  if(hasSales()){
+    const {matched,unmatched,totalRev}=computeJoin();
+    const matRev=matched.reduce((s,d)=>s+d.net,0);
+    const profit=matched.reduce((s,d)=>s+d.profit,0);
+    const avg=matRev>0?profit/matRev*100:0;
+    const loss=matched.filter(d=>d.profit<0).length;
+    const a=matched.filter(d=>d.grade==='A').length;
+    m.innerHTML=
+     card('총 매출',won(totalRev),'전체 판매(취소 제외)')+
+     card('총 순이익',won(profit),'원가 등록 '+matched.length+'종 기준',profit<0)+
+     card('평균 마진율',avg.toFixed(1)+'%','수수료 반영')+
+     card('적자 상품',loss+'종','순이익 < 0',loss>0)+
+     card('A등급 상품',a+'종','마진율 '+GA2+'%↑',false,true);
+  } else if(COSTROWS.length){
+    const valid=COSTROWS.filter(d=>d.price>0);
+    const avg=valid.length?valid.reduce((s,d)=>s+d.mr,0)/valid.length:0;
+    const loss=COSTROWS.filter(d=>d.price>0&&d.mr<=0).length;
+    const a=COSTROWS.filter(d=>d.grade==='A').length;
+    m.innerHTML=
+     card('총 매출','—','매출 파일 업로드 시')+
+     card('총 순이익','—','매출 파일 업로드 시')+
+     card('평균 마진율',avg.toFixed(1)+'%','상품 '+COSTROWS.length+'종 · 원가마진')+
+     card('적자 상품',loss+'종','판매가 < 원가',loss>0)+
+     card('A등급 상품',a+'종','원가마진 '+GA1+'%↑',false,true);
+  }
+}
+function card(label,value,sub,neg,hi){
+  return '<div class="metric-card'+(hi?' highlight':'')+'"><div class="metric-label">'+label+'</div><div class="metric-value'+(neg?' neg':'')+'">'+value+'</div><div class="metric-sub">'+sub+'</div></div>';
 }
 
-function renderTable(){
-  if(!RAW.length) return;
-  let v=RAW.slice();
+function renderMain(){
+  const thead=document.getElementById('thead'), tb=document.getElementById('tbody');
   const se=val('fSeason'), ca=val('fCat'), so=val('fSort'), q=val('fSearch').trim().toLowerCase();
-  if(se) v=v.filter(d=>d.season===se);
-  if(ca) v=v.filter(d=>d.cat===ca);
-  if(q) v=v.filter(d=>(d.code+' '+d.name).toLowerCase().includes(q));
-  const cmps={mr_asc:(a,b)=>a.mr-b.mr, mr_desc:(a,b)=>b.mr-a.mr, price_desc:(a,b)=>b.price-a.price, cost_desc:(a,b)=>b.cost-a.cost};
-  v.sort(cmps[so]||cmps.mr_asc);
-  const tb=document.getElementById('tbody');
-  if(!v.length){ tb.innerHTML='<tr><td colspan="11" class="loading">조건에 맞는 상품이 없어요.</td></tr>'; return; }
-  tb.innerHTML=v.map(d=>'<tr>'+
-    '<td class="code-cell">'+esc(d.code)+'</td>'+
-    '<td>'+esc(d.name)+'</td>'+
-    '<td>'+esc(d.season)+'</td>'+
-    '<td>'+esc(d.cat)+'</td>'+
-    '<td class="num">'+d.colors+'</td>'+
-    '<td class="num">'+won(d.cost)+'</td>'+
-    '<td class="num">'+won(d.price)+'</td>'+
-    '<td class="num">'+won(d.margin)+'</td>'+
-    '<td class="num'+(d.mr<=0?' neg':'')+'">'+d.mr.toFixed(1)+'%</td>'+
-    '<td class="num">'+(d.mult?d.mult.toFixed(2)+'배':'-')+'</td>'+
-    '<td><span class="grade g-'+d.grade+'">'+d.grade+'</span></td>'+
-  '</tr>').join('');
+  const filt=d=>(!se||d.season===se)&&(!ca||d.cat===ca)&&(!q||((d.code||'')+' '+d.name).toLowerCase().includes(q));
+
+  if(hasSales()){
+    document.getElementById('tableTitle').textContent='SKU 손익 · 원가 등록 상품';
+    thead.innerHTML='<th>상품명</th><th>시즌</th><th>카테고리</th><th class="num">수량</th><th class="num">실판매액</th><th class="num">수수료</th><th class="num">원가합계</th><th class="num">순이익</th><th class="num">마진율</th><th>등급</th>';
+    let {matched,unmatched,effRate}=computeJoin();
+    const er=document.getElementById('effRate'); if(er) er.textContent=effRate.toFixed(1)+'%';
+    let v=matched.filter(filt);
+    const cmps={profit_asc:(a,b)=>a.profit-b.profit,profit_desc:(a,b)=>b.profit-a.profit,mr_asc:(a,b)=>a.mr-b.mr,mr_desc:(a,b)=>b.mr-a.mr,rev_desc:(a,b)=>b.net-a.net};
+    v.sort(cmps[so]||cmps.profit_asc);
+    tb.innerHTML = v.length ? v.map(d=>'<tr>'+
+      '<td>'+esc(d.name)+'</td><td>'+esc(d.season)+'</td><td>'+esc(d.cat)+'</td>'+
+      '<td class="num">'+d.qty+'</td>'+
+      '<td class="num">'+won(d.net)+'</td>'+
+      '<td class="num" style="color:var(--text-3)">−'+won(d.fee)+'</td>'+
+      '<td class="num">'+won(d.costsum)+'</td>'+
+      '<td class="num '+(d.profit<0?'neg':'pos')+'">'+won(d.profit)+'</td>'+
+      '<td class="num '+(d.mr<0?'neg':'')+'">'+d.mr.toFixed(1)+'%</td>'+
+      '<td><span class="grade g-'+d.grade+'">'+d.grade+'</span></td></tr>').join('')
+      : '<tr><td colspan="10" class="loading">원가가 등록된 판매 상품이 없어요. 아래 "원가 미등록" 목록을 확인해주세요.</td></tr>';
+    // unmatched
+    const us=document.getElementById('unmatchedSection');
+    if(unmatched.length){
+      us.style.display='block';
+      const rev=unmatched.reduce((s,a)=>s+a.net,0);
+      document.getElementById('unmatchedNote').textContent='총 '+unmatched.length+'종 · 실판매액 '+won(rev)+' — 원가표에 이 상품들의 원가를 추가하면 손익에 자동 반영돼요.';
+      document.getElementById('tbodyUnmatched').innerHTML=unmatched.sort((a,b)=>b.net-a.net).map(a=>'<tr>'+
+        '<td>'+esc(a.name)+'</td><td class="code-cell">'+esc(a.num)+'</td>'+
+        '<td class="num">'+a.qty+'</td><td class="num">'+won(a.net)+'</td></tr>').join('');
+    } else us.style.display='none';
+  } else {
+    document.getElementById('tableTitle').textContent='SKU 마진 · 상품 단위 (원가 기준)';
+    document.getElementById('unmatchedSection').style.display='none';
+    thead.innerHTML='<th>상품코드</th><th>상품명</th><th>시즌</th><th>카테고리</th><th class="num">컬러</th><th class="num">원가</th><th class="num">판매가</th><th class="num">개당 마진</th><th class="num">마진율</th><th class="num">배수</th><th>등급</th>';
+    let v=COSTROWS.filter(filt);
+    const cmps={mr_asc:(a,b)=>a.mr-b.mr,mr_desc:(a,b)=>b.mr-a.mr,price_desc:(a,b)=>b.price-a.price,cost_desc:(a,b)=>b.cost-a.cost};
+    v.sort(cmps[so]||cmps.mr_asc);
+    tb.innerHTML = v.length ? v.map(d=>'<tr>'+
+      '<td class="code-cell">'+esc(d.code)+'</td><td>'+esc(d.name)+'</td><td>'+esc(d.season)+'</td><td>'+esc(d.cat)+'</td>'+
+      '<td class="num">'+d.colors+'</td><td class="num">'+won(d.cost)+'</td><td class="num">'+won(d.price)+'</td>'+
+      '<td class="num">'+won(d.margin)+'</td><td class="num'+(d.mr<=0?' neg':'')+'">'+d.mr.toFixed(1)+'%</td>'+
+      '<td class="num">'+(d.mult?d.mult.toFixed(2)+'배':'-')+'</td>'+
+      '<td><span class="grade g-'+d.grade+'">'+d.grade+'</span></td></tr>').join('')
+      : '<tr><td colspan="11" class="loading">조건에 맞는 상품이 없어요.</td></tr>';
+  }
+}
+
+function recompute(){ if(COSTROWS.length){ renderKPIs(); renderMain(); } saveState(); }
+function renderAll(){
+  setSortOptions(hasSales());
+  document.getElementById('feeRow').style.display=hasSales()?'flex':'none';
+  if(COSTROWS.length){ fillFilters(); renderKPIs(); renderMain(); }
+  else { document.getElementById('metrics').innerHTML=DEFAULT_METRICS; }
+  const any = COSTROWS.length||hasSales();
+  document.getElementById('savedNote').style.display = any?'inline':'none';
+  document.getElementById('clearBtn').style.display = any?'inline-block':'none';
+  // status
+  document.getElementById('costStat').textContent = COSTROWS.length? COSTROWS.length+'종' : '미등록';
+  document.getElementById('costDot').className = COSTROWS.length?'dot-on':'dot-off';
+  const sf=Object.keys(SALESFILES);
+  document.getElementById('salesStat').textContent = sf.length? sf.length+'개 파일' : '미등록';
+  document.getElementById('salesDot').className = sf.length?'dot-on':'dot-off';
+  let tr='파일을 올려주세요';
+  if(COSTROWS.length&&hasSales()) tr='원가 '+COSTROWS.length+'종 · 매출 '+sf.length+'개';
+  else if(COSTROWS.length) tr='원가 '+COSTROWS.length+'종 · 매출 대기';
+  document.getElementById('topRight').textContent=tr;
 }
 
 let toastTimer;
-function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2600); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2800); }
+
+const LSKEY='anniz_sku_v1';
+function saveState(){
+  try{ localStorage.setItem(LSKEY, JSON.stringify({costrows:COSTROWS,cost:COST,sales:SALESFILES,feeBase:val('feeBase')})); }catch(e){}
+}
+function loadState(){
+  try{
+    const s=localStorage.getItem(LSKEY); if(!s) return;
+    const o=JSON.parse(s);
+    COSTROWS=o.costrows||[]; COST=o.cost||{}; SALESFILES=o.sales||{};
+    if(o.feeBase) document.getElementById('feeBase').value=o.feeBase;
+  }catch(e){}
+}
+function clearAll(){
+  try{ localStorage.removeItem(LSKEY); }catch(e){}
+  COST={}; COSTROWS=[]; SALESFILES={};
+  document.getElementById('thead').innerHTML='';
+  document.getElementById('tbody').innerHTML='<tr><td class="loading">먼저 원가표(시즌별 생산정보) 엑셀을 올려주세요.</td></tr>';
+  document.getElementById('unmatchedSection').style.display='none';
+  renderAll(); toast('전체 데이터를 지웠어요.');
+}
 
 function handleFile(f){
   const r=new FileReader();
   r.onload=ev=>{
     try{
-      parse(new Uint8Array(ev.target.result));
-      if(!RAW.length){ toast('상품 데이터를 찾지 못했어요. 파일을 확인해주세요.'); return; }
-      fillFilters(); renderKPIs(); renderTable();
-      document.getElementById('uploadIdle').style.display='none';
-      document.getElementById('uploadDone').style.display='block';
-      document.getElementById('uploadInfo').textContent='✓ '+f.name+' · 상품 '+RAW.length+'개 불러옴';
-      document.getElementById('topRight').textContent='상품 '+RAW.length+'개 · 원가 마스터';
-      toast('불러왔어요! 상품 '+RAW.length+'개');
+      const wb=XLSX.read(new Uint8Array(ev.target.result),{type:'array'});
+      const t=detectType(wb);
+      if(t==='cost'){
+        parseCost(wb);
+        if(!COSTROWS.length){ toast('원가표에서 상품을 찾지 못했어요.'); return; }
+        toast('원가표 불러옴 · 상품 '+COSTROWS.length+'종');
+      } else if(t==='sales29'){
+        if(!COSTROWS.length){ toast('먼저 원가표를 올려주세요. 그다음 매출 파일을 올리면 손익이 계산돼요.'); return; }
+        const rows=parse29CM(wb);
+        if(!rows.length){ toast('매출 데이터를 찾지 못했어요.'); return; }
+        SALESFILES[f.name]={platform:'29CM',rows};
+        toast('매출 불러옴 · '+f.name+' ('+rows.length+'건)');
+      } else { toast('이 파일 형식은 아직 못 알아봐요. 원가표 또는 29CM 주문내역 파일인지 확인해주세요.'); return; }
+      renderAll(); saveState();
     }catch(err){ console.error(err); toast('파일을 읽지 못했어요. 엑셀(.xlsx)인지 확인해주세요.'); }
   };
   r.readAsArrayBuffer(f);
 }
+function resetSales(){ SALESFILES={}; renderAll(); saveState(); toast('매출 데이터를 초기화했어요.'); }
 
 document.getElementById('fileInput').addEventListener('change',e=>{ const f=e.target.files[0]; if(f) handleFile(f); e.target.value=''; });
 const dz=document.getElementById('dropZone');
@@ -435,6 +609,7 @@ dz.addEventListener('drop',e=>{ const f=e.dataTransfer.files&&e.dataTransfer.fil
 
 function openMobileMenu(){ document.getElementById('mmOverlay').classList.add('open'); document.getElementById('mmPanel').classList.add('open'); }
 function closeMobileMenu(){ document.getElementById('mmOverlay').classList.remove('open'); document.getElementById('mmPanel').classList.remove('open'); }
+loadState(); renderAll();
 </script>
 </body>
 </html>
