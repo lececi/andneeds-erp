@@ -539,7 +539,7 @@ function renderAll(){
   if(COSTROWS.length){ fillFilters(); renderKPIs(); renderMain(); }
   else { document.getElementById('metrics').innerHTML=DEFAULT_METRICS; }
   const any = COSTROWS.length||hasSales();
-  document.getElementById('savedNote').style.display = any?'inline':'none';
+  updateSavedNote();
   document.getElementById('clearBtn').style.display = any?'inline-block':'none';
   // status
   document.getElementById('costStat').textContent = COSTROWS.length? COSTROWS.length+'종' : '미등록';
@@ -557,20 +557,46 @@ let toastTimer;
 function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2800); }
 
 const LSKEY='anniz_sku_v1';
-function saveState(){
-  try{ localStorage.setItem(LSKEY, JSON.stringify({costrows:COSTROWS,cost:COST,sales:SALESFILES,feeBase:val('feeBase')})); }catch(e){}
+const SB_URL='https://nifytqcqfattzpwlzpmb.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs';
+const SB_ID='main';
+let cloudOK=false;
+async function sbFetch(path,opts={}){
+  const res=await fetch(SB_URL+'/rest/v1/'+path,{...opts,headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':opts.prefer||'return=minimal',...(opts.headers||{})}});
+  if(!res.ok) throw new Error(await res.text());
+  const t=await res.text(); if(!t||!t.trim()) return null;
+  try{return JSON.parse(t);}catch(e){return null;}
 }
-function loadState(){
+function snapshot(){ return {costrows:COSTROWS,cost:COST,sales:SALESFILES,feeBase:val('feeBase')}; }
+function applySnap(o){ COSTROWS=o.costrows||[]; COST=o.cost||{}; SALESFILES=o.sales||{}; if(o.feeBase) document.getElementById('feeBase').value=o.feeBase; }
+function updateSavedNote(){
+  const n=document.getElementById('savedNote'); if(!n) return;
+  const any=COSTROWS.length||hasSales();
+  n.style.display=any?'inline':'none';
+  n.className=cloudOK?'dot-on':'';
+  n.textContent=cloudOK?'☁ 클라우드 저장됨 · 모든 기기에서 보여요':'⚠ 이 기기에만 저장됨';
+}
+async function saveState(){
+  const snap=snapshot();
+  try{ localStorage.setItem(LSKEY,JSON.stringify(snap)); }catch(e){}
   try{
-    const s=localStorage.getItem(LSKEY); if(!s) return;
-    const o=JSON.parse(s);
-    COSTROWS=o.costrows||[]; COST=o.cost||{}; SALESFILES=o.sales||{};
-    if(o.feeBase) document.getElementById('feeBase').value=o.feeBase;
-  }catch(e){}
+    await sbFetch('sku_state',{method:'POST',prefer:'resolution=merge-duplicates',body:JSON.stringify({id:SB_ID,payload:snap,updated_at:new Date().toISOString()})});
+    cloudOK=true;
+  }catch(e){ cloudOK=false; console.error('cloud save',e); }
+  updateSavedNote();
 }
-function clearAll(){
-  try{ localStorage.removeItem(LSKEY); }catch(e){}
+async function loadState(){
+  try{
+    const rows=await sbFetch('sku_state?id=eq.'+SB_ID+'&select=payload');
+    cloudOK=true;
+    if(rows&&rows[0]&&rows[0].payload){ applySnap(rows[0].payload); try{localStorage.setItem(LSKEY,JSON.stringify(rows[0].payload));}catch(e){} return; }
+  }catch(e){ cloudOK=false; console.error('cloud load',e); }
+  try{ const s=localStorage.getItem(LSKEY); if(s) applySnap(JSON.parse(s)); }catch(e){}
+}
+async function clearAll(){
   COST={}; COSTROWS=[]; SALESFILES={};
+  try{ localStorage.removeItem(LSKEY); }catch(e){}
+  try{ await sbFetch('sku_state?id=eq.'+SB_ID,{method:'DELETE'}); }catch(e){}
   document.getElementById('thead').innerHTML='';
   document.getElementById('tbody').innerHTML='<tr><td class="loading">먼저 원가표(시즌별 생산정보) 엑셀을 올려주세요.</td></tr>';
   document.getElementById('unmatchedSection').style.display='none';
@@ -609,7 +635,8 @@ dz.addEventListener('drop',e=>{ const f=e.dataTransfer.files&&e.dataTransfer.fil
 
 function openMobileMenu(){ document.getElementById('mmOverlay').classList.add('open'); document.getElementById('mmPanel').classList.add('open'); }
 function closeMobileMenu(){ document.getElementById('mmOverlay').classList.remove('open'); document.getElementById('mmPanel').classList.remove('open'); }
-loadState(); renderAll();
+async function init(){ document.getElementById('topRight').textContent='불러오는 중...'; await loadState(); renderAll(); updateSavedNote(); }
+init();
 </script>
 </body>
 </html>
