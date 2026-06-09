@@ -249,11 +249,11 @@ input:focus,select:focus{border-color:var(--text);}
   <main>
     <div class="sec-head"><span class="sec-title">파일 업로드</span></div>
     <div class="upload-area" id="dropZone">
-      <div style="font-size:13px;color:var(--text-2);margin-bottom:6px;">원가표 · 매출 파일을 올려주세요 <span style="color:var(--text-3);">(파일 종류 자동 인식)</span></div>
-      <div style="font-size:12px;color:var(--text-3);margin-bottom:16px;">① 시즌별 생산정보(원가·판매가) &nbsp;②&nbsp; 29CM 주문상품 내역 &nbsp;·&nbsp; 끌어다 놓거나 버튼으로</div>
+      <div style="font-size:13px;color:var(--text-2);margin-bottom:6px;">원가 파일 · 매출 파일을 올려주세요 <span style="color:var(--text-3);">(파일 종류 자동 인식)</span></div>
+      <div style="font-size:12px;color:var(--text-3);margin-bottom:16px;">① 시즌별 생산정보 또는 재고현황(원가) &nbsp;②&nbsp; 29CM 주문상품 내역 &nbsp;·&nbsp; 끌어다 놓거나 버튼으로</div>
       <button class="btn-primary" onclick="document.getElementById('fileInput').click()">파일 선택</button>
       <div class="status-row" id="statusRow">
-        <span><span id="costDot" class="dot-off">●</span> 원가표 <b id="costStat">미등록</b></span>
+        <span><span id="costDot" class="dot-off">●</span> 원가 <b id="costStat">미등록</b></span>
         <span><span id="salesDot" class="dot-off">●</span> 매출 <b id="salesStat">미등록</b></span>
         <span id="savedNote" class="dot-on" style="display:none;">✓ 이 브라우저에 저장됨</span>
         <button class="upload-btn" id="clearBtn" style="display:none;" onclick="clearAll()">전체 지우기</button>
@@ -304,6 +304,7 @@ input:focus,select:focus{border-color:var(--text);}
 
     <div style="font-size:11px;color:var(--text-3);line-height:1.7;margin-top:6px;">
       · 순이익 = 실판매액 − 수수료 − (개당원가×수량) · 수수료 = 기본 30%에서 주문 할인 10%마다 −1% (주문별 자동 계산) · 배송비 미반영.<br>
+      · 원가는 <b>시즌별 생산정보</b>와 <b>재고현황(단가)</b> 둘 다 인식해요. 둘 다 올리면 더 많은 상품의 원가가 채워져요.<br>
       · 매출↔원가는 <b>상품명</b>으로 자동 연결해요. 이름이 다르면 "원가 미등록"에 들어가요. 숫자가 이상하면 상품명이 잘못 연결된 건 아닌지 확인해주세요.<br>
       · 등급(조절 가능): 손익 기준 A 마진율 40%↑ · B 28~40% · C 18~28% · D 18%↓ · 적자 순이익&lt;0.<br>
       · 취소·취소준비중 주문은 자동 제외돼요. 다른 플랫폼(무신사·자사몰)은 파일 샘플을 주시면 추가할게요.
@@ -317,7 +318,7 @@ input:focus,select:focus{border-color:var(--text);}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-const CAT={JK:'자켓',TS:'티셔츠',BL:'블라우스',SK:'스커트',KN:'니트',SH:'셔츠',HD:'후드',PT:'팬츠',OP:'원피스',BA:'가방',HT:'모자'};
+const CAT={JK:'자켓',TS:'티셔츠',BL:'블라우스',SK:'스커트',KN:'니트',SH:'셔츠',HD:'후드',PT:'팬츠',OP:'원피스',BA:'가방',BG:'가방',HT:'모자',CD:'가디건',CT:'코트',CO:'코트',LJ:'점퍼',JP:'점퍼',DN:'데님',AC:'악세서리',SW:'스웨터',VT:'베스트',MF:'머플러'};
 const GA1=76,GB1=72,GC1=68;       // 원가마진 등급(매출 없을 때)
 const GA2=40,GB2=28,GC2=18;       // 손익마진 등급(매출 있을 때)
 const FEE_DEF={'29CM':33,'무신사':30,'자사몰':0};
@@ -331,6 +332,7 @@ const DEFAULT_METRICS=
 let COST={};        // normName -> {code,name,season,cat,cost,price}
 let COSTROWS=[];    // 원가표 상품 목록(시즌별)
 let SALESFILES={};  // filename -> {platform, rows:[{name,num,qty,net}]}
+let SRC={season:[],inv:[]};  // 원가 소스: 시즌별 생산정보 + 재고현황(단가)
 
 function num(v){ if(v==null) return 0; const n=parseFloat(String(v).replace(/[^0-9.\-]/g,'')); return isNaN(n)?0:n; }
 function esc(s){ return String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
@@ -345,16 +347,17 @@ function hasSales(){ return Object.keys(SALESFILES).length>0; }
 function detectType(wb){
   for(const sn of wb.SheetNames){
     const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:null});
-    const flat=rows.slice(0,3).flat().map(c=>String(c==null?'':c).replace(/\s/g,''));
+    const flat=rows.slice(0,10).flat().map(c=>String(c==null?'':c).replace(/\s/g,''));
     const has=kw=>flat.some(h=>h.includes(kw));
     if(has('주문번호')&&(has('실판매액')||has('판매액'))) return 'sales29';
+    if(has('단가')&&(has('바코드')||has('기말잔액'))) return 'inv';
     if(has('사전원가')||(has('상품코드')&&has('판매가'))) return 'cost';
   }
   return 'unknown';
 }
 
 function parseCost(wb){
-  COST={}; COSTROWS=[];
+  const arr=[];
   wb.SheetNames.forEach(sn=>{
     const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:null});
     let hi=rows.findIndex(r=>r&&r.some(c=>String(c).replace(/\s/g,'').includes('상품코드')));
@@ -376,11 +379,39 @@ function parseCost(wb){
     }
     Object.values(g).forEach(o=>{
       const margin=o.price-o.cost, mr=o.price>0?margin/o.price*100:0, cat=catOf(o.code);
-      COSTROWS.push({season:o.season,code:o.code,name:o.name,cat,colors:o.colors.size||1,cost:o.cost,price:o.price,margin,mr,mult:o.cost>0?o.price/o.cost:0,grade:grade1(mr)});
-      const nk=norm(o.name);
-      if(nk && !COST[nk]) COST[nk]={code:o.code,name:o.name,season:o.season,cat,cost:o.cost,price:o.price};
+      arr.push({season:o.season,code:o.code,name:o.name,cat,colors:o.colors.size||1,cost:o.cost,price:o.price,margin,mr,mult:o.cost>0?o.price/o.cost:0,grade:grade1(mr),src:'시즌'});
     });
   });
+  return arr;
+}
+
+function parseInventory(wb){
+  const out=[]; const sn=wb.SheetNames[0];
+  const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:null});
+  let hi=rows.findIndex(r=>r&&r.some(c=>String(c).replace(/\s/g,'').includes('단가')));
+  if(hi<0) return out;
+  const hdr=rows[hi].map(c=>String(c==null?'':c).replace(/\s/g,''));
+  const find=kw=>hdr.findIndex(h=>h.includes(kw));
+  const iSeason=find('시즌'), iName=find('상품명'), iBar=find('바코드'), iCost=find('단가'), iQty=find('수량');
+  const g={};
+  for(let r=hi+1;r<rows.length;r++){
+    const row=rows[r]; if(!row) continue;
+    const nm=iName>=0?String(row[iName]==null?'':row[iName]).trim():'';
+    if(!nm||nm==='합계'||nm==='소계'||nm==='nan') continue;
+    const cost=num(iCost>=0?row[iCost]:0); if(cost<=0) continue;
+    const k=norm(nm); if(!k) continue;
+    if(!g[k]) g[k]={season:iSeason>=0?String(row[iSeason]==null?'':row[iSeason]).trim():'',code:iBar>=0?String(row[iBar]==null?'':row[iBar]).trim():'',name:nm,cost:0,n:0};
+    if(cost>g[k].cost) g[k].cost=cost;
+    g[k].n++;
+  }
+  Object.values(g).forEach(o=>out.push({season:o.season,code:o.code,name:o.name,cat:catOf(o.code),colors:o.n,cost:o.cost,price:0,margin:0,mr:0,mult:0,grade:'-',src:'재고'}));
+  return out;
+}
+
+function rebuildCost(){
+  COST={}; COSTROWS=[];
+  (SRC.season||[]).forEach(o=>{ COSTROWS.push(o); const nk=norm(o.name); if(nk&&!COST[nk]) COST[nk]={code:o.code,name:o.name,season:o.season,cat:o.cat,cost:o.cost,price:o.price}; });
+  (SRC.inv||[]).forEach(o=>{ const nk=norm(o.name); if(nk&&COST[nk]) return; COSTROWS.push(o); if(nk) COST[nk]={code:o.code,name:o.name,season:o.season,cat:o.cat,cost:o.cost,price:o.price}; });
 }
 
 function parse29CM(wb){
@@ -522,12 +553,16 @@ function renderMain(){
     let v=COSTROWS.filter(filt);
     const cmps={mr_asc:(a,b)=>a.mr-b.mr,mr_desc:(a,b)=>b.mr-a.mr,price_desc:(a,b)=>b.price-a.price,cost_desc:(a,b)=>b.cost-a.cost};
     v.sort(cmps[so]||cmps.mr_asc);
-    tb.innerHTML = v.length ? v.map(d=>'<tr>'+
+    tb.innerHTML = v.length ? v.map(d=>{ const hp=d.price>0;
+      return '<tr>'+
       '<td class="code-cell">'+esc(d.code)+'</td><td>'+esc(d.name)+'</td><td>'+esc(d.season)+'</td><td>'+esc(d.cat)+'</td>'+
-      '<td class="num">'+d.colors+'</td><td class="num">'+won(d.cost)+'</td><td class="num">'+won(d.price)+'</td>'+
-      '<td class="num">'+won(d.margin)+'</td><td class="num'+(d.mr<=0?' neg':'')+'">'+d.mr.toFixed(1)+'%</td>'+
-      '<td class="num">'+(d.mult?d.mult.toFixed(2)+'배':'-')+'</td>'+
-      '<td><span class="grade g-'+d.grade+'">'+d.grade+'</span></td></tr>').join('')
+      '<td class="num">'+d.colors+'</td><td class="num">'+won(d.cost)+'</td>'+
+      '<td class="num">'+(hp?won(d.price):'—')+'</td>'+
+      '<td class="num">'+(hp?won(d.margin):'—')+'</td>'+
+      '<td class="num'+(hp&&d.mr<=0?' neg':'')+'">'+(hp?d.mr.toFixed(1)+'%':'—')+'</td>'+
+      '<td class="num">'+(hp&&d.mult?d.mult.toFixed(2)+'배':'—')+'</td>'+
+      '<td>'+(hp?'<span class="grade g-'+d.grade+'">'+d.grade+'</span>':'<span style="color:var(--text-3)">—</span>')+'</td></tr>';
+      }).join('')
       : '<tr><td colspan="11" class="loading">조건에 맞는 상품이 없어요.</td></tr>';
   }
 }
@@ -567,8 +602,14 @@ async function sbFetch(path,opts={}){
   const t=await res.text(); if(!t||!t.trim()) return null;
   try{return JSON.parse(t);}catch(e){return null;}
 }
-function snapshot(){ return {costrows:COSTROWS,cost:COST,sales:SALESFILES,feeBase:val('feeBase')}; }
-function applySnap(o){ COSTROWS=o.costrows||[]; COST=o.cost||{}; SALESFILES=o.sales||{}; if(o.feeBase) document.getElementById('feeBase').value=o.feeBase; }
+function snapshot(){ return {src:SRC,sales:SALESFILES,feeBase:val('feeBase')}; }
+function applySnap(o){
+  SALESFILES=o.sales||{};
+  if(o.feeBase) document.getElementById('feeBase').value=o.feeBase;
+  if(o.src){ SRC={season:o.src.season||[],inv:o.src.inv||[]}; }
+  else { SRC={season:o.costrows||[],inv:[]}; }
+  rebuildCost();
+}
 function updateSavedNote(){
   const n=document.getElementById('savedNote'); if(!n) return;
   const any=COSTROWS.length||hasSales();
@@ -610,16 +651,19 @@ function handleFile(f){
       const wb=XLSX.read(new Uint8Array(ev.target.result),{type:'array'});
       const t=detectType(wb);
       if(t==='cost'){
-        parseCost(wb);
-        if(!COSTROWS.length){ toast('원가표에서 상품을 찾지 못했어요.'); return; }
-        toast('원가표 불러옴 · 상품 '+COSTROWS.length+'종');
+        SRC.season=parseCost(wb); rebuildCost();
+        if(!SRC.season.length){ toast('원가표에서 상품을 찾지 못했어요.'); return; }
+        toast('원가표(시즌별) 불러옴 · '+SRC.season.length+'종');
+      } else if(t==='inv'){
+        SRC.inv=parseInventory(wb); rebuildCost();
+        if(!SRC.inv.length){ toast('재고현황에서 원가를 찾지 못했어요.'); return; }
+        toast('재고현황 원가 불러옴 · '+SRC.inv.length+'종');
       } else if(t==='sales29'){
-        if(!COSTROWS.length){ toast('먼저 원가표를 올려주세요. 그다음 매출 파일을 올리면 손익이 계산돼요.'); return; }
         const rows=parse29CM(wb);
         if(!rows.length){ toast('매출 데이터를 찾지 못했어요.'); return; }
         SALESFILES[f.name]={platform:'29CM',rows};
-        toast('매출 불러옴 · '+f.name+' ('+rows.length+'건)');
-      } else { toast('이 파일 형식은 아직 못 알아봐요. 원가표 또는 29CM 주문내역 파일인지 확인해주세요.'); return; }
+        toast('매출 불러옴 · '+f.name+' ('+rows.length+'건)'+(COSTROWS.length?'':' — 원가/재고 파일도 올리면 손익이 계산돼요'));
+      } else { toast('이 파일 형식은 아직 못 알아봐요. 원가표·재고현황·29CM 주문내역인지 확인해주세요.'); return; }
       renderAll(); saveState();
     }catch(err){ console.error(err); toast('파일을 읽지 못했어요. 엑셀(.xlsx)인지 확인해주세요.'); }
   };
