@@ -186,7 +186,6 @@ input:focus,select:focus{border-color:var(--text);}
   .lang-btn{font-size:11px;padding:5px 8px;}
   .topbar-title{display:none;}
 }
-</style>
 <style id="airy-v1">
 :root{--border:rgba(0,0,0,0.055);--border-mid:rgba(0,0,0,0.10);}
 body{line-height:1.62;}
@@ -213,43 +212,38 @@ table td{padding:16px 20px;font-size:13px;}
 .col{padding:14px;border-radius:16px;}
 .pcard{padding:14px 15px;border-radius:12px;margin-bottom:10px;}
 @media(max-width:768px){main{padding:24px 16px 76px;}.topbar{padding:0 16px;}}
-</style>
 <style id="navcolor-v1">
 .nav-item{color:#1A1714;}
 .nav-item:hover{color:#1A1714;background:var(--surface2);}
 .nav-item.active{color:#2B6CB8;background:var(--surface2);font-weight:500;}
 .nav-item.active span{border-color:#2B6CB8 !important;}
-</style>
 <style id="layout-v2">
 .sidebar{width:252px;}
 .page-content{margin-left:252px;}
 .sidebar-logo img{height:32px !important;}
 @media(max-width:768px){.sidebar{width:48px;}.page-content{margin-left:48px;}}
-</style>
 <style id="layout-v3">
 .sidebar-logo{height:76px;}
 .topbar{height:76px;}
 .sidebar-logo img{height:40px !important;}
-</style>
 <style id="layout-v4">
 .sidebar{width:288px;border-right-color:#2B6CB8;}
 .page-content{margin-left:288px;}
 .sidebar-logo{border-bottom-color:#2B6CB8;}
 .topbar{border-bottom-color:#2B6CB8;}
 @media(max-width:768px){.sidebar{width:48px;}.page-content{margin-left:48px;}}
-</style>
 <style id="textcolor-v1">
 :root{--text:#1A1A1A;--text-2:#6E6E6E;--text-3:#ABABAB;--ink:#1A1A1A;--ink-2:#6E6E6E;--ink-3:#ABABAB;--ink-4:#DADADA;}
 .nav-item{color:#1A1A1A;}
 .nav-item:hover{color:#1A1A1A;}
 .nav-item.active{color:#2B6CB8;}
-</style>
 <style id="topbar-v1">
+.sidebar-nav .nav-item .nav-label{font-size:13px !important;font-weight:400 !important;letter-spacing:0 !important;}
 .sidebar-nav .nav-item span[style]{display:none !important;}
 .nav-section-label{color:#2B6CB8 !important;font-size:14px !important;}
-#topbarDate{color:#2B6CB8 !important;}
+#topbarDate{color:#141414 !important;font-size:13px !important;font-weight:500 !important;letter-spacing:normal !important;text-transform:none !important;}
 .hero-greeting{text-transform:uppercase !important;color:#141414 !important;}
-</style>
+.sec-title{color:#141414 !important;}
 </head>
 <body>
 <div class="layout">
@@ -259,7 +253,7 @@ table td{padding:16px 20px;font-size:13px;}
   </div>
   <nav class="sidebar-nav">
     <div class="nav-section-label">OPERATION</div>
-    <a href="home.html" class="nav-item"><span style="width:7px;height:7px;border-radius:50%;border:1.5px solid var(--text-3);display:inline-block;flex-shrink:0;"></span><span class="nav-label">홈</span></a>
+    <a href="home.html" class="nav-item"><span style="width:7px;height:7px;border-radius:50%;border:1.5px solid var(--text-3);display:inline-block;flex-shrink:0;"></span><span class="nav-label">HOME</span></a>
     <a href="index.html" class="nav-item active"><span style="width:7px;height:7px;border-radius:50%;border:1.5px solid var(--text-3);display:inline-block;flex-shrink:0;"></span><span class="nav-label">매출현황</span></a>
     <a href="sku.html" class="nav-item"><span style="width:7px;height:7px;border-radius:50%;border:1.5px solid var(--text-3);display:inline-block;flex-shrink:0;"></span><span class="nav-label">손익관리</span></a>
     <a href="production.html" class="nav-item"><span style="width:7px;height:7px;border-radius:50%;border:1.5px solid var(--text-3);display:inline-block;flex-shrink:0;"></span><span class="nav-label">생산관리</span></a>
