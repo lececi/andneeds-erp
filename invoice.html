@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=Inter:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#fff;--surface:#fff;--surface2:#F5F5F5;--border:rgba(0,0,0,0.08);--border-mid:rgba(0,0,0,0.14);--text:#1A1714;--text-2:#6B6560;--text-3:#A09A94;--danger:#8C3A2A;--success:#2B6CB8;}
+:root{--bg:#fff;--surface:#fff;--surface2:#F5F5F5;--border:rgba(0,0,0,0.08);--border-mid:rgba(0,0,0,0.14);--text:#1A1714;--text-2:#6B6560;--text-3:#A09A94;--danger:#BD090A;--success:#2B6CB8;}
 body{font-family:'Noto Sans KR',sans-serif;background:#F5F5F5;color:var(--text);font-size:14px;}
 
   .layout{display:flex;min-height:100vh;}
@@ -678,7 +678,7 @@ async function openLoadModal() {
     }
     listEl.innerHTML = list.map(inv => {
       const isPaid = inv.status === '입금완료';
-      const statusColor = isPaid ? '#2B6CB8' : '#8C3A2A';
+      const statusColor = isPaid ? '#2B6CB8' : '#BD090A';
       const statusBg = isPaid ? '#EBF2FB' : '#FDF0ED';
       return `
       <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.08);">
@@ -692,11 +692,11 @@ async function openLoadModal() {
         <div style="display:flex;gap:6px;align-items:center;">
           <button onclick="toggleStatus(${inv.id},'${inv.status||'미수금'}')" style="font-family:'Noto Sans KR',sans-serif;font-size:11px;padding:5px 10px;border-radius:7px;border:1px solid ${statusColor};background:${statusBg};color:${statusColor};cursor:pointer;">${isPaid?'↩ 미수금':'✓ 입금완료'}</button>
           <button onclick="loadSaved(${inv.id})" style="font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:6px 14px;border-radius:7px;border:1px solid rgba(0,0,0,0.14);background:#fff;cursor:pointer;">불러오기</button>
-          <button onclick="deleteSaved(${inv.id})" style="font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:6px 10px;border-radius:7px;border:1px solid rgba(140,58,42,0.3);background:#fff;color:#8C3A2A;cursor:pointer;">삭제</button>
+          <button onclick="deleteSaved(${inv.id})" style="font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:6px 10px;border-radius:7px;border:1px solid rgba(140,58,42,0.3);background:#fff;color:#BD090A;cursor:pointer;">삭제</button>
         </div>
       </div>`;
     }).join('');
-  } catch(e) { listEl.innerHTML = '<div style="color:#8C3A2A;font-size:13px;">불러오기 실패</div>'; }
+  } catch(e) { listEl.innerHTML = '<div style="color:#BD090A;font-size:13px;">불러오기 실패</div>'; }
 }
 
 async function toggleStatus(id, currentStatus) {
