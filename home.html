@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ANDNEEDS · Today at Andneeds</title>
+<title>ANDNEEDS · THE DAILY EDIT.</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 @font-face {
@@ -403,13 +403,29 @@ table td{padding:16px 20px;font-size:13px;}
 .nav-section-label{color:#2B6CB8 !important;font-size:14px !important;}
 .topbar-title{color:#2B6CB8 !important;}
 #topbarDate{color:#2B6CB8 !important;font-size:13px !important;font-weight:500 !important;letter-spacing:normal !important;text-transform:none !important;}
-.hero-greeting{text-transform:uppercase !important;color:#141414 !important;}
+.hero-greeting{text-transform:none !important;color:#141414 !important;}
 .sec-title{color:#141414 !important;}
 </style>
 <style id="chips-v1">
 .filter-btn:not(.active),.plat-filter-btn:not(.active),.tab-btn:not(.active){color:#2B6CB8 !important;border-color:#2B6CB8 !important;background:transparent !important;}
 .filter-btn.active,.plat-filter-btn.active,.tab-btn.active{background:#2B6CB8 !important;border-color:#2B6CB8 !important;color:#fff !important;}
 .filter-btn:not(.active):hover,.plat-filter-btn:not(.active):hover,.tab-btn:not(.active):hover{background:#EAF1FA !important;color:#2B6CB8 !important;}
+</style>
+<style id="home-v1">
+.hero-greeting{font-family:'Galvji',-apple-system,'Helvetica Neue',Arial,sans-serif !important;font-weight:300 !important;letter-spacing:0.02em !important;font-style:normal !important;font-size:26px !important;}
+.hero-greeting span{font-style:normal !important;}
+.goal-title{font-size:15px !important;color:#1A1A1A !important;}
+.inv-strip-label{font-size:15px !important;color:#555555 !important;}
+.section-title{font-size:15px !important;color:#1A1A1A !important;}
+.todo-row{position:relative;}
+.todo-check{cursor:pointer;}
+.todo-btn{background:none;border:none;cursor:pointer;color:var(--ink-3);font-size:13px;line-height:1;padding:2px 5px;border-radius:5px;opacity:0;transition:opacity .12s,background .12s;}
+.todo-row:hover .todo-btn{opacity:1;}
+.todo-btn:hover{background:var(--bg);color:var(--ink);}
+.todo-add{display:flex;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border-mid);}
+.todo-add input{flex:1;font-family:inherit;font-size:13px;padding:7px 11px;border:1px solid var(--border-mid);border-radius:8px;background:#fff;color:var(--ink);outline:none;}
+.todo-add input:focus{border-color:#2B6CB8;}
+.todo-add-btn{font-family:inherit;font-size:12px;font-weight:500;padding:7px 16px;border-radius:8px;border:none;background:#2B6CB8;color:#fff;cursor:pointer;white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -452,7 +468,7 @@ table td{padding:16px 20px;font-size:13px;}
     <!-- HERO -->
     <div class="hero-strip">
       <div style="display:flex;align-items:baseline;gap:32px;">
-        <div class="hero-greeting">Today at Andneeds</div>
+        <div class="hero-greeting">THE DAILY EDIT.</div>
         
       </div>
 
@@ -799,30 +815,33 @@ function buildAlerts() {
     </div>`).join('');
 }
 
-function buildTodo() {
-  const todos = [
-    { text:'무신사 26FW 상품 등록 완료', tag:'ops', done:false },
-    { text:'케빈 인보이스 입금 확인', tag:'cs', done:false },
-    { text:'룩북 상세 이미지 편집본 수령', tag:'design', done:false },
-    { text:'29CM 5월 정산 확인', tag:'ops', done:true },
-    { text:'성수매장 재고 정리', tag:'ops', done:false },
-  ];
-  const remaining = todos.filter(t=>!t.done).length;
-  document.getElementById('todoCount').textContent = `${remaining}개 남음`;
-  document.getElementById('todoList').innerHTML = todos.map((t,i) => `
-    <div class="todo-row" onclick="toggleTodo(${i})">
-      <div class="todo-check ${t.done?'done':''}" id="check-${i}"></div>
-      <span class="todo-text ${t.done?'done':''}" id="text-${i}">${t.text}</span>
-      <span class="todo-tag ${t.tag}">${t.tag==='ops'?'운영':t.tag==='design'?'디자인':'CS'}</span>
-    </div>`).join('');
+const TODO_SB='home_todo', TODO_LS='anniz_home_todo_v1';
+const TODO_URL='https://nifytqcqfattzpwlzpmb.supabase.co';
+const TODO_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs';
+let todos=[];
+const TODO_TAGS={ops:'운영',design:'디자인',cs:'CS'};
+function todoEsc(x){return String(x==null?'':x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+async function todoSB(path,opts={}){const r=await fetch(TODO_URL+'/rest/v1/'+path,{...opts,headers:{'apikey':TODO_KEY,'Authorization':'Bearer '+TODO_KEY,'Content-Type':'application/json','Prefer':opts.prefer||'return=minimal',...(opts.headers||{})}});if(!r.ok)throw new Error(await r.text());const t=await r.text();return t&&t.trim()?JSON.parse(t):null;}
+async function loadTodos(){try{const r=await todoSB('sku_state?id=eq.'+TODO_SB+'&select=payload');if(r&&r[0]&&r[0].payload&&r[0].payload.todos){todos=r[0].payload.todos;return;}}catch(e){}try{const s=localStorage.getItem(TODO_LS);if(s){todos=JSON.parse(s);return;}}catch(e){}todos=[{text:'무신사 26FW 상품 등록 완료',tag:'ops',done:false},{text:'케빈 인보이스 입금 확인',tag:'cs',done:false},{text:'룩북 상세 이미지 편집본 수령',tag:'design',done:false},{text:'29CM 5월 정산 확인',tag:'ops',done:true},{text:'성수매장 재고 정리',tag:'ops',done:false}];}
+async function saveTodos(){try{localStorage.setItem(TODO_LS,JSON.stringify(todos));}catch(e){}try{await todoSB('sku_state',{method:'POST',prefer:'resolution=merge-duplicates',body:JSON.stringify({id:TODO_SB,payload:{todos:todos},updated_at:new Date().toISOString()})});}catch(e){}}
+function renderTodos(){
+  const remaining=todos.filter(t=>!t.done).length;
+  const cnt=document.getElementById('todoCount'); if(cnt)cnt.textContent=remaining+'개 남음';
+  document.getElementById('todoList').innerHTML = todos.map((t,i)=>`
+    <div class="todo-row">
+      <div class="todo-check ${t.done?'done':''}" onclick="toggleTodo(${i})"></div>
+      <span class="todo-text ${t.done?'done':''}" onclick="toggleTodo(${i})">${todoEsc(t.text)}</span>
+      ${t.tag?`<span class="todo-tag ${t.tag}">${TODO_TAGS[t.tag]||t.tag}</span>`:''}
+      <button class="todo-btn" title="수정" onclick="editTodo(${i})">&#9998;</button>
+      <button class="todo-btn" title="삭제" onclick="deleteTodo(${i})">&times;</button>
+    </div>`).join('') +
+    `<div class="todo-add"><input id="todoInput" type="text" placeholder="할 일 추가 후 Enter" onkeydown="if(event.key==='Enter')addTodo()"><button class="todo-add-btn" onclick="addTodo()">추가</button></div>`;
 }
-
-function toggleTodo(i) {
-  const check = document.getElementById('check-'+i);
-  const text = document.getElementById('text-'+i);
-  check.classList.toggle('done');
-  text.classList.toggle('done');
-}
+function toggleTodo(i){todos[i].done=!todos[i].done;saveTodos();renderTodos();}
+function editTodo(i){const v=prompt('할 일 수정:',todos[i].text);if(v!=null&&v.trim()){todos[i].text=v.trim();saveTodos();renderTodos();}}
+function deleteTodo(i){if(!confirm('이 할 일을 삭제할까요?'))return;todos.splice(i,1);saveTodos();renderTodos();}
+function addTodo(){const inp=document.getElementById('todoInput');const v=inp.value.trim();if(!v)return;todos.push({text:v,tag:'ops',done:false});saveTodos();renderTodos();const ni=document.getElementById('todoInput');if(ni)ni.focus();}
+async function buildTodo(){await loadTodos();renderTodos();}
 
 // 출고 예정 - 임시 데이터
 document.getElementById('todayShip').textContent = '12건';
