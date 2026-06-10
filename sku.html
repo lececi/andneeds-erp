@@ -545,13 +545,13 @@ function renderInsights(matched,unmatched){
   const ir=(SRC.inv||[]).map(o=>({name:o.name,stock:o.stock||0,sold:sMap[norm(o.name)]||0})).filter(o=>o.stock>=5).sort((a,b)=>(b.stock/(b.sold+1))-(a.stock/(a.sold+1))).slice(0,5);
   const un=matched.filter(m=>m.mr<15).sort((a,b)=>a.profit-b.profit).slice(0,5);
   let h='';
-  h+='<div class="insight-card"><h4>돈 잘 번 상품</h4><div class="ic-sub">순이익 TOP 5</div>'+
+  h+='<div class="insight-card"><h4>KEEP</h4><div class="ic-sub">돈 잘 번 상품 · 순이익 TOP 5</div>'+
     (tp.length?tp.map(m=>insightRow(m.name,'순이익 '+manwon(m.profit)+' · 마진 '+m.mr.toFixed(0)+'% · '+m.qty+'장',(m.mr>=40?'→ 컬러·사이즈 확장':'→ 리오더 검토'),'a-grow')).join(''):'<div class="ic-empty">원가가 등록된 판매 상품이 필요해요 (재고현황 파일 업로드).</div>')+'</div>';
-  h+='<div class="insight-card"><h4>제일 많이 팔린 상품</h4><div class="ic-sub">판매량 TOP 5</div>'+
+  h+='<div class="insight-card"><h4>GROW</h4><div class="ic-sub">제일 많이 팔린 상품 · 판매량 TOP 5</div>'+
     (tv.length?tv.map(m=>insightRow(m.name,'판매 '+m.qty+'장 · 매출 '+manwon(m.net),'→ 리오더 검토','a-grow')).join(''):'<div class="ic-empty">매출 파일을 올려주세요.</div>')+'</div>';
-  h+='<div class="insight-card"><h4>재고 위험 상품</h4><div class="ic-sub">재고 많고 안 팔리는 순</div>'+
+  h+='<div class="insight-card"><h4>FIX</h4><div class="ic-sub">재고 위험 상품 · 재고 많고 안 팔리는 순</div>'+
     (ir.length?ir.map(o=>insightRow(o.name,'재고 '+o.stock+'장 · 기간 판매 '+o.sold+'장','→ 세일 검토','a-sale')).join(''):'<div class="ic-empty">재고현황 파일을 올리면 분석돼요.</div>')+'</div>';
-  h+='<div class="insight-card"><h4>아쉬운 상품</h4><div class="ic-sub">많이 팔아도 안 남는 순 (마진 15%↓)</div>'+
+  h+='<div class="insight-card"><h4>LET GO</h4><div class="ic-sub">아쉬운 상품 · 많이 팔아도 안 남는 순 (마진 15%↓)</div>'+
     (un.length?un.map(m=>insightRow(m.name,'매출 '+manwon(m.net)+' · 순이익 '+manwon(m.profit),(m.profit<0?'→ 단종·가격 재검토':'→ 가격 인상 검토'),'a-cut')).join(''):'<div class="ic-empty">마진 낮은 상품이 없어요 — 잘하고 있어요!</div>')+'</div>';
   document.getElementById('insights').innerHTML=h;
 }
