@@ -208,10 +208,11 @@ input:focus,select:focus{border-color:var(--text);}
 .mk-yearbar{display:flex;align-items:center;gap:11px;margin-bottom:26px;flex-wrap:wrap;}
 .mk-yearsel{font-family:inherit;font-size:14px;font-weight:500;color:var(--text);border:1px solid var(--border-mid);border-radius:8px;padding:6px 11px;background:#fff;cursor:pointer;width:auto !important;min-width:130px;}
 .mk-yearbar-txt{font-size:13px;color:var(--text-3);}
-.mk-upload{margin-left:auto;font-family:inherit;font-size:12px;color:#fff;background:#2B6CB8;border:1px solid #2B6CB8;border-radius:8px;padding:7px 14px;cursor:pointer;}
+.mk-upload{margin-left:auto;font-family:inherit;font-size:12px;color:#fff;background:#2B6CB8;border:1px solid #2B6CB8;border-radius:8px;padding:7px 14px;cursor:pointer;min-width:112px;text-align:center;box-sizing:border-box;line-height:1.4;}
 .mk-upload:hover{background:#245a9c;}
-.mk-addyear{margin-left:8px;font-family:inherit;font-size:12px;color:#2B6CB8;background:none;border:1px solid #2B6CB8;border-radius:8px;padding:7px 14px;cursor:pointer;}
+.mk-addyear{margin-left:4px;font-family:inherit;font-size:12px;color:#2B6CB8;background:none;border:1px solid #2B6CB8;border-radius:8px;padding:7px 14px;cursor:pointer;min-width:112px;text-align:center;box-sizing:border-box;line-height:1.4;}
 .mk-addyear:hover{background:#EAF1FA;}
+.mk-delyear{margin-left:4px;font-family:inherit;font-size:12px;color:var(--text-3);background:none;border:1px solid var(--border-mid);border-radius:8px;padding:7px 14px;cursor:pointer;min-width:112px;text-align:center;box-sizing:border-box;line-height:1.4;}.mk-delyear:hover{color:var(--danger);border-color:var(--danger);background:rgba(200,60,60,0.05);}
 .mk-summary{margin:2px 0 4px;padding-bottom:26px;border-bottom:1px solid var(--border);}
 .mk-sum-label{font-size:11px;letter-spacing:0.14em;color:var(--text-3);text-transform:uppercase;}
 .mk-sum-line{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;gap:12px;flex-wrap:wrap;}
@@ -386,7 +387,7 @@ input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit
 }
 </style>
 <style id="nav-tight-v1">
-.sidebar-nav{padding-top:12px !important;}
+.sidebar-nav{padding-top:20px !important;}
 .nav-section-label{margin-bottom:8px !important;font-size:15px !important;}
 .nav-group-link, .nav-group-head{padding-top:3px !important;padding-bottom:3px !important;margin-bottom:0 !important;}
 .nav-group-body .nav-item{padding-top:3px !important;padding-bottom:3px !important;margin-bottom:0 !important;}
@@ -737,9 +738,19 @@ function renderContent(){ if(activeTab==='summary')renderSummaryView(); else ren
 function renderYearBar(){
   const years=Object.keys(state.years).sort();
   const opts=years.map(y=>'<option value="'+y+'"'+(String(y)===String(state.currentYear)?' selected':'')+'>'+y+'년</option>').join('');
-  document.getElementById('yearBar').innerHTML='<div class="mk-yearbar"><select class="mk-yearsel" id="yearSel" onchange="switchYear(this.value)">'+opts+'</select><span class="mk-yearbar-txt">마케팅 집행</span><button class="mk-upload" onclick="mkUploadClick()">엑셀 업로드</button><button class="mk-addyear" onclick="addYear()">+ 연도 추가</button></div>';
+  document.getElementById('yearBar').innerHTML='<div class="mk-yearbar"><select class="mk-yearsel" id="yearSel" onchange="switchYear(this.value)">'+opts+'</select><span class="mk-yearbar-txt">마케팅 집행</span><button class="mk-upload" onclick="mkUploadClick()">엑셀 업로드</button><button class="mk-addyear" onclick="addYear()">+ 연도 추가</button><button class="mk-delyear" onclick="deleteYear()" title="현재 연도 삭제">연도 삭제</button></div>';
 }
 function switchYear(v){state.currentYear=v;save();renderAll();}
+function deleteYear(){
+  const ys=Object.keys(state.years);
+  if(ys.length<=1){toast('연도가 하나뿐이라 삭제할 수 없어요.');return;}
+  const y=String(state.currentYear);
+  if(!confirm(y+'년 마케팅 데이터를 완전히 삭제할까요? 되돌릴 수 없어요.'))return;
+  delete state.years[y];
+  const rest=Object.keys(state.years).sort();
+  state.currentYear=rest[rest.length-1];
+  save();renderAll();toast(y+'년을 삭제했어요.');
+}
 function addYear(){
   const next=Math.max(...Object.keys(state.years).map(Number))+1;
   const v=prompt('추가할 연도를 입력하세요:',next);if(v==null)return;
