@@ -484,37 +484,37 @@ body{padding-bottom:34px;}
   </div>
   <div class="pp-card">
     <div class="pp-clabel">상품 정보</div>
-    <div class="pp-field" style="margin-bottom:14px;"><label>상품명</label><input class="pp-txt" id="pp_pname" type="text" value="[3 PACK] Bessette half tee"></div>
+    <div class="pp-field" style="margin-bottom:14px;"><label>상품명</label><input class="pp-txt" id="pp_pname" type="text" placeholder="예: Bessette half tee"></div>
     <div class="pp-grid pp-g2">
-      <div class="pp-field"><label>판매가</label><div class="pp-unit"><input id="pp_price" type="number" value="89000"><span class="pp-u">원</span></div></div>
-      <div class="pp-field"><label>배송비</label><div class="pp-unit"><input id="pp_ship" type="number" value="2500"><span class="pp-u">원</span></div></div>
+      <div class="pp-field"><label>판매가</label><div class="pp-unit"><input id="pp_price" type="number" placeholder="예: 42000"><span class="pp-u">원</span></div></div>
+      <div class="pp-field"><label>배송비</label><div class="pp-unit"><input id="pp_ship" type="number" placeholder="예: 2500"><span class="pp-u">원</span></div></div>
     </div>
     <div class="pp-grid pp-g3" style="margin-top:14px;">
-      <div class="pp-field"><label>원가 단가</label><div class="pp-unit"><input id="pp_unit" type="number" value="11000"><span class="pp-u">원</span></div></div>
-      <div class="pp-field"><label>수량 (팩 구성)</label><input id="pp_qty" type="number" value="3"></div>
-      <div class="pp-field"><label>패키지 비용</label><div class="pp-unit"><input id="pp_pkg" type="number" value="1540"><span class="pp-u">원</span></div></div>
+      <div class="pp-field"><label>원가 단가</label><div class="pp-unit"><input id="pp_unit" type="number" placeholder="예: 11000"><span class="pp-u">원</span></div></div>
+      <div class="pp-field"><label>수량 (팩 구성)</label><input id="pp_qty" type="number" placeholder="예: 3"></div>
+      <div class="pp-field"><label>패키지 비용</label><div class="pp-unit"><input id="pp_pkg" type="number" placeholder="예: 1000"><span class="pp-u">원</span></div></div>
     </div>
-    <div class="pp-costout">원가 합계 <b id="pp_costOut">34,540원</b> <span style="color:#A09A94;">(단가×수량 + 패키지)</span></div>
+    <div class="pp-costout">원가 합계 <b id="pp_costOut">0원</b> <span style="color:#A09A94;">(단가×수량 + 패키지)</span></div>
   </div>
   <div class="pp-card">
     <div class="pp-clabel">플랫폼 공통 설정</div>
     <div class="pp-grid pp-g2">
       <div class="pp-field"><label>플랫폼 수수료</label><div class="pp-unit"><input id="pp_fee" type="number" value="30" step="0.1"><span class="pp-u">%</span></div><span class="pp-hint">29CM 기본 30%</span></div>
-      <div class="pp-field" style="justify-content:flex-end;"><label class="pp-toggle"><input id="pp_feeMinus" type="checkbox" checked> 기본할인 적용 시 수수료 −1%p (30→29%)</label></div>
+      <div class="pp-field" style="justify-content:flex-end;"><label class="pp-toggle"><input id="pp_feeMinus" type="checkbox" checked> 기본할인 10%마다 수수료 −1% 자동 차감</label></div>
     </div>
   </div>
   <div class="pp-scnwrap">
     <div class="pp-scn">
       <input class="pp-scnname" id="pp_n1" value="기존 고객" type="text">
-      <div class="pp-field"><label>기본할인 (이구위크 등)</label><div class="pp-unit"><input id="pp_base1" type="number" value="10" step="0.1"><span class="pp-u">%</span></div></div>
-      <div class="pp-field"><label>브랜드 부담 쿠폰·추가할인</label><div class="pp-unit"><input id="pp_coup1" type="number" value="17.4" step="0.1"><span class="pp-u">%</span></div></div>
+      <div class="pp-field"><label>기본할인</label><div class="pp-unit"><input id="pp_base1" type="number" placeholder="예: 10" step="0.1"><span class="pp-u">%</span></div></div>
+      <div class="pp-field"><label>브랜드 부담 쿠폰·추가할인</label><div class="pp-unit"><input id="pp_coup1" type="number" placeholder="예: 17.4" step="0.1"><span class="pp-u">%</span></div></div>
       <div class="pp-rows" id="pp_rows1"></div>
       <div class="pp-result" id="pp_res1"></div>
     </div>
     <div class="pp-scn">
       <input class="pp-scnname" id="pp_n2" value="신규 고객" type="text">
-      <div class="pp-field"><label>기본할인 (이구위크 등)</label><div class="pp-unit"><input id="pp_base2" type="number" value="10" step="0.1"><span class="pp-u">%</span></div></div>
-      <div class="pp-field"><label>브랜드 부담 쿠폰·추가할인</label><div class="pp-unit"><input id="pp_coup2" type="number" value="20" step="0.1"><span class="pp-u">%</span></div></div>
+      <div class="pp-field"><label>기본할인</label><div class="pp-unit"><input id="pp_base2" type="number" placeholder="예: 10" step="0.1"><span class="pp-u">%</span></div></div>
+      <div class="pp-field"><label>브랜드 부담 쿠폰·추가할인</label><div class="pp-unit"><input id="pp_coup2" type="number" placeholder="예: 20" step="0.1"><span class="pp-u">%</span></div></div>
       <div class="pp-rows" id="pp_rows2"></div>
       <div class="pp-result" id="pp_res2"></div>
     </div>
@@ -538,9 +538,10 @@ function pct(n){return (Math.round(n*10)/10).toLocaleString('ko-KR')+'%';}
 function cost(){return num('pp_unit')*num('pp_qty')+num('pp_pkg');}
 function scenario(baseId,coupId,rowsId,resId){
   var P=num('pp_price'),C=cost(),ship=num('pp_ship'),feeBase=num('pp_fee');
-  var base=num(baseId)/100,coup=num(coupId)/100;
+  var basePct=num(baseId);var base=basePct/100,coup=num(coupId)/100;
   var minus=document.getElementById('pp_feeMinus').checked;
-  var feeRate=(feeBase-(base>0&&minus?1:0))/100;
+  var feeCut=minus?Math.floor(basePct/10):0;
+  var feeRate=(feeBase-feeCut)/100;
   var buy=P*(1-base)*(1-coup);var feeAmt=buy*feeRate;var settle=buy-feeAmt;var margin=settle-C-ship;
   var rate=P>0?margin/P*100:0;
   document.getElementById(rowsId).innerHTML=
