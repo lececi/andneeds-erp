@@ -501,7 +501,7 @@ body{padding-bottom:34px;}
 <div class="mk-modal-overlay" id="mkEditModal">
   <div class="mk-modal">
     <div class="mk-modal-title"><span id="mkEditTitle">항목 수정</span><button class="mk-modal-close" onclick="closeEditModal()">&times;</button></div>
-    <div class="mk-field" id="mkShootFields" style="display:none;"><label>촬영명 / 분류 / 촬영시간</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><input type="text" id="mkfShoot" placeholder="촬영명 (예: SS 1차 룩북 촬영)"><input type="text" id="mkfLine" placeholder="분류 (예: 스튜디오)"></div><input type="text" id="mkfTime" placeholder="촬영시간 (예: 풀데이)" style="margin-top:10px;"></div><div class="mk-field"><label>내용</label><input type="text" id="mkfContent" placeholder="예: 1차 룩북 촬영"></div>
+    <div class="mk-field" id="mkShootFields" style="display:none;"><label>촬영명 / 분류 / 촬영시간</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><input type="text" id="mkfShoot" placeholder="촬영명 (예: SS 1차 룩북 촬영)"><input type="text" id="mkfLine" placeholder="분류 (예: 스튜디오)"></div><input type="text" id="mkfTime" placeholder="촬영시간 (예: 풀데이)" style="margin-top:10px;"></div><div class="mk-field" id="mkSeedFields" style="display:none;"><label>채널명 / 시즌 / 협찬품목 / 판매가</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><input type="text" id="mkfChannel" placeholder="채널명"><input type="text" id="mkfSeason" placeholder="시즌 (예: SS 1차)"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;"><input type="text" id="mkfProduct" placeholder="협찬품목"><input type="number" id="mkfPrice" placeholder="판매가"></div></div><div class="mk-field"><label>내용</label><input type="text" id="mkfContent" placeholder="예: 1차 룩북 촬영"></div>
     <div class="mk-field2">
       <div class="mk-field"><label>날짜</label><input type="text" id="mkfDate" placeholder="예: 1.28 / 2026-03"></div>
       <div class="mk-field"><label>금액 (원)</label><input type="number" id="mkfAmount" placeholder="0"></div>
@@ -644,6 +644,7 @@ function renderSummaryView(){
 
 function detailBlock(ci){
   if(isShootCat(cur().cats[ci]))return detailBlockShoot(ci);
+  if(isSeedCat(cur().cats[ci]))return detailBlockSeed(ci);
   const c=cur().cats[ci];const act=catActual(c);const bud=num(c.budget);const rate=bud>0?act/bud*100:0;const over=act>bud&&bud>0;
   const items=c.items||[];
   const rows = items.length ? items.map((it,j)=>'<tr>'+
@@ -722,6 +723,61 @@ function loadShootPreset(ci){
   if(cur().cats[ci].items&&cur().cats[ci].items.length){if(!confirm('\ud604\uc7ac \ub0b4\uc5ed\uc744 \uc0ac\uc9c4 \ub370\uc774\ud130\ub85c \uad50\uccb4\ud560\uae4c\uc694?'))return;}
   cur().cats[ci].items=JSON.parse(JSON.stringify(SHOOT_PRESET_SS));
   save();renderContent();toast('\ucd2c\uc601 \uc0c1\uc138\ub0b4\uc5ed\uc744 \ubd88\ub7ec\uc654\uc5b4\uc694!');
+}
+function isSeedCat(c){return ((c&&c.name)||'').indexOf('시딩')>=0;}
+function seedGroups(items){
+  const order=[];const map={};
+  items.forEach((it,j)=>{const k=it.channel||it.content||'(미지정)';if(!map[k]){map[k]=[];order.push(k);}map[k].push({it:it,j:j});});
+  return order.map(k=>({channel:k,rows:map[k]}));
+}
+function detailBlockSeed(ci){
+  const c=cur().cats[ci];const items=c.items||[];const act=catActual(c);const bud=num(c.budget);const rate=bud>0?act/bud*100:0;const over=act>bud&&bud>0;
+  const groups=seedGroups(items);
+  let body='';
+  if(!items.length){
+    body='<tr><td colspan="9" class="empty-it">아직 등록된 시딩이 없어요. 아래에서 채널과 협찬품목을 추가해주세요.</td></tr>';
+  } else {
+    groups.forEach(g=>{
+      const sub=g.rows.reduce((sm,r)=>sm+num(r.it.amount),0);
+      const head=g.rows[0].it;const n=g.rows.length;
+      g.rows.forEach((r,ri)=>{
+        const it=r.it;
+        body+='<tr class="'+(ri===0?'sh-first':'')+'">';
+        if(ri===0){body+='<td class="sh-name" rowspan="'+n+'">'+esc(g.channel)+'</td><td class="sh-sub" rowspan="'+n+'">'+esc(head.content||'')+'</td><td class="sh-sub" rowspan="'+n+'">'+esc(head.season||'')+'</td>';}
+        body+='<td class="sh-line">'+esc(it.product||'')+'</td>';
+        body+='<td class="num">'+(num(it.price)?won(num(it.price)):'-')+'</td>';
+        body+='<td class="num">'+(num(it.amount)?won(num(it.amount))+(it.est?' <span style="color:var(--text-3);font-size:10px;">추정</span>':''):'-')+'</td>';
+        if(ri===0)body+='<td class="sh-sum" rowspan="'+n+'">'+won(sub)+'</td><td class="sh-note" rowspan="'+n+'">'+esc(head.note||'')+'</td>';
+        body+='<td class="shoot-act"><button class="item-edit" onclick="editItemAt('+ci+','+r.j+')" title="수정">&#9998;</button><button class="item-del" onclick="deleteItemAt('+ci+','+r.j+')" title="삭제">&times;</button></td></tr>';
+      });
+    });
+  }
+  return '<div class="mk-detail">'+
+    '<div class="mk-detail-head"><div class="mk-detail-name">'+esc(c.name)+' <span style="font-size:11px;color:var(--text-3);">채널별 협찬</span></div>'+
+    '<div class="mk-detail-meta">총 비용 <b>'+won(act)+'</b> · 예산 '+won(bud)+' · <span class="'+(over?'over':'')+'">집행률 '+rate.toFixed(0)+'%</span></div></div>'+
+    '<div class="mk-detail-bud">예산 수정 <input type="number" step="100000" value="'+bud+'" onchange="setCatBudget('+ci+',this.value)">원 <span style="margin-left:10px;color:var(--text-3);">※ 원가 칸 비우면 판매가÷3 자동</span></div>'+
+    '<div class="shoot-scroll"><table class="shoot-tbl"><thead><tr><th>채널명</th><th>진행내용</th><th>시즌</th><th>협찬품목</th><th style="text-align:right;">판매가</th><th style="text-align:right;">원가</th><th style="text-align:right;">합계</th><th>비고</th><th></th></tr></thead><tbody>'+body+'</tbody></table></div>'+
+    '<div class="shoot-add">'+
+      '<input id="se-channel-'+ci+'" type="text" placeholder="채널명" style="width:120px;">'+
+      '<input id="se-content-'+ci+'" type="text" placeholder="진행내용(단순선물 등)" style="width:150px;">'+
+      '<input id="se-season-'+ci+'" type="text" placeholder="시즌(SS 1차)" style="width:90px;">'+
+      '<input id="se-product-'+ci+'" type="text" placeholder="협찬품목" style="width:160px;">'+
+      '<input id="se-price-'+ci+'" type="number" placeholder="판매가" style="width:96px;text-align:right;">'+
+      '<input id="se-cost-'+ci+'" type="number" placeholder="원가(비우면 자동)" style="width:130px;text-align:right;">'+
+      '<input id="se-note-'+ci+'" type="text" placeholder="비고(선택)" style="width:100px;">'+
+      '<button onclick="addSeedItem('+ci+')">추가</button>'+
+    '</div></div>';
+}
+function addSeedItem(ci){
+  const channel=val('se-channel-'+ci).trim();const product=val('se-product-'+ci).trim();
+  const price=num(val('se-price-'+ci));let cost=num(val('se-cost-'+ci));let est=false;
+  if(!channel){toast('채널명을 입력해주세요.');return;}
+  if(!product){toast('협찬품목을 입력해주세요.');return;}
+  if(!cost){if(price){cost=Math.round(price/3);est=true;}else{cost=0;}}
+  cur().cats[ci].items.push({channel:channel,content:val('se-content-'+ci).trim(),season:val('se-season-'+ci).trim(),product:product,price:price,amount:cost,est:est,note:val('se-note-'+ci).trim()});
+  save();renderContent();
+  ['se-product-'+ci,'se-price-'+ci,'se-cost-'+ci].forEach(id=>{var e=document.getElementById(id);if(e)e.value='';});
+  var pf=document.getElementById('se-product-'+ci);if(pf)pf.focus();
 }
 function renderGroupView(g){
   const gAct=GROUPS[g].idx.reduce((s,i)=>s+catActual(cur().cats[i]),0);
@@ -827,6 +883,9 @@ function editItemAt(ci,j){
   var _sc=isShootCat(cur().cats[ci]);
   var _sf=document.getElementById('mkShootFields');if(_sf)_sf.style.display=_sc?'block':'none';
   if(_sc){document.getElementById('mkfShoot').value=it.shoot||'';document.getElementById('mkfLine').value=it.line||'';document.getElementById('mkfTime').value=it.time||'';}
+  var _se=isSeedCat(cur().cats[ci]);
+  var _sef=document.getElementById('mkSeedFields');if(_sef)_sef.style.display=_se?'block':'none';
+  if(_se){document.getElementById('mkfChannel').value=it.channel||'';document.getElementById('mkfSeason').value=it.season||'';document.getElementById('mkfProduct').value=it.product||'';document.getElementById('mkfPrice').value=(it.price!=null?it.price:'');}
   document.getElementById('mkfContent').value=it.content||'';
   document.getElementById('mkfDate').value=it.date||'';
   document.getElementById('mkfAmount').value=(it.amount!=null?it.amount:'');
@@ -839,11 +898,10 @@ function saveEditModal(){
   if(mkEditRef.ci==null)return;
   const it=cur().cats[mkEditRef.ci].items[mkEditRef.j];
   if(!it){closeEditModal();return;}
-  if(isShootCat(cur().cats[mkEditRef.ci])){it.shoot=document.getElementById('mkfShoot').value.trim();it.line=document.getElementById('mkfLine').value.trim();it.time=document.getElementById('mkfTime').value.trim();it.content=document.getElementById('mkfContent').value.trim();}
-  else{it.content=(document.getElementById('mkfContent').value.trim())||it.content;}
-  it.date=document.getElementById('mkfDate').value.trim();
-  it.amount=num(document.getElementById('mkfAmount').value);
-  it.note=document.getElementById('mkfNote').value.trim();
+  var _cat=cur().cats[mkEditRef.ci];
+  if(isShootCat(_cat)){it.shoot=document.getElementById('mkfShoot').value.trim();it.line=document.getElementById('mkfLine').value.trim();it.time=document.getElementById('mkfTime').value.trim();it.content=document.getElementById('mkfContent').value.trim();it.date=document.getElementById('mkfDate').value.trim();it.amount=num(document.getElementById('mkfAmount').value);it.note=document.getElementById('mkfNote').value.trim();}
+  else if(isSeedCat(_cat)){it.channel=document.getElementById('mkfChannel').value.trim();it.season=document.getElementById('mkfSeason').value.trim();it.product=document.getElementById('mkfProduct').value.trim();it.price=num(document.getElementById('mkfPrice').value);it.content=document.getElementById('mkfContent').value.trim();var _c=num(document.getElementById('mkfAmount').value);if(!_c&&it.price){_c=Math.round(it.price/3);it.est=true;}else{it.est=false;}it.amount=_c;it.note=document.getElementById('mkfNote').value.trim();}
+  else{it.content=(document.getElementById('mkfContent').value.trim())||it.content;it.date=document.getElementById('mkfDate').value.trim();it.amount=num(document.getElementById('mkfAmount').value);it.note=document.getElementById('mkfNote').value.trim();}
   save();renderContent();closeEditModal();
 }
 function deleteItemAt(ci,j){if(!confirm('이 항목을 삭제할까요?'))return;cur().cats[ci].items.splice(j,1);save();renderContent();}
