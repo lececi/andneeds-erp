@@ -190,6 +190,21 @@ input:focus,select:focus{border-color:var(--text);}
 .mk-tabs{display:flex;gap:7px;overflow-x:auto;}
 .mk-tabs::-webkit-scrollbar{display:none;}
 .mk-tabs .tab-btn{font-size:12px;white-space:nowrap;flex-shrink:0;}
+.mk-modal-overlay{display:none;position:fixed;inset:0;background:rgba(26,23,20,0.42);z-index:300;align-items:center;justify-content:center;}
+.mk-modal-overlay.open{display:flex;}
+.mk-modal{background:#fff;border-radius:16px;padding:28px;width:100%;max-width:460px;margin:16px;box-shadow:0 12px 44px rgba(0,0,0,0.14);}
+.mk-modal-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:22px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.mk-modal-title span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.mk-modal-close{background:none;border:none;font-size:22px;line-height:1;cursor:pointer;color:var(--text-3);flex-shrink:0;}
+.mk-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.mk-field label{font-size:11px;font-weight:500;color:var(--text-3);letter-spacing:0.04em;}
+.mk-field input{font-family:inherit;font-size:13px;padding:10px 12px;border:1px solid var(--border-mid);border-radius:9px;background:#fff;color:var(--text);outline:none;width:100%;box-sizing:border-box;}
+.mk-field input:focus{border-color:#2B6CB8;}
+.mk-field2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.mk-modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:22px;}
+.mk-btn-cancel{font-family:inherit;font-size:13px;padding:9px 20px;border-radius:9px;border:1px solid var(--border-mid);background:#fff;color:var(--text-2);cursor:pointer;}
+.mk-btn-save{font-family:inherit;font-size:13px;font-weight:500;padding:9px 22px;border-radius:9px;border:none;background:#2B6CB8;color:#fff;cursor:pointer;}
+.mk-btn-save:hover{background:#245a9c;}
 .mk-yearbar{display:flex;align-items:center;gap:11px;margin-bottom:26px;flex-wrap:wrap;}
 .mk-yearsel{font-family:inherit;font-size:14px;font-weight:500;color:var(--text);border:1px solid var(--border-mid);border-radius:8px;padding:6px 11px;background:#fff;cursor:pointer;width:auto !important;min-width:130px;}
 .mk-yearbar-txt{font-size:13px;color:var(--text-3);}
@@ -389,6 +404,21 @@ table td{padding:16px 20px;font-size:13px;}
 </div>
 </div>
 
+<div class="mk-modal-overlay" id="mkEditModal">
+  <div class="mk-modal">
+    <div class="mk-modal-title"><span id="mkEditTitle">항목 수정</span><button class="mk-modal-close" onclick="closeEditModal()">&times;</button></div>
+    <div class="mk-field"><label>내용</label><input type="text" id="mkfContent" placeholder="예: 1차 룩북 촬영"></div>
+    <div class="mk-field2">
+      <div class="mk-field"><label>날짜</label><input type="text" id="mkfDate" placeholder="예: 1.28 / 2026-03"></div>
+      <div class="mk-field"><label>금액 (원)</label><input type="number" id="mkfAmount" placeholder="0"></div>
+    </div>
+    <div class="mk-field"><label>비고 (선택)</label><input type="text" id="mkfNote" placeholder=""></div>
+    <div class="mk-modal-actions">
+      <button class="mk-btn-cancel" onclick="closeEditModal()">취소</button>
+      <button class="mk-btn-save" onclick="saveEditModal()">저장하기</button>
+    </div>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -599,18 +629,34 @@ function addItemInline(ci){
   cur().cats[ci].items.push({content,date:val('gf-date-'+ci).trim(),amount:amt,note:val('gf-note-'+ci).trim()});
   save();renderContent();const f=document.getElementById('gf-content-'+ci);if(f)f.focus();
 }
+let mkEditRef={ci:null,j:null};
 function editItemAt(ci,j){
   const it=cur().cats[ci].items[j];
-  const c=prompt('내용 수정:',it.content);if(c==null)return;
-  const a=prompt('금액 수정:',it.amount);if(a==null)return;
-  it.content=c.trim()||it.content;it.amount=num(a);save();renderContent();
+  mkEditRef={ci:ci,j:j};
+  document.getElementById('mkfContent').value=it.content||'';
+  document.getElementById('mkfDate').value=it.date||'';
+  document.getElementById('mkfAmount').value=(it.amount!=null?it.amount:'');
+  document.getElementById('mkfNote').value=it.note||'';
+  document.getElementById('mkEditTitle').textContent='항목 수정 · '+(cur().cats[ci].name||'');
+  document.getElementById('mkEditModal').classList.add('open');
+}
+function closeEditModal(){document.getElementById('mkEditModal').classList.remove('open');mkEditRef={ci:null,j:null};}
+function saveEditModal(){
+  if(mkEditRef.ci==null)return;
+  const it=cur().cats[mkEditRef.ci].items[mkEditRef.j];
+  if(!it){closeEditModal();return;}
+  it.content=(document.getElementById('mkfContent').value.trim())||it.content;
+  it.date=document.getElementById('mkfDate').value.trim();
+  it.amount=num(document.getElementById('mkfAmount').value);
+  it.note=document.getElementById('mkfNote').value.trim();
+  save();renderContent();closeEditModal();
 }
 function deleteItemAt(ci,j){if(!confirm('이 항목을 삭제할까요?'))return;cur().cats[ci].items.splice(j,1);save();renderContent();}
 
 function openMobileMenu(){document.getElementById('mmOverlay').classList.add('open');document.getElementById('mmPanel').classList.add('open');}
 function closeMobileMenu(){document.getElementById('mmOverlay').classList.remove('open');document.getElementById('mmPanel').classList.remove('open');}
 
-(async()=>{document.getElementById('saveNote').textContent='불러오는 중...';await load();renderAll();var _mf=document.getElementById('mkFile');if(_mf)_mf.addEventListener('change',handleMkFile);document.getElementById('saveNote').textContent=cloudOK?'☁ 저장됨':'⚠ 오프라인';})();
+(async()=>{document.getElementById('saveNote').textContent='불러오는 중...';await load();renderAll();var _mf=document.getElementById('mkFile');if(_mf)_mf.addEventListener('change',handleMkFile);var _mo=document.getElementById('mkEditModal');if(_mo)_mo.addEventListener('click',function(e){if(e.target===_mo)closeEditModal();});document.getElementById('saveNote').textContent=cloudOK?'☁ 저장됨':'⚠ 오프라인';})();
 </script>
 </body>
 </html>
