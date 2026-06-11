@@ -77,9 +77,7 @@ main { padding: 24px 28px 64px; max-width: 1200px; margin: 0 auto; }
 
 /* ── HERO STRIP ── */
 .hero-strip {
-  display: flex; align-items: baseline; justify-content: space-between;
-  margin-bottom: 48px; padding-bottom: 32px;
-  border-bottom: 1px solid var(--border);
+  display: none;
 }
 .hero-greeting {
   font-family: 'Branch', Georgia, serif;
@@ -105,7 +103,7 @@ main { padding: 24px 28px 64px; max-width: 1200px; margin: 0 auto; }
 }
 .today-card {
   background: var(--white); border: 1px solid var(--border);
-  border-radius: 12px; padding: 24px 22px;
+  border-radius: 14px; padding: 36px 30px; min-height: 158px;
   position: relative; overflow: hidden;
   transition: box-shadow 0.2s;
 }
@@ -117,7 +115,7 @@ main { padding: 24px 28px 64px; max-width: 1200px; margin: 0 auto; }
 }
 .today-card.dark .today-label { color: rgba(255,255,255,0.45); }
 .today-val {
-  font-family: var(--sans); font-size: 20px; font-weight: 400;
+  font-family: var(--sans); font-size: 28px; font-weight: 400;
   color: var(--ink); line-height: 1;
 }
 .today-card.dark .today-val { color: var(--white); }
