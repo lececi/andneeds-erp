@@ -189,10 +189,10 @@ input:focus,select:focus{border-color:var(--text);}
 .mk-tabs{display:flex;gap:7px;overflow-x:auto;}
 .mk-tabs::-webkit-scrollbar{display:none;}
 .mk-tabs .tab-btn{font-size:12px;white-space:nowrap;flex-shrink:0;}
-.mk-yearbar{display:flex;align-items:center;gap:11px;margin-bottom:14px;flex-wrap:wrap;}
+.mk-yearbar{display:flex;align-items:center;gap:11px;margin-bottom:26px;flex-wrap:wrap;}
 .mk-yearsel{font-family:inherit;font-size:14px;font-weight:500;color:var(--text);border:1px solid var(--border-mid);border-radius:8px;padding:6px 11px;background:#fff;cursor:pointer;width:auto !important;min-width:130px;}
 .mk-yearbar-txt{font-size:13px;color:var(--text-3);}
-.mk-addyear{font-family:inherit;font-size:12px;color:#2B6CB8;background:none;border:1px solid #2B6CB8;border-radius:8px;padding:7px 14px;cursor:pointer;margin-bottom:26px;}
+.mk-addyear{margin-left:auto;font-family:inherit;font-size:12px;color:#2B6CB8;background:none;border:1px solid #2B6CB8;border-radius:8px;padding:7px 14px;cursor:pointer;}
 .mk-addyear:hover{background:#EAF1FA;}
 .mk-summary{margin:2px 0 4px;padding-bottom:26px;border-bottom:1px solid var(--border);}
 .mk-sum-label{font-size:11px;letter-spacing:0.14em;color:var(--text-3);text-transform:uppercase;}
@@ -523,7 +523,7 @@ function renderContent(){ if(activeTab==='summary')renderSummaryView(); else ren
 function renderYearBar(){
   const years=Object.keys(state.years).sort();
   const opts=years.map(y=>'<option value="'+y+'"'+(String(y)===String(state.currentYear)?' selected':'')+'>'+y+'년</option>').join('');
-  document.getElementById('yearBar').innerHTML='<div class="mk-yearbar"><select class="mk-yearsel" id="yearSel" onchange="switchYear(this.value)">'+opts+'</select><span class="mk-yearbar-txt">마케팅 집행</span></div><button class="mk-addyear" onclick="addYear()">+ 연도 추가</button>';
+  document.getElementById('yearBar').innerHTML='<div class="mk-yearbar"><select class="mk-yearsel" id="yearSel" onchange="switchYear(this.value)">'+opts+'</select><span class="mk-yearbar-txt">마케팅 집행</span><button class="mk-addyear" onclick="addYear()">+ 연도 추가</button></div>';
 }
 function switchYear(v){state.currentYear=v;save();renderAll();}
 function addYear(){
