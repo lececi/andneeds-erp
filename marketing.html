@@ -6,6 +6,7 @@
 <title>마케팅 비용 · ANDNEEDS ERP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{--bg:#FFFFFF;--surface:#FFFFFF;--surface2:#F5F5F5;--border:rgba(0,0,0,0.08);--border-mid:rgba(0,0,0,0.14);--text:#1A1714;--text-2:#6B6560;--text-3:#A09A94;--danger:#BD090A;--success:#2B6CB8;}
@@ -192,7 +193,9 @@ input:focus,select:focus{border-color:var(--text);}
 .mk-yearbar{display:flex;align-items:center;gap:11px;margin-bottom:26px;flex-wrap:wrap;}
 .mk-yearsel{font-family:inherit;font-size:14px;font-weight:500;color:var(--text);border:1px solid var(--border-mid);border-radius:8px;padding:6px 11px;background:#fff;cursor:pointer;width:auto !important;min-width:130px;}
 .mk-yearbar-txt{font-size:13px;color:var(--text-3);}
-.mk-addyear{margin-left:auto;font-family:inherit;font-size:12px;color:#2B6CB8;background:none;border:1px solid #2B6CB8;border-radius:8px;padding:7px 14px;cursor:pointer;}
+.mk-upload{margin-left:auto;font-family:inherit;font-size:12px;color:#fff;background:#2B6CB8;border:1px solid #2B6CB8;border-radius:8px;padding:7px 14px;cursor:pointer;}
+.mk-upload:hover{background:#245a9c;}
+.mk-addyear{margin-left:8px;font-family:inherit;font-size:12px;color:#2B6CB8;background:none;border:1px solid #2B6CB8;border-radius:8px;padding:7px 14px;cursor:pointer;}
 .mk-addyear:hover{background:#EAF1FA;}
 .mk-summary{margin:2px 0 4px;padding-bottom:26px;border-bottom:1px solid var(--border);}
 .mk-sum-label{font-size:11px;letter-spacing:0.14em;color:var(--text-3);text-transform:uppercase;}
@@ -377,6 +380,7 @@ table td{padding:16px 20px;font-size:13px;}
 
   <main>
     <div id="yearBar"></div>
+    <input type="file" id="mkFile" accept=".xlsx,.xls" style="display:none;">
     <div id="content"></div>
     <div style="font-size:11px;color:var(--text-3);line-height:1.7;margin-top:30px;">
       위 메뉴로 시즌을 고르면 상세 내역이 펼쳐져요. 항목(내용·날짜·금액)을 추가·수정·삭제하면 금년 실제가 자동 합산되고, 클라우드에 자동 저장돼요.
@@ -437,7 +441,7 @@ async function save(){
 }
 function buildYear(y){
   const base=JSON.parse(JSON.stringify(DEFAULT_CATS));
-  if(y&&y.cats){y.cats.forEach((sc,i)=>{if(base[i]){base[i].items=sc.items||[];if(sc.budget!=null)base[i].budget=sc.budget;}});}
+  if(y&&y.cats){y.cats.forEach((sc,i)=>{if(base[i]){base[i].items=sc.items||[];if(sc.budget!=null)base[i].budget=sc.budget;if(sc.name)base[i].name=sc.name;if(sc.last!=null)base[i].last=sc.last;if(sc.ratio!=null)base[i].ratio=sc.ratio;}});}
   return {budget:(y&&y.budget!=null)?y.budget:DEFAULT_BUDGET,cats:base};
 }
 function mergeLoaded(p){
@@ -523,7 +527,7 @@ function renderContent(){ if(activeTab==='summary')renderSummaryView(); else ren
 function renderYearBar(){
   const years=Object.keys(state.years).sort();
   const opts=years.map(y=>'<option value="'+y+'"'+(String(y)===String(state.currentYear)?' selected':'')+'>'+y+'년</option>').join('');
-  document.getElementById('yearBar').innerHTML='<div class="mk-yearbar"><select class="mk-yearsel" id="yearSel" onchange="switchYear(this.value)">'+opts+'</select><span class="mk-yearbar-txt">마케팅 집행</span><button class="mk-addyear" onclick="addYear()">+ 연도 추가</button></div>';
+  document.getElementById('yearBar').innerHTML='<div class="mk-yearbar"><select class="mk-yearsel" id="yearSel" onchange="switchYear(this.value)">'+opts+'</select><span class="mk-yearbar-txt">마케팅 집행</span><button class="mk-upload" onclick="mkUploadClick()">엑셀 업로드</button><button class="mk-addyear" onclick="addYear()">+ 연도 추가</button></div>';
 }
 function switchYear(v){state.currentYear=v;save();renderAll();}
 function addYear(){
@@ -535,6 +539,56 @@ function addYear(){
   state.currentYear=y;save();renderAll();toast(y+'년이 추가됐어요.');
 }
 function renderAll(){renderYearBar();renderTabs();renderContent();}
+function numCell(v){if(typeof v==='number')return v;const n=parseFloat(String(v==null?'':v).replace(/[^0-9.\-]/g,''));return isFinite(n)?n:0;}
+function parseMarketingExcel(wb){
+  const sumName=wb.SheetNames.find(n=>n.replace(/\s/g,'').indexOf('총마케팅비용')>=0)||wb.SheetNames[0];
+  const sum=XLSX.utils.sheet_to_json(wb.Sheets[sumName],{header:1,raw:true});
+  let year=2026;
+  outer: for(const row of sum){for(const cell of row){const m=String(cell==null?'':cell).match(/20\d{2}/);if(m){year=parseInt(m[0],10);break outer;}}}
+  let budget=DEFAULT_BUDGET;
+  for(const row of sum){const j=row.findIndex(c=>String(c==null?'':c).indexOf('예산')>=0);if(j>=0){let found=0;for(let k=j+1;k<row.length;k++){const n=numCell(row[k]);if(n>1000000){found=n;break;}}if(found){budget=found;break;}}}
+  let hi=sum.findIndex(r=>r.some(c=>String(c==null?'':c).indexOf('프로모션')>=0));
+  if(hi<0)hi=3;
+  const cats=JSON.parse(JSON.stringify(DEFAULT_CATS));
+  let ci=0;
+  for(let i=hi+1;i<sum.length&&ci<cats.length;i++){
+    const r=sum[i]||[];const name=String(r[1]==null?'':r[1]).trim();
+    if(!name)continue;
+    if(name.indexOf('합계')>=0||name.indexOf('총 ')>=0)break;
+    cats[ci].name=name;
+    cats[ci].last=numCell(r[2]);
+    cats[ci].ratio=numCell(r[3])||0;
+    const bud=numCell(r[4]);if(bud)cats[ci].budget=bud;
+    cats[ci].items=[];
+    ci++;
+  }
+  wb.SheetNames.forEach(sn=>{
+    const m=sn.match(/^\s*(\d+)\s*\./);if(!m)return;
+    const idx=parseInt(m[1],10)-1;if(idx<0||idx>=cats.length)return;
+    const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true});
+    let total=0;
+    for(const r of rows){const arr=r||[];const j=arr.findIndex(c=>String(c==null?'':c).replace(/\s/g,'').indexOf('총비용')>=0);if(j>=0){for(let k=j+1;k<arr.length;k++){const n=numCell(arr[k]);if(n>0){total=n;break;}}if(total)break;}}
+    if(total>0)cats[idx].items=[{content:'엑셀 집행 합계',date:'',amount:total,note:'엑셀에서 불러옴'}];
+  });
+  return {year:String(year),budget:budget,cats:cats};
+}
+window.mkUploadClick=function(){document.getElementById('mkFile').click();};
+function handleMkFile(e){
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  if(typeof XLSX==='undefined'){toast('엑셀 모듈 로딩 중이에요. 잠시 후 다시 시도해주세요.');return;}
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const wb=XLSX.read(new Uint8Array(ev.target.result),{type:'array'});
+      const data=parseMarketingExcel(wb);
+      state.years[data.year]={budget:data.budget,cats:data.cats};
+      state.currentYear=data.year;
+      save();renderAll();
+      toast(data.year+'년 마케팅 비용을 불러왔어요!');
+    }catch(err){console.error(err);toast('엑셀을 읽지 못했어요. 양식을 확인해주세요.');}
+  };
+  reader.readAsArrayBuffer(f);
+}
 
 function setBudget(){cur().budget=num(val('budgetInput'));save();renderContent();}
 function setCatBudget(ci,v){cur().cats[ci].budget=num(v);save();renderContent();}
@@ -556,7 +610,7 @@ function deleteItemAt(ci,j){if(!confirm('이 항목을 삭제할까요?'))return
 function openMobileMenu(){document.getElementById('mmOverlay').classList.add('open');document.getElementById('mmPanel').classList.add('open');}
 function closeMobileMenu(){document.getElementById('mmOverlay').classList.remove('open');document.getElementById('mmPanel').classList.remove('open');}
 
-(async()=>{document.getElementById('saveNote').textContent='불러오는 중...';await load();renderAll();document.getElementById('saveNote').textContent=cloudOK?'☁ 저장됨':'⚠ 오프라인';})();
+(async()=>{document.getElementById('saveNote').textContent='불러오는 중...';await load();renderAll();var _mf=document.getElementById('mkFile');if(_mf)_mf.addEventListener('change',handleMkFile);document.getElementById('saveNote').textContent=cloudOK?'☁ 저장됨':'⚠ 오프라인';})();
 </script>
 </body>
 </html>
