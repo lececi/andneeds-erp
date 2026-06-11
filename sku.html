@@ -443,7 +443,7 @@ body{padding-bottom:34px;}
         <span><span id="costDot" class="dot-off">●</span> 원가 <b id="costStat">미등록</b></span>
         <span><span id="salesDot" class="dot-off">●</span> 매출 <b id="salesStat">미등록</b></span>
         <span id="savedNote" class="dot-on" style="display:none;">✓ 이 브라우저에 저장됨</span>
-        <button class="upload-btn" id="clearBtn" style="display:none;" onclick="clearAll()">전체 지우기</button>
+        <button class="upload-btn" id="shareBtn" style="display:none;" onclick="shareToCloud()">☁ 클라우드 저장 (MD팀 공유)</button><button class="upload-btn" id="clearBtn" style="display:none;" onclick="clearAll()">전체 지우기</button>
       </div>
     </div>
 
@@ -787,6 +787,7 @@ function renderAll(){
   const any = COSTROWS.length||hasSales();
   updateSavedNote();
   document.getElementById('clearBtn').style.display = any?'inline-block':'none';
+  var _sb=document.getElementById('shareBtn'); if(_sb) _sb.style.display = any?'inline-block':'none';
   document.getElementById('costStat').textContent = COSTROWS.length? COSTROWS.length+'종' : '미등록';
   document.getElementById('costDot').className = COSTROWS.length?'dot-on':'dot-off';
   const sf=Object.keys(SALESFILES);
@@ -837,13 +838,22 @@ async function saveState(){
   }catch(e){ cloudOK=false; console.error('cloud save',e); }
   updateSavedNote();
 }
+async function shareToCloud(){
+  var tr=document.getElementById('topRight'); if(tr) tr.textContent='클라우드에 저장 중...';
+  await saveState();
+  if(cloudOK) toast('클라우드에 저장했어요! MD팀이 같은 주소에서 새로고침(Cmd+Shift+R)하면 보여요.');
+  else toast('클라우드 저장 실패 — 잠시 후 다시 시도하거나 Supabase 설정을 확인해주세요.');
+  if(tr) tr.textContent='';
+}
 async function loadState(){
+  let cloudReachable=false;
   try{
     const rows=await sbFetch('sku_state?id=eq.'+SB_ID+'&select=payload');
-    cloudOK=true;
+    cloudOK=true; cloudReachable=true;
     if(rows&&rows[0]&&rows[0].payload){ applySnap(rows[0].payload); try{localStorage.setItem(LSKEY,JSON.stringify(rows[0].payload));}catch(e){} return; }
   }catch(e){ cloudOK=false; console.error('cloud load',e); }
-  try{ const s=localStorage.getItem(LSKEY); if(s) applySnap(JSON.parse(s)); }catch(e){}
+  // 클라우드는 연결됐지만 데이터가 없고, 이 기기에 저장된 데이터가 있으면 → 클라우드로 자동 업로드(공유)
+  try{ const s=localStorage.getItem(LSKEY); if(s){ applySnap(JSON.parse(s)); if(cloudReachable){ try{ await saveState(); }catch(e){} } } }catch(e){}
 }
 async function clearAll(){
   COST={}; COSTROWS=[]; SALESFILES={}; SRC={season:[],inv:[]};
