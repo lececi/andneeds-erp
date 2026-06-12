@@ -363,40 +363,47 @@ body{padding-bottom:34px;}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
 <style id="um-style">
-.um-wrap{max-width:1000px;margin:0 auto;}
-.um-hero{padding:2px 0 22px;border-bottom:1px solid #2B6CB8;margin-bottom:24px;}
+.um-wrap{max-width:1180px;margin:0 auto;}
+.um-hero{padding:2px 0 20px;border-bottom:1px solid #2B6CB8;margin-bottom:22px;}
 .um-eyebrow{font-size:11px;letter-spacing:0.22em;color:#2B6CB8;text-transform:uppercase;margin-bottom:8px;}
-.um-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:36px;font-weight:600;letter-spacing:0.02em;line-height:1;color:#1A1714;}
-.um-sub{font-size:13px;color:#A09A94;margin-top:10px;line-height:1.6;}
-.um-bar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:18px;}
-.um-bar input,.um-bar select{font-family:inherit;font-size:13px;padding:8px 11px;border:1px solid rgba(26,23,20,0.16);border-radius:9px;background:#fff;color:#1A1714;outline:none;}
-.um-bar input:focus,.um-bar select:focus{border-color:#2B6CB8;}
-.um-bar #um_search{flex:1;min-width:140px;}
-.um-feebox{font-size:13px;color:#6B6560;display:flex;align-items:center;gap:6px;background:#F6F6F4;padding:5px 11px;border-radius:9px;}
-.um-feebox input{width:54px;text-align:right;padding:6px 8px;border:1px solid rgba(26,23,20,0.16);border-radius:7px;font-family:inherit;font-size:13px;}
-.um-feebox b{color:#A09A94;font-weight:400;}
-.um-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
-.um-card{background:#fff;border:1px solid rgba(26,23,20,0.10);border-radius:14px;padding:16px 18px;}
-.um-card .l{font-size:11px;color:#A09A94;letter-spacing:0.04em;margin-bottom:7px;}
-.um-card .v{font-size:21px;font-weight:600;color:#1A1714;font-variant-numeric:tabular-nums;}
-.um-card .v.blue{color:#2B6CB8;}.um-card .v.red{color:#C2453B;}
-.um-card .s{font-size:11px;color:#A09A94;margin-top:4px;}
+.um-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:34px;font-weight:600;letter-spacing:0.02em;line-height:1;color:#1A1714;}
+.um-sub{font-size:13px;color:#A09A94;margin-top:9px;line-height:1.6;}
+.um-tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.um-tab{border:1px solid rgba(26,23,20,0.16);background:#F6F6F4;color:#6B6560;padding:8px 18px;border-radius:999px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;}
+.um-tab:hover{border-color:#2B6CB8;}
+.um-tab.active{background:#2B6CB8;border-color:#2B6CB8;color:#fff;}
+.um-set,.um-set2{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:12px;}
+.um-setbox{display:inline-flex;align-items:center;gap:7px;background:#F6F6F4;padding:6px 12px;border-radius:9px;font-size:12.5px;color:#6B6560;}
+.um-setbox b{font-weight:600;color:#1A1714;}
+.um-setbox input{width:58px;text-align:right;padding:5px 7px;border:1px solid rgba(26,23,20,0.16);border-radius:7px;font-family:inherit;font-size:13px;background:#fff;outline:none;}
+.um-setbox input:focus{border-color:#2B6CB8;}
+.um-setbox i{font-style:normal;color:#A09A94;font-size:11px;}
+.um-chnote{font-size:11.5px;color:#A09A94;}
+.um-spacer{flex:1;}
+.um-modebtn{border:1px solid #2B6CB8;background:#fff;color:#2B6CB8;padding:7px 15px;border-radius:8px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;}
+.um-modebtn:hover{background:#EAF1FA;}
+.um-set2 input,.um-set2 select{font-family:inherit;font-size:13px;padding:8px 11px;border:1px solid rgba(26,23,20,0.16);border-radius:9px;background:#fff;color:#1A1714;outline:none;}
+.um-set2 input:focus,.um-set2 select:focus{border-color:#2B6CB8;}
+.um-set2 #um_search{flex:1;min-width:130px;}
+.um-custom input{width:62px;}
+.um-count{font-size:12px;color:#A09A94;}
 .um-tablecard{background:#fff;border:1px solid rgba(26,23,20,0.10);border-radius:14px;overflow:hidden;}
 .um-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.um-tbl{width:100%;border-collapse:collapse;font-size:13px;min-width:720px;}
-.um-tbl th{color:#A09A94;font-weight:400;text-align:left;padding:12px 14px;font-size:11px;letter-spacing:0.03em;border-bottom:1px solid rgba(26,23,20,0.10);background:#F6F6F4;white-space:nowrap;}
+.um-tbl{width:100%;border-collapse:collapse;font-size:12.5px;min-width:860px;}
+.um-tbl th{color:#A09A94;font-weight:400;text-align:left;padding:11px 12px;font-size:11px;letter-spacing:0.02em;border-bottom:1px solid rgba(26,23,20,0.10);background:#F6F6F4;white-space:nowrap;}
 .um-tbl th.num,.um-tbl td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
-.um-tbl td{padding:11px 14px;border-bottom:1px solid rgba(26,23,20,0.06);}
+.um-tbl th.cust,.um-tbl td.cust{background:#EAF1FA;}
+.um-tbl td{padding:10px 12px;border-bottom:1px solid rgba(26,23,20,0.06);}
 .um-tbl tbody tr:hover{background:rgba(43,108,184,0.03);}
-.um-tbl .pname{font-weight:500;color:#1A1714;}
+.um-tbl .pname{font-weight:500;color:#1A1714;white-space:nowrap;}
 .um-tbl .sub{color:#A09A94;}
-.um-tbl .net{font-weight:600;color:#2B6CB8;}
-.um-tbl .net.red{color:#C2453B;}
-.um-tbl .mr.red{color:#C2453B;}
+.um-tbl .mcell{color:#1A1714;font-weight:500;}
+.um-tbl .mcell.thin{color:#C2790A;}
+.um-tbl .mcell.neg{color:#C2453B;}
 .um-empty{text-align:center;color:#A09A94;padding:36px 14px !important;}
-.um-note{font-size:11.5px;color:#A09A94;line-height:1.7;margin-top:14px;}
+.um-note{font-size:11.5px;color:#A09A94;line-height:1.8;margin-top:14px;}
 .um-note b{color:#6B6560;}
-@media(max-width:760px){.um-title{font-size:28px;}.um-cards{grid-template-columns:1fr 1fr;}}
+@media(max-width:760px){.um-title{font-size:27px;}.um-spacer{display:none;}}
 </style>
 </head>
 <body>
@@ -466,36 +473,47 @@ body{padding-bottom:34px;}
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1714" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
       </div>
-      <span class="topbar-title">상품별 마진 · 1개당 손익</span>
+      <span class="topbar-title">상품별 마진 · 채널·할인별 손익</span>
     </div>
-    <div style="font-size:12px;color:var(--text-3);" id="topRight">상품 1개당 마진</div>
+    <div style="font-size:12px;color:var(--text-3);" id="topRight">채널·할인별 1개당 마진</div>
   </div>
 
   <main>
 <div class="um-wrap">
   <div class="um-hero">
-    <div class="um-eyebrow">Andneeds · Per-unit Margin</div>
+    <div class="um-eyebrow">Andneeds · Channel Margin</div>
     <div class="um-title">상품별 마진</div>
-    <div class="um-sub">상품 1개를 팔면 실제로 얼마가 남는지 한눈에 봐요. 손익관리에 올린 원가·판매가 데이터를 그대로 사용해요.</div>
+    <div class="um-sub">채널과 할인율에 따라 상품 1개를 팔면 실제로 얼마가 남는지 한눈에 봐요. 손익관리에 올린 원가·판매가 데이터를 그대로 사용해요.</div>
   </div>
-  <div class="um-bar">
-    <span class="um-feebox">플랫폼 수수료 <input id="um_fee" type="number" value="30" step="0.1"><b>%</b></span>
+  <div class="um-tabs" id="um_tabs">
+    <button class="um-tab active" data-ch="29CM">29CM</button>
+    <button class="um-tab" data-ch="무신사">무신사</button>
+    <button class="um-tab" data-ch="ZVZO">ZVZO</button>
+    <button class="um-tab" data-ch="자사몰">자사몰</button>
+  </div>
+  <div class="um-set">
+    <span class="um-setbox"><b id="um_feelabel">29CM 수수료</b><input id="um_fee" type="number" step="0.1"><i>%</i></span>
+    <span class="um-setbox" id="um_cutwrap"><b>할인당 수수료 차감</b><input id="um_cut" type="number" step="0.1"><i>%p /10%</i></span>
+    <span class="um-chnote" id="um_chnote"></span>
+    <span class="um-spacer"></span>
+    <button class="um-modebtn" id="um_mode">마진율 보기</button>
+  </div>
+  <div class="um-set2">
     <input id="um_search" type="text" placeholder="상품명 검색">
     <select id="um_season"><option value="">전체 시즌</option></select>
     <select id="um_cat"><option value="">전체 카테고리</option></select>
-    <select id="um_sort">
-      <option value="net_desc">많이 남는 순</option>
-      <option value="net_asc">적게 남는 순</option>
-      <option value="mr_desc">마진율 높은순</option>
-      <option value="mr_asc">마진율 낮은순</option>
-      <option value="price_desc">판매가 높은순</option>
-    </select>
+    <select id="um_sort"><option value="net_desc">정가마진 높은순</option><option value="net_asc">정가마진 낮은순</option><option value="price_desc">판매가 높은순</option></select>
+    <span class="um-setbox um-custom"><b>직접 할인</b><input id="um_custom" type="number" placeholder="예:35" step="1"><i>%</i></span>
+    <span class="um-count" id="um_count"></span>
   </div>
-  <div class="um-cards" id="um_cards"></div>
   <div class="um-tablecard"><div class="um-scroll">
-    <table class="um-tbl"><thead><tr><th>상품명</th><th>시즌</th><th>카테고리</th><th class="num">판매가</th><th class="num">원가</th><th class="num">1개 팔면 남는 돈</th><th class="num">마진율</th><th class="num">배수</th></tr></thead><tbody id="um_tbody"><tr><td colspan="8" class="um-empty">손익관리에서 원가·판매가 데이터를 올리면 여기에 상품별 1개당 마진이 보여요.</td></tr></tbody></table>
+    <table class="um-tbl"><thead id="um_thead"></thead><tbody id="um_tbody"><tr><td class="um-empty">손익관리에서 원가·판매가 데이터를 올리면 채널·할인별 마진이 보여요.</td></tr></tbody></table>
   </div></div>
-  <div class="um-note">· <b>1개 팔면 남는 돈</b> = 판매가 − 플랫폼 수수료 − 원가 (정가 기준, 할인 미반영). 할인까지 보려면 <b>PROFIT PREVIEW</b>를 사용하세요.<br>· 손익관리에서 데이터를 올리고 ☁ 클라우드 저장하면 여기에도 자동 반영돼요.</div>
+  <div class="um-note">
+    · <b>마진</b> = 할인가 − 채널 수수료 − 원가. <b>29CM</b>은 10% 할인당 수수료 −1%p 자동 차감(정가 30% → 50%할인 시 25%)이 반영돼요.<br>
+    · <b>자사몰</b>은 플랫폼 수수료 대신 <b>PG 결제 수수료(기본 3.3%)</b>만 빠져요. 무신사·ZVZO 수수료율은 실제 계약값으로 바꿔주세요.<br>
+    · 오른쪽 <b>마진액/마진율</b> 버튼으로 표시 전환. 마진이 마이너스면 빨강, 얇으면(10% 미만) 주황으로 표시돼요. 정가 기준 할인 미반영 단일 시나리오는 PROFIT PREVIEW를 쓰세요.
+  </div>
 </div>
   </main>
 </div>
@@ -510,44 +528,59 @@ function closeMobileMenu(){ document.getElementById('mmOverlay').classList.remov
 (function(){
 const SB_URL='https://nifytqcqfattzpwlzpmb.supabase.co', SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs', SB_ID='main', LSKEY='anniz_sku_v1';
 async function sbFetch(path){ const r=await fetch(SB_URL+'/rest/v1/'+path,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}}); if(!r.ok)throw new Error(await r.text()); const t=await r.text(); return t&&t.trim()?JSON.parse(t):null; }
-function num(v){if(v==null)return 0;var n=parseFloat(String(v).replace(/[^0-9.\-]/g,''));return isNaN(n)?0:n;}
-function won(n){return Math.round(n).toLocaleString('ko-KR')+'원';}
-function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-var ROWS=[];
-function fee(){var f=parseFloat(document.getElementById('um_fee').value);return isNaN(f)?30:f;}
-function compute(r){var net=r.price*(1-fee()/100)-r.cost; var mr=r.price>0?net/r.price*100:0; var mult=r.cost>0?r.price/r.cost:0; return {net:net,mr:mr,mult:mult};}
-function fillFilters(){
-  var seasons=[],cats=[];
-  ROWS.forEach(function(r){ if(r.season&&seasons.indexOf(r.season)<0)seasons.push(r.season); if(r.cat&&cats.indexOf(r.cat)<0)cats.push(r.cat); });
-  var ss=document.getElementById('um_season'), cc=document.getElementById('um_cat');
-  ss.innerHTML='<option value="">전체 시즌</option>'+seasons.sort().map(function(x){return '<option value="'+esc(x)+'">'+esc(x)+'</option>';}).join('');
-  cc.innerHTML='<option value="">전체 카테고리</option>'+cats.sort().map(function(x){return '<option value="'+esc(x)+'">'+esc(x)+'</option>';}).join('');
+function num(v){ if(v==null) return 0; var n=parseFloat(String(v).replace(/[^0-9.]/g,'')); return isNaN(n)?0:n; }
+function won(n){ return Math.round(n).toLocaleString('ko-KR')+'원'; }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+var ROWS=[], active='29CM', mode='amt';
+var CH={ '29CM':{fee:30,cut:1,pg:false}, '무신사':{fee:30,cut:0,pg:false}, 'ZVZO':{fee:30,cut:0,pg:false}, '자사몰':{fee:3.3,cut:0,pg:true} };
+var DISC=[0,10,20,30,40,50];
+function feeAt(ch,d){ if(ch.pg) return ch.fee; return Math.max(0, ch.fee - Math.floor(d/10)*ch.cut); }
+function marginAt(r,ch,d){ var sp=r.price*(1-d/100); var f=feeAt(ch,d); var m=sp*(1-f/100)-r.cost; var rate=sp>0?m/sp*100:0; return {sp:sp,m:m,rate:rate}; }
+function customD(){ var v=parseFloat(document.getElementById('um_custom').value); return (isNaN(v)||v<=0)?null:v; }
+function syncChannelUI(){
+  var ch=CH[active];
+  document.getElementById('um_feelabel').textContent = ch.pg?'자사몰 PG 수수료':(active+' 수수료');
+  document.getElementById('um_fee').value=ch.fee;
+  var cw=document.getElementById('um_cutwrap');
+  if(ch.pg){ cw.style.display='none'; document.getElementById('um_chnote').textContent='자사몰은 PG 결제 수수료만 빠져요 (할인-수수료 차감 없음).'; }
+  else { cw.style.display=''; document.getElementById('um_cut').value=ch.cut; document.getElementById('um_chnote').textContent = active==='29CM'?'29CM은 10% 할인당 수수료 -1%p 차감':'할인당 수수료 차감이 있으면 값을 넣으세요.'; }
+}
+function cell(r,ch,d,cust){
+  var x=marginAt(r,ch,d);
+  var cls = x.m<0?'neg':(x.rate<10?'thin':'');
+  var val = mode==='amt'? won(x.m) : x.rate.toFixed(1)+'%';
+  return '<td class="num mcell '+cls+(cust?' cust':'')+'">'+val+'</td>';
 }
 function render(){
+  syncChannelUI();
+  var ch=CH[active];
   var q=(document.getElementById('um_search').value||'').toLowerCase();
   var se=document.getElementById('um_season').value, ca=document.getElementById('um_cat').value, sort=document.getElementById('um_sort').value;
+  var cd=customD();
   var list=ROWS.filter(function(r){return r.price>0;})
     .filter(function(r){return (!se||r.season===se)&&(!ca||r.cat===ca)&&(!q||(r.name||'').toLowerCase().indexOf(q)>=0);})
-    .map(function(r){var c=compute(r);return {r:r,net:c.net,mr:c.mr,mult:c.mult};});
-  var cmp={net_desc:function(a,b){return b.net-a.net;},net_asc:function(a,b){return a.net-b.net;},mr_desc:function(a,b){return b.mr-a.mr;},mr_asc:function(a,b){return a.mr-b.mr;},price_desc:function(a,b){return b.r.price-a.r.price;}};
+    .map(function(r){ return {r:r, base:marginAt(r,ch,0).m}; });
+  var cmp={net_desc:function(a,b){return b.base-a.base;},net_asc:function(a,b){return a.base-b.base;},price_desc:function(a,b){return b.r.price-a.r.price;}};
   list.sort(cmp[sort]||cmp.net_desc);
-  // 카드
-  var cnt=list.length, avgNet=cnt?list.reduce(function(s,x){return s+x.net;},0)/cnt:0, avgMr=cnt?list.reduce(function(s,x){return s+x.mr;},0)/cnt:0, loss=list.filter(function(x){return x.net<=0;}).length;
-  document.getElementById('um_cards').innerHTML=
-    '<div class="um-card"><div class="l">상품 수</div><div class="v">'+cnt+'종</div></div>'+
-    '<div class="um-card"><div class="l">평균 1개당 남는 돈</div><div class="v blue">'+won(avgNet)+'</div><div class="s">수수료 '+fee()+'% 기준</div></div>'+
-    '<div class="um-card"><div class="l">평균 마진율</div><div class="v">'+avgMr.toFixed(1)+'%</div></div>'+
-    '<div class="um-card"><div class="l">마진 0 이하</div><div class="v'+(loss?' red':'')+'">'+loss+'종</div><div class="s">팔수록 손해</div></div>';
-  // 표
+  document.getElementById('um_count').textContent='상품 '+list.length+'종 · '+active;
+  var th='<tr><th>상품명</th><th>시즌</th><th class="num">원가</th><th class="num">판매가</th>';
+  DISC.forEach(function(d){ th+='<th class="num">'+(d===0?'정가':('-'+d+'%'))+'</th>'; });
+  if(cd) th+='<th class="num cust">-'+cd+'%</th>';
+  th+='</tr>';
+  document.getElementById('um_thead').innerHTML=th;
   var tb=document.getElementById('um_tbody');
-  if(!list.length){ tb.innerHTML='<tr><td colspan="8" class="um-empty">조건에 맞는 상품이 없어요. 손익관리에서 데이터를 올렸는지 확인해주세요.</td></tr>'; return; }
-  tb.innerHTML=list.map(function(x){var r=x.r;var neg=x.net<=0;
-    return '<tr><td class="pname">'+esc(r.name||'-')+'</td><td class="sub">'+esc(r.season||'')+'</td><td class="sub">'+esc(r.cat||'')+'</td>'+
-    '<td class="num">'+won(r.price)+'</td><td class="num sub">'+won(r.cost)+'</td>'+
-    '<td class="num net'+(neg?' red':'')+'">'+won(x.net)+'</td>'+
-    '<td class="num mr'+(neg?' red':'')+'">'+x.mr.toFixed(1)+'%</td>'+
-    '<td class="num sub">'+(x.mult?x.mult.toFixed(2)+'배':'-')+'</td></tr>';
+  if(!list.length){ var cols=4+DISC.length+(cd?1:0); tb.innerHTML='<tr><td colspan="'+cols+'" class="um-empty">조건에 맞는 상품이 없어요. 손익관리에서 데이터를 올렸는지 확인해주세요.</td></tr>'; return; }
+  tb.innerHTML=list.map(function(o){ var r=o.r;
+    var row='<tr><td class="pname">'+esc(r.name||'-')+'</td><td class="sub">'+esc(r.season||'')+'</td><td class="num sub">'+won(r.cost)+'</td><td class="num sub">'+won(r.price)+'</td>';
+    DISC.forEach(function(d){ row+=cell(r,ch,d,false); });
+    if(cd) row+=cell(r,ch,cd,true);
+    return row+'</tr>';
   }).join('');
+}
+function fillFilters(){
+  var ss=[],cs=[]; ROWS.forEach(function(r){ if(r.season&&ss.indexOf(r.season)<0)ss.push(r.season); if(r.cat&&cs.indexOf(r.cat)<0)cs.push(r.cat); });
+  document.getElementById('um_season').innerHTML='<option value="">전체 시즌</option>'+ss.sort().map(function(x){return '<option value="'+esc(x)+'">'+esc(x)+'</option>';}).join('');
+  document.getElementById('um_cat').innerHTML='<option value="">전체 카테고리</option>'+cs.sort().map(function(x){return '<option value="'+esc(x)+'">'+esc(x)+'</option>';}).join('');
 }
 function extract(p){ var season=(p&&p.src&&p.src.season)||(p&&p.costrows)||[]; return season.filter(function(o){return o&&num(o.price)>0;}).map(function(o){return {name:o.name,season:o.season,cat:o.cat,price:num(o.price),cost:num(o.cost)};}); }
 async function load(){
@@ -555,7 +588,12 @@ async function load(){
   if(!ROWS.length){ try{ var ls=localStorage.getItem(LSKEY); if(ls) ROWS=extract(JSON.parse(ls)); }catch(e){} }
   fillFilters(); render();
 }
-['um_fee','um_search','um_season','um_cat','um_sort'].forEach(function(id){var e=document.getElementById(id);if(e){e.addEventListener('input',render);e.addEventListener('change',render);}});
+// 이벤트
+document.querySelectorAll('.um-tab').forEach(function(b){ b.addEventListener('click',function(){ document.querySelectorAll('.um-tab').forEach(function(x){x.classList.remove('active');}); b.classList.add('active'); active=b.getAttribute('data-ch'); render(); }); });
+document.getElementById('um_mode').addEventListener('click',function(){ mode=(mode==='amt'?'rate':'amt'); this.textContent=(mode==='amt'?'마진율 보기':'마진액 보기'); render(); });
+document.getElementById('um_fee').addEventListener('input',function(){ CH[active].fee=num(this.value); render(); });
+document.getElementById('um_cut').addEventListener('input',function(){ CH[active].cut=num(this.value); render(); });
+['um_search','um_season','um_cat','um_sort','um_custom'].forEach(function(id){ var e=document.getElementById(id); if(e){ e.addEventListener('input',render); e.addEventListener('change',render); } });
 load();
 })();
 </script>
