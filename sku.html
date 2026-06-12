@@ -807,7 +807,7 @@ const LSKEY='anniz_sku_v1';
 const SB_URL='https://nifytqcqfattzpwlzpmb.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs';
 const SB_ID='main';
-let cloudOK=false;
+let cloudOK=false; let lastCloudErr=null;
 async function sbFetch(path,opts={}){
   const res=await fetch(SB_URL+'/rest/v1/'+path,{...opts,headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':opts.prefer||'return=minimal',...(opts.headers||{})}});
   if(!res.ok) throw new Error(await res.text());
@@ -834,16 +834,16 @@ async function saveState(){
   try{ localStorage.setItem(LSKEY,JSON.stringify(snap)); }catch(e){}
   try{
     await sbFetch('sku_state',{method:'POST',prefer:'resolution=merge-duplicates',body:JSON.stringify({id:SB_ID,payload:snap,updated_at:new Date().toISOString()})});
-    cloudOK=true;
-  }catch(e){ cloudOK=false; console.error('cloud save',e); }
+    cloudOK=true; lastCloudErr=null;
+  }catch(e){ cloudOK=false; lastCloudErr=(e&&e.message)?e.message:String(e); console.error('cloud save',e); }
   updateSavedNote();
 }
 async function shareToCloud(){
   var tr=document.getElementById('topRight'); if(tr) tr.textContent='클라우드에 저장 중...';
   await saveState();
-  if(cloudOK) toast('클라우드에 저장했어요! MD팀이 같은 주소에서 새로고침(Cmd+Shift+R)하면 보여요.');
-  else toast('클라우드 저장 실패 — 잠시 후 다시 시도하거나 Supabase 설정을 확인해주세요.');
   if(tr) tr.textContent='';
+  if(cloudOK){ toast('클라우드에 저장했어요! MD팀이 같은 주소에서 새로고침(Cmd+Shift+R)하면 보여요.'); }
+  else { toast('클라우드 저장 실패'); alert('클라우드 저장에 실패했어요.\n\n[오류 내용]\n'+(lastCloudErr||'알 수 없음')+'\n\n대부분 Supabase의 RLS(접근보안) 또는 테이블 설정 문제예요. 이 메시지를 캡처해서 알려주세요.'); }
 }
 async function loadState(){
   let cloudReachable=false;
