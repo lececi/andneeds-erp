@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PROFIT PREVIEW · Andneeds</title>
+<title>상품별 마진 · Andneeds</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -362,45 +362,41 @@ body{padding-bottom:34px;}
 .ceo-name::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:#2B6CB8;margin-right:8px;vertical-align:middle;}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
-<style id="pp-style">
-.pp-wrap{max-width:880px;margin:0 auto;}
-.pp-hero{padding:2px 0 22px;border-bottom:1px solid #2B6CB8;margin-bottom:26px;}
-.pp-eyebrow{font-size:11px;letter-spacing:0.22em;color:#2B6CB8;text-transform:uppercase;margin-bottom:8px;}
-.pp-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:36px;font-weight:600;letter-spacing:0.02em;line-height:1;color:#1A1714;}
-.pp-sub{font-size:13px;color:#A09A94;margin-top:10px;line-height:1.6;}
-.pp-card{background:#fff;border:1px solid rgba(26,23,20,0.10);border-radius:16px;padding:22px;margin-bottom:18px;}
-.pp-clabel{font-size:11px;letter-spacing:0.16em;color:#A09A94;text-transform:uppercase;margin-bottom:16px;}
-.pp-grid{display:grid;gap:14px;}.pp-g2{grid-template-columns:1fr 1fr;}.pp-g3{grid-template-columns:1fr 1fr 1fr;}
-.pp-field{display:flex;flex-direction:column;gap:6px;}
-.pp-field label{font-size:12px;color:#6B6560;font-weight:500;}
-.pp-field .pp-hint{font-size:11px;color:#A09A94;}
-.pp-field input{font-family:inherit;font-size:15px;padding:11px 13px;border:1px solid rgba(26,23,20,0.16);border-radius:10px;background:#fff;color:#1A1714;outline:none;width:100%;box-sizing:border-box;font-variant-numeric:tabular-nums;}
-.pp-field input:focus{border-color:#2B6CB8;}
-.pp-field input.pp-txt{font-size:14px;}
-.pp-unit{position:relative;}.pp-unit input{padding-right:34px;}
-.pp-unit .pp-u{position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:12px;color:#A09A94;pointer-events:none;}
-.pp-costout{margin-top:12px;font-size:13px;color:#6B6560;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.pp-costout b{color:#1A1714;font-weight:600;font-variant-numeric:tabular-nums;}
-.pp-toggle{display:flex;align-items:center;gap:10px;font-size:13px;color:#6B6560;cursor:pointer;user-select:none;}
-.pp-toggle input{width:18px;height:18px;accent-color:#2B6CB8;cursor:pointer;}
-.pp-scnwrap{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-.pp-scn{background:#fff;border:1px solid rgba(26,23,20,0.10);border-radius:16px;padding:20px;}
-.pp-scnname{font-family:inherit;font-size:15px;font-weight:700;border:none;border-bottom:1.5px solid rgba(26,23,20,0.10);background:transparent;width:100%;padding:0 0 8px;margin-bottom:16px;outline:none;color:#1A1714;box-sizing:border-box;}
-.pp-scnname:focus{border-bottom-color:#2B6CB8;}
-.pp-scn .pp-field{margin-bottom:12px;}
-.pp-rows{margin-top:6px;border-top:1px dashed rgba(26,23,20,0.16);padding-top:14px;}
-.pp-crow{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;padding:5px 0;color:#6B6560;font-variant-numeric:tabular-nums;}
-.pp-crow .pp-v{color:#1A1714;font-weight:500;}
-.pp-crow.pp-minus .pp-v::before{content:'− ';}
-.pp-result{margin-top:14px;padding-top:16px;border-top:1.5px solid #2B6CB8;text-align:center;}
-.pp-mamt{font-family:'Cormorant Garamond',Georgia,serif;font-size:40px;font-weight:600;line-height:1;color:#2B6CB8;font-variant-numeric:tabular-nums;}
-.pp-mamt.pp-neg{color:#C2453B;}
-.pp-mwon{font-size:15px;color:#2B6CB8;font-weight:500;}
-.pp-mamt.pp-neg + .pp-mwon{color:#C2453B;}
-.pp-mrate{font-size:13px;color:#A09A94;margin-top:7px;}.pp-mrate b{color:#6B6560;font-weight:600;}
-.pp-note{font-size:12px;color:#A09A94;line-height:1.7;background:#F6F6F4;border-radius:12px;padding:16px 18px;}
-.pp-note b{color:#6B6560;}
-@media(max-width:680px){.pp-title{font-size:28px;}.pp-g2,.pp-g3{grid-template-columns:1fr;}.pp-scnwrap{grid-template-columns:1fr;}.pp-mamt{font-size:34px;}}
+<style id="um-style">
+.um-wrap{max-width:1000px;margin:0 auto;}
+.um-hero{padding:2px 0 22px;border-bottom:1px solid #2B6CB8;margin-bottom:24px;}
+.um-eyebrow{font-size:11px;letter-spacing:0.22em;color:#2B6CB8;text-transform:uppercase;margin-bottom:8px;}
+.um-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:36px;font-weight:600;letter-spacing:0.02em;line-height:1;color:#1A1714;}
+.um-sub{font-size:13px;color:#A09A94;margin-top:10px;line-height:1.6;}
+.um-bar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:18px;}
+.um-bar input,.um-bar select{font-family:inherit;font-size:13px;padding:8px 11px;border:1px solid rgba(26,23,20,0.16);border-radius:9px;background:#fff;color:#1A1714;outline:none;}
+.um-bar input:focus,.um-bar select:focus{border-color:#2B6CB8;}
+.um-bar #um_search{flex:1;min-width:140px;}
+.um-feebox{font-size:13px;color:#6B6560;display:flex;align-items:center;gap:6px;background:#F6F6F4;padding:5px 11px;border-radius:9px;}
+.um-feebox input{width:54px;text-align:right;padding:6px 8px;border:1px solid rgba(26,23,20,0.16);border-radius:7px;font-family:inherit;font-size:13px;}
+.um-feebox b{color:#A09A94;font-weight:400;}
+.um-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.um-card{background:#fff;border:1px solid rgba(26,23,20,0.10);border-radius:14px;padding:16px 18px;}
+.um-card .l{font-size:11px;color:#A09A94;letter-spacing:0.04em;margin-bottom:7px;}
+.um-card .v{font-size:21px;font-weight:600;color:#1A1714;font-variant-numeric:tabular-nums;}
+.um-card .v.blue{color:#2B6CB8;}.um-card .v.red{color:#C2453B;}
+.um-card .s{font-size:11px;color:#A09A94;margin-top:4px;}
+.um-tablecard{background:#fff;border:1px solid rgba(26,23,20,0.10);border-radius:14px;overflow:hidden;}
+.um-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.um-tbl{width:100%;border-collapse:collapse;font-size:13px;min-width:720px;}
+.um-tbl th{color:#A09A94;font-weight:400;text-align:left;padding:12px 14px;font-size:11px;letter-spacing:0.03em;border-bottom:1px solid rgba(26,23,20,0.10);background:#F6F6F4;white-space:nowrap;}
+.um-tbl th.num,.um-tbl td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.um-tbl td{padding:11px 14px;border-bottom:1px solid rgba(26,23,20,0.06);}
+.um-tbl tbody tr:hover{background:rgba(43,108,184,0.03);}
+.um-tbl .pname{font-weight:500;color:#1A1714;}
+.um-tbl .sub{color:#A09A94;}
+.um-tbl .net{font-weight:600;color:#2B6CB8;}
+.um-tbl .net.red{color:#C2453B;}
+.um-tbl .mr.red{color:#C2453B;}
+.um-empty{text-align:center;color:#A09A94;padding:36px 14px !important;}
+.um-note{font-size:11.5px;color:#A09A94;line-height:1.7;margin-top:14px;}
+.um-note b{color:#6B6560;}
+@media(max-width:760px){.um-title{font-size:28px;}.um-cards{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
@@ -470,56 +466,36 @@ body{padding-bottom:34px;}
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1714" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
       </div>
-      <span class="topbar-title">PROFIT PREVIEW</span>
+      <span class="topbar-title">상품별 마진 · 1개당 손익</span>
     </div>
-    <div style="font-size:12px;color:var(--text-3);" id="topRight">마진 미리보기</div>
+    <div style="font-size:12px;color:var(--text-3);" id="topRight">상품 1개당 마진</div>
   </div>
 
   <main>
-<div class="pp-wrap">
-  <div class="pp-hero">
-    <div class="pp-eyebrow">Andneeds · Profit Preview</div>
-    <div class="pp-title">PROFIT PREVIEW</div>
-    <div class="pp-sub">판매가에서 플랫폼 수수료·할인·원가·배송비를 빼고 실제 남는 마진을 계산해요. 기존 / 신규 고객을 나란히 비교할 수 있어요.</div>
+<div class="um-wrap">
+  <div class="um-hero">
+    <div class="um-eyebrow">Andneeds · Per-unit Margin</div>
+    <div class="um-title">상품별 마진</div>
+    <div class="um-sub">상품 1개를 팔면 실제로 얼마가 남는지 한눈에 봐요. 손익관리에 올린 원가·판매가 데이터를 그대로 사용해요.</div>
   </div>
-  <div class="pp-card">
-    <div class="pp-clabel">상품 정보</div>
-    <div class="pp-field" style="margin-bottom:14px;"><label>상품명</label><input class="pp-txt" id="pp_pname" type="text" placeholder="예: Bessette half tee"></div>
-    <div class="pp-grid pp-g2">
-      <div class="pp-field"><label>판매가</label><div class="pp-unit"><input id="pp_price" type="number" placeholder="예: 42000"><span class="pp-u">원</span></div></div>
-      <div class="pp-field"><label>배송비</label><div class="pp-unit"><input id="pp_ship" type="number" placeholder="예: 2500"><span class="pp-u">원</span></div></div>
-    </div>
-    <div class="pp-grid pp-g3" style="margin-top:14px;">
-      <div class="pp-field"><label>원가 단가</label><div class="pp-unit"><input id="pp_unit" type="number" placeholder="예: 11000"><span class="pp-u">원</span></div></div>
-      <div class="pp-field"><label>수량 (팩 구성)</label><input id="pp_qty" type="number" placeholder="예: 3"></div>
-      <div class="pp-field"><label>패키지 비용</label><div class="pp-unit"><input id="pp_pkg" type="number" placeholder="예: 1000"><span class="pp-u">원</span></div></div>
-    </div>
-    <div class="pp-costout">원가 합계 <b id="pp_costOut">0원</b> <span style="color:#A09A94;">(단가×수량 + 패키지)</span></div>
+  <div class="um-bar">
+    <span class="um-feebox">플랫폼 수수료 <input id="um_fee" type="number" value="30" step="0.1"><b>%</b></span>
+    <input id="um_search" type="text" placeholder="상품명 검색">
+    <select id="um_season"><option value="">전체 시즌</option></select>
+    <select id="um_cat"><option value="">전체 카테고리</option></select>
+    <select id="um_sort">
+      <option value="net_desc">많이 남는 순</option>
+      <option value="net_asc">적게 남는 순</option>
+      <option value="mr_desc">마진율 높은순</option>
+      <option value="mr_asc">마진율 낮은순</option>
+      <option value="price_desc">판매가 높은순</option>
+    </select>
   </div>
-  <div class="pp-card">
-    <div class="pp-clabel">플랫폼 공통 설정</div>
-    <div class="pp-grid pp-g2">
-      <div class="pp-field"><label>플랫폼 수수료</label><div class="pp-unit"><input id="pp_fee" type="number" value="30" step="0.1"><span class="pp-u">%</span></div><span class="pp-hint">29CM 기본 30%</span></div>
-      <div class="pp-field" style="justify-content:flex-end;"><label class="pp-toggle"><input id="pp_feeMinus" type="checkbox" checked> 기본할인 10%마다 수수료 −1% 자동 차감</label></div>
-    </div>
-  </div>
-  <div class="pp-scnwrap">
-    <div class="pp-scn">
-      <input class="pp-scnname" id="pp_n1" value="기존 고객" type="text">
-      <div class="pp-field"><label>기본할인</label><div class="pp-unit"><input id="pp_base1" type="number" placeholder="예: 10" step="0.1"><span class="pp-u">%</span></div></div>
-      <div class="pp-field"><label>브랜드 부담 쿠폰·추가할인</label><div class="pp-unit"><input id="pp_coup1" type="number" placeholder="예: 17.4" step="0.1"><span class="pp-u">%</span></div></div>
-      <div class="pp-rows" id="pp_rows1"></div>
-      <div class="pp-result" id="pp_res1"></div>
-    </div>
-    <div class="pp-scn">
-      <input class="pp-scnname" id="pp_n2" value="신규 고객" type="text">
-      <div class="pp-field"><label>기본할인</label><div class="pp-unit"><input id="pp_base2" type="number" placeholder="예: 10" step="0.1"><span class="pp-u">%</span></div></div>
-      <div class="pp-field"><label>브랜드 부담 쿠폰·추가할인</label><div class="pp-unit"><input id="pp_coup2" type="number" placeholder="예: 20" step="0.1"><span class="pp-u">%</span></div></div>
-      <div class="pp-rows" id="pp_rows2"></div>
-      <div class="pp-result" id="pp_res2"></div>
-    </div>
-  </div>
-  <div class="pp-note"><b>계산 방식</b><br>① 구매가 = 판매가 × (1 − 기본할인) × (1 − 브랜드쿠폰부담)<br>② 적용 수수료 = 기본할인이 있으면 30% → 29% (−1%p)<br>③ 정산가 = 구매가 − 플랫폼 수수료<br>④ <b>마진 = 정산가 − 원가 − 배송비</b><br>※ 플랫폼이 부담하는 쿠폰 몫은 브랜드 마진에 영향이 없어 제외했어요. 브랜드가 실제 부담하는 할인율만 입력하면 돼요.</div>
+  <div class="um-cards" id="um_cards"></div>
+  <div class="um-tablecard"><div class="um-scroll">
+    <table class="um-tbl"><thead><tr><th>상품명</th><th>시즌</th><th>카테고리</th><th class="num">판매가</th><th class="num">원가</th><th class="num">1개 팔면 남는 돈</th><th class="num">마진율</th><th class="num">배수</th></tr></thead><tbody id="um_tbody"><tr><td colspan="8" class="um-empty">손익관리에서 원가·판매가 데이터를 올리면 여기에 상품별 1개당 마진이 보여요.</td></tr></tbody></table>
+  </div></div>
+  <div class="um-note">· <b>1개 팔면 남는 돈</b> = 판매가 − 플랫폼 수수료 − 원가 (정가 기준, 할인 미반영). 할인까지 보려면 <b>PROFIT PREVIEW</b>를 사용하세요.<br>· 손익관리에서 데이터를 올리고 ☁ 클라우드 저장하면 여기에도 자동 반영돼요.</div>
 </div>
   </main>
 </div>
@@ -528,37 +504,59 @@ body{padding-bottom:34px;}
 <input type="file" id="fileInput" accept=".xlsx,.xls">
 <div class="toast" id="toast"></div>
 
-<script id="pp-calc-js">
+<script id="um-js">
 function openMobileMenu(){ document.getElementById('mmOverlay').classList.add('open'); document.getElementById('mmPanel').classList.add('open'); }
 function closeMobileMenu(){ document.getElementById('mmOverlay').classList.remove('open'); document.getElementById('mmPanel').classList.remove('open'); }
 (function(){
-function num(id){var e=document.getElementById(id);if(!e)return 0;var n=parseFloat(String(e.value).replace(/[^0-9.\-]/g,''));return isNaN(n)?0:n;}
+const SB_URL='https://nifytqcqfattzpwlzpmb.supabase.co', SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs', SB_ID='main', LSKEY='anniz_sku_v1';
+async function sbFetch(path){ const r=await fetch(SB_URL+'/rest/v1/'+path,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}}); if(!r.ok)throw new Error(await r.text()); const t=await r.text(); return t&&t.trim()?JSON.parse(t):null; }
+function num(v){if(v==null)return 0;var n=parseFloat(String(v).replace(/[^0-9.\-]/g,''));return isNaN(n)?0:n;}
 function won(n){return Math.round(n).toLocaleString('ko-KR')+'원';}
-function pct(n){return (Math.round(n*10)/10).toLocaleString('ko-KR')+'%';}
-function cost(){return num('pp_unit')*num('pp_qty')+num('pp_pkg');}
-function scenario(baseId,coupId,rowsId,resId){
-  var P=num('pp_price'),C=cost(),ship=num('pp_ship'),feeBase=num('pp_fee');
-  var basePct=num(baseId);var base=basePct/100,coup=num(coupId)/100;
-  var minus=document.getElementById('pp_feeMinus').checked;
-  var feeCut=minus?Math.floor(basePct/10):0;
-  var feeRate=(feeBase-feeCut)/100;
-  var buy=P*(1-base)*(1-coup);var feeAmt=buy*feeRate;var settle=buy-feeAmt;var margin=settle-C-ship;
-  var rate=P>0?margin/P*100:0;
-  document.getElementById(rowsId).innerHTML=
-    '<div class="pp-crow"><span>구매가 (할인 후)</span><span class="pp-v">'+won(buy)+'</span></div>'+
-    '<div class="pp-crow pp-minus"><span>플랫폼 수수료 ('+pct(feeRate*100)+')</span><span class="pp-v">'+won(feeAmt)+'</span></div>'+
-    '<div class="pp-crow"><span>정산가</span><span class="pp-v">'+won(settle)+'</span></div>'+
-    '<div class="pp-crow pp-minus"><span>원가</span><span class="pp-v">'+won(C)+'</span></div>'+
-    '<div class="pp-crow pp-minus"><span>배송비</span><span class="pp-v">'+won(ship)+'</span></div>';
-  var neg=margin<0;
-  document.getElementById(resId).innerHTML=
-    '<div class="pp-mamt'+(neg?' pp-neg':'')+'">'+Math.round(margin).toLocaleString('ko-KR')+'</div>'+
-    '<div class="pp-mwon">원 남음</div>'+
-    '<div class="pp-mrate">마진율 <b>'+pct(rate)+'</b> · 구매가 '+won(buy)+'</div>';
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+var ROWS=[];
+function fee(){var f=parseFloat(document.getElementById('um_fee').value);return isNaN(f)?30:f;}
+function compute(r){var net=r.price*(1-fee()/100)-r.cost; var mr=r.price>0?net/r.price*100:0; var mult=r.cost>0?r.price/r.cost:0; return {net:net,mr:mr,mult:mult};}
+function fillFilters(){
+  var seasons=[],cats=[];
+  ROWS.forEach(function(r){ if(r.season&&seasons.indexOf(r.season)<0)seasons.push(r.season); if(r.cat&&cats.indexOf(r.cat)<0)cats.push(r.cat); });
+  var ss=document.getElementById('um_season'), cc=document.getElementById('um_cat');
+  ss.innerHTML='<option value="">전체 시즌</option>'+seasons.sort().map(function(x){return '<option value="'+esc(x)+'">'+esc(x)+'</option>';}).join('');
+  cc.innerHTML='<option value="">전체 카테고리</option>'+cats.sort().map(function(x){return '<option value="'+esc(x)+'">'+esc(x)+'</option>';}).join('');
 }
-function run(){document.getElementById('pp_costOut').textContent=won(cost());scenario('pp_base1','pp_coup1','pp_rows1','pp_res1');scenario('pp_base2','pp_coup2','pp_rows2','pp_res2');}
-document.querySelectorAll('.pp-wrap input').forEach(function(el){el.addEventListener('input',run);el.addEventListener('change',run);});
-run();
+function render(){
+  var q=(document.getElementById('um_search').value||'').toLowerCase();
+  var se=document.getElementById('um_season').value, ca=document.getElementById('um_cat').value, sort=document.getElementById('um_sort').value;
+  var list=ROWS.filter(function(r){return r.price>0;})
+    .filter(function(r){return (!se||r.season===se)&&(!ca||r.cat===ca)&&(!q||(r.name||'').toLowerCase().indexOf(q)>=0);})
+    .map(function(r){var c=compute(r);return {r:r,net:c.net,mr:c.mr,mult:c.mult};});
+  var cmp={net_desc:function(a,b){return b.net-a.net;},net_asc:function(a,b){return a.net-b.net;},mr_desc:function(a,b){return b.mr-a.mr;},mr_asc:function(a,b){return a.mr-b.mr;},price_desc:function(a,b){return b.r.price-a.r.price;}};
+  list.sort(cmp[sort]||cmp.net_desc);
+  // 카드
+  var cnt=list.length, avgNet=cnt?list.reduce(function(s,x){return s+x.net;},0)/cnt:0, avgMr=cnt?list.reduce(function(s,x){return s+x.mr;},0)/cnt:0, loss=list.filter(function(x){return x.net<=0;}).length;
+  document.getElementById('um_cards').innerHTML=
+    '<div class="um-card"><div class="l">상품 수</div><div class="v">'+cnt+'종</div></div>'+
+    '<div class="um-card"><div class="l">평균 1개당 남는 돈</div><div class="v blue">'+won(avgNet)+'</div><div class="s">수수료 '+fee()+'% 기준</div></div>'+
+    '<div class="um-card"><div class="l">평균 마진율</div><div class="v">'+avgMr.toFixed(1)+'%</div></div>'+
+    '<div class="um-card"><div class="l">마진 0 이하</div><div class="v'+(loss?' red':'')+'">'+loss+'종</div><div class="s">팔수록 손해</div></div>';
+  // 표
+  var tb=document.getElementById('um_tbody');
+  if(!list.length){ tb.innerHTML='<tr><td colspan="8" class="um-empty">조건에 맞는 상품이 없어요. 손익관리에서 데이터를 올렸는지 확인해주세요.</td></tr>'; return; }
+  tb.innerHTML=list.map(function(x){var r=x.r;var neg=x.net<=0;
+    return '<tr><td class="pname">'+esc(r.name||'-')+'</td><td class="sub">'+esc(r.season||'')+'</td><td class="sub">'+esc(r.cat||'')+'</td>'+
+    '<td class="num">'+won(r.price)+'</td><td class="num sub">'+won(r.cost)+'</td>'+
+    '<td class="num net'+(neg?' red':'')+'">'+won(x.net)+'</td>'+
+    '<td class="num mr'+(neg?' red':'')+'">'+x.mr.toFixed(1)+'%</td>'+
+    '<td class="num sub">'+(x.mult?x.mult.toFixed(2)+'배':'-')+'</td></tr>';
+  }).join('');
+}
+function extract(p){ var season=(p&&p.src&&p.src.season)||(p&&p.costrows)||[]; return season.filter(function(o){return o&&num(o.price)>0;}).map(function(o){return {name:o.name,season:o.season,cat:o.cat,price:num(o.price),cost:num(o.cost)};}); }
+async function load(){
+  try{ var rows=await sbFetch('sku_state?id=eq.'+SB_ID+'&select=payload'); if(rows&&rows[0]&&rows[0].payload){ ROWS=extract(rows[0].payload); } }catch(e){ console.error('load',e); }
+  if(!ROWS.length){ try{ var ls=localStorage.getItem(LSKEY); if(ls) ROWS=extract(JSON.parse(ls)); }catch(e){} }
+  fillFilters(); render();
+}
+['um_fee','um_search','um_season','um_cat','um_sort'].forEach(function(id){var e=document.getElementById(id);if(e){e.addEventListener('input',render);e.addEventListener('change',render);}});
+load();
 })();
 </script>
 
