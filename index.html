@@ -355,7 +355,7 @@ body{padding-bottom:34px;}
 .plat-fill{background:#2B6CB8 !important;border-radius:5px !important;}
 .sec-title{color:#A09A94 !important;letter-spacing:0.1em !important;}
 .plat-filter-btn.active{background:#2B6CB8 !important;border-color:#2B6CB8 !important;color:#fff !important;}
-.tab-btn.active{background:#1A1714 !important;border-color:#1A1714 !important;color:#fff !important;}
+.tab-btn.active{background:#2B6CB8 !important;border-color:#2B6CB8 !important;color:#fff !important;}
 .btn-primary{background:#2B6CB8 !important;border-radius:9px !important;}
 .input-tab.active{color:#fff !important;}
 .plat-select-btn.active{background:#2B6CB8 !important;border-color:#2B6CB8 !important;color:#fff !important;}
@@ -694,7 +694,7 @@ function renderMetrics() {
 }
 
 var trendGran='monthly', topRange='all';
-var monthCur=null; var previewDetail=[]; var salesDetail=[]; try{salesDetail=JSON.parse(localStorage.getItem('anniz_sales_detail')||'[]');}catch(_e){salesDetail=[];}
+var monthCur=null; var nrMonthCur=null; var nrMonths=[]; var previewDetail=[]; var salesDetail=[]; try{salesDetail=JSON.parse(localStorage.getItem('anniz_sales_detail')||'[]');}catch(_e){salesDetail=[];}
 function setTrendGran(g,btn){trendGran=g; var seg=document.getElementById('trendSeg'); if(seg)seg.querySelectorAll('.iv-segbtn').forEach(function(b){b.classList.remove('active');}); if(btn)btn.classList.add('active'); renderChart();}
 function setTopRange(r,btn){topRange=r; var seg=document.getElementById('topSeg'); if(seg)seg.querySelectorAll('.iv-segbtn').forEach(function(b){b.classList.remove('active');}); if(btn)btn.classList.add('active'); renderTopProducts();}
 function periodLabel(key, gran){
@@ -921,14 +921,31 @@ function renderNewReturning(){
   if(!ol.length){el.innerHTML='';return;}
   var first={};
   ol.forEach(function(o){var key=o.buyer||o.id; var f=first[key]; if(!f||o.date<f.date||(o.date===f.date&&o.id<f.id))first[key]=o;});
+  var ms={}; ol.forEach(function(o){ms[String(o.date).slice(0,7)]=1;});
+  nrMonths=Object.keys(ms).sort();
+  if(!nrMonthCur || nrMonths.indexOf(nrMonthCur)<0) nrMonthCur=nrMonths[nrMonths.length-1];
   var nNew=0,nRe=0,sNew=0,sRe=0;
-  ol.forEach(function(o){var key=o.buyer||o.id; if(first[key].id===o.id){nNew++;sNew+=o.net;}else{nRe++;sRe+=o.net;}});
-  var tot=nNew+nRe||1; var pNew=Math.round(nNew/tot*100), pRe=100-pNew;
+  ol.forEach(function(o){ if(String(o.date).slice(0,7)!==nrMonthCur)return; var key=o.buyer||o.id; if(first[key].id===o.id){nNew++;sNew+=o.net;}else{nRe++;sRe+=o.net;} });
+  var realTot=nNew+nRe; var pNew=realTot?Math.round(nNew/realTot*100):0; var pRe=realTot?100-pNew:0;
+  var p=nrMonthCur.split('-'); var label=p[0]+'년 '+Number(p[1])+'월';
+  var idx=nrMonths.indexOf(nrMonthCur); var atFirst=idx<=0, atLast=idx>=nrMonths.length-1;
+  var nav='<div class="mnav"><button class="mnav-btn" onclick="moveNRMonth(-1)"'+(atFirst?' disabled':'')+'>&#x2039;</button><span class="mnav-label">'+label+'</span><button class="mnav-btn" onclick="moveNRMonth(1)"'+(atLast?' disabled':'')+'>&#x203a;</button></div>';
+  if(!realTot){
+    el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span></div><div class="chart-card">'+nav+'<div style="text-align:center;color:#A09A94;font-size:13px;padding:8px 0;">이 달은 주문이 없어요.</div></div>';
+    return;
+  }
   el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span><span class="iv-nrnote">재구매율 '+pRe+'%</span></div>'+
-   '<div class="chart-card"><div class="iv-nrbar"><span class="iv-nrnew" style="width:'+pNew+'%"></span><span class="iv-nrre" style="width:'+pRe+'%"></span></div>'+
+   '<div class="chart-card">'+nav+
+   '<div class="iv-nrbar"><span class="iv-nrnew" style="width:'+pNew+'%"></span><span class="iv-nrre" style="width:'+pRe+'%"></span></div>'+
    '<div class="iv-nrrow"><div class="iv-nrcell"><span class="iv-nrk"><i class="dot new"></i>신규</span><b>'+nNew+'건 ('+pNew+'%)</b><span class="iv-nrsub">'+fmt(sNew)+'</span></div>'+
    '<div class="iv-nrcell"><span class="iv-nrk"><i class="dot re"></i>재구매</span><b>'+nRe+'건 ('+pRe+'%)</b><span class="iv-nrsub">'+fmt(sRe)+'</span></div></div>'+
-   '<div class="iv-nrcaption">업로드된 주문 기준 · 같은 주문자의 첫 주문=신규, 이후=재구매</div></div>';
+   '<div class="iv-nrcaption">'+label+' 주문 기준 · 첫 구매 고객=신규, 이전에 산 적 있으면=재구매</div></div>';
+}
+function moveNRMonth(d){
+  if(!nrMonths||!nrMonths.length)return;
+  var idx=nrMonths.indexOf(nrMonthCur); if(idx<0)idx=nrMonths.length-1;
+  var ni=idx+d; if(ni<0||ni>=nrMonths.length)return;
+  nrMonthCur=nrMonths[ni]; renderNewReturning();
 }
 
 var platChart=null, oavChartI=null, cumChartI=null;
