@@ -449,6 +449,12 @@ body{padding-bottom:34px;}
 .mstat b{font-size:14px;font-weight:600;color:#1A1714;font-variant-numeric:tabular-nums;}
 @media(max-width:600px){.mstat-grid{grid-template-columns:repeat(2,1fr);}.mnav-label{font-size:16px;}}
 </style>
+<style id="mvp-v8">
+.period-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;background:#fff;border:1px solid rgba(26,23,20,0.08);border-radius:14px;padding:11px 14px;margin-bottom:18px;flex-wrap:wrap;}
+.period-bar .mnav{margin:0;flex:0 0 auto;}
+.period-bar .mnav-btn{width:34px;height:34px;font-size:16px;}
+@media(max-width:600px){.period-bar{justify-content:center;}.period-bar .mnav-label{min-width:120px !important;}}
+</style>
 </head>
 <body>
 <div class="layout">
@@ -515,8 +521,10 @@ body{padding-bottom:34px;}
     <div id="ivToday"></div>
     <div class="metrics" id="metrics"><div class="loading">불러오는 중...</div></div>
     <div class="iv-info" id="ivInfo"></div>
-    <div id="ivNR"></div>
+    <div id="periodBar"></div>
     <div id="ivMonthly"></div>
+    <div id="ivNR"></div>
+    <div id="ivTop"></div>
     <div class="chart-card" id="chartSection">
       <div class="iv-chead"><span class="iv-ctitle">매출 추이</span><div class="iv-seg" id="trendSeg"><button class="iv-segbtn active" onclick="setTrendGran('monthly',this)">월별</button><button class="iv-segbtn" onclick="setTrendGran('weekly',this)">주별</button><button class="iv-segbtn" onclick="setTrendGran('daily',this)">일별</button></div></div>
       <div class="chart-legend">
@@ -540,8 +548,6 @@ body{padding-bottom:34px;}
     <div class="chart-card"><div style="height:210px"><canvas id="platTrendChart"></canvas></div></div>
     <div class="sec-head"><span class="sec-title">주문 건수 · 객단가 추이</span></div>
     <div class="chart-card"><div style="height:210px"><canvas id="oavChart"></canvas></div></div>
-    <div class="iv-shead"><span class="sec-title">상품별 매출 TOP</span><div class="iv-seg" id="topSeg"><button class="iv-segbtn" onclick="setTopRange('day',this)">일별</button><button class="iv-segbtn" onclick="setTopRange('week',this)">주별</button><button class="iv-segbtn" onclick="setTopRange('month',this)">월별</button><button class="iv-segbtn active" onclick="setTopRange('all',this)">전체</button></div></div>
-    <div class="chart-card"><div class="platforms" id="topProducts"></div></div>
     <div class="sec-head"><span class="sec-title">요일별 매출</span></div>
     <div class="chart-card" id="ivWeekday"></div>
     <div class="sec-head"><span class="sec-title">상세 내역</span></div>
@@ -649,8 +655,29 @@ async function loadData() {
       from += size;
     }
     records = all;
+    await loadDetailCloud();
     render();
   } catch(e) { showToast('데이터 불러오기 실패: ' + e.message); }
+}
+async function saveDetailCloud(){
+  try{
+    await sbFetch('sku_state', { method:'POST', prefer:'resolution=merge-duplicates,return=minimal', body: JSON.stringify([{id:'sales_detail', payload: salesDetail}]) });
+  }catch(e){ /* RLS/네트워크 실패 시 로컬 저장 유지 */ }
+}
+async function loadDetailCloud(){
+  try{
+    const r = await sbFetch('sku_state?id=eq.sales_detail&select=payload');
+    let cloud = (r && r[0] && r[0].payload) ? r[0].payload : null;
+    if(typeof cloud === 'string'){ try{cloud=JSON.parse(cloud);}catch(_e){cloud=null;} }
+    if(Array.isArray(cloud) && cloud.length){
+      var m={}; (salesDetail||[]).forEach(function(x){if(x&&x.key)m[x.key]=x;}); cloud.forEach(function(x){if(x&&x.key)m[x.key]=x;});
+      salesDetail=Object.values(m);
+      try{localStorage.setItem('anniz_sales_detail',JSON.stringify(salesDetail));}catch(_e){}
+      saveDetailCloud();
+    } else if(salesDetail && salesDetail.length){
+      saveDetailCloud();
+    }
+  }catch(e){}
 }
 
 function fmt(n) { return '₩' + Math.round(n).toLocaleString(); }
@@ -694,7 +721,7 @@ function renderMetrics() {
 }
 
 var trendGran='monthly', topRange='all';
-var monthCur=null; var nrMonthCur=null; var nrMonths=[]; var previewDetail=[]; var salesDetail=[]; try{salesDetail=JSON.parse(localStorage.getItem('anniz_sales_detail')||'[]');}catch(_e){salesDetail=[];}
+var monthCur=null; var nrMonthCur=null; var nrMonths=[]; var tpUnit='month'; var tpCursor=null; var perUnit='month'; var perCursor=null; var previewDetail=[]; var salesDetail=[]; try{salesDetail=JSON.parse(localStorage.getItem('anniz_sales_detail')||'[]');}catch(_e){salesDetail=[];}
 function setTrendGran(g,btn){trendGran=g; var seg=document.getElementById('trendSeg'); if(seg)seg.querySelectorAll('.iv-segbtn').forEach(function(b){b.classList.remove('active');}); if(btn)btn.classList.add('active'); renderChart();}
 function setTopRange(r,btn){topRange=r; var seg=document.getElementById('topSeg'); if(seg)seg.querySelectorAll('.iv-segbtn').forEach(function(b){b.classList.remove('active');}); if(btn)btn.classList.add('active'); renderTopProducts();}
 function periodLabel(key, gran){
@@ -862,90 +889,105 @@ function moveMonth(dir){
 }
 
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function perBounds(){
+  var ds=[];
+  if(typeof records!=='undefined' && records) records.forEach(function(r){ds.push(String(r.date));});
+  salesDetail.forEach(function(r){ds.push(r.date);});
+  if(!ds.length) return null;
+  var min=ds[0],max=ds[0]; ds.forEach(function(d){if(d<min)min=d;if(d>max)max=d;});
+  return {min:min,max:max};
+}
+function ensurePer(){ var b=perBounds(); if(!b)return false; if(!perCursor||perCursor<b.min||perCursor>b.max)perCursor=b.max; return true; }
+function perWindow(cur,unit){
+  cur=cur||perCursor; unit=unit||perUnit;
+  if(unit==='all') return {start:null,end:null,label:'전체 기간'};
+  var d=new Date(cur+'T00:00');
+  if(unit==='month'){var s=new Date(d.getFullYear(),d.getMonth(),1);var e=new Date(d.getFullYear(),d.getMonth()+1,0);return {start:s,end:e,label:d.getFullYear()+'년 '+(d.getMonth()+1)+'월'};}
+  if(unit==='week'){var off=(d.getDay()+6)%7;var s2=new Date(d.getTime()-off*86400000);var e2=new Date(s2.getTime()+6*86400000);return {start:s2,end:e2,label:(s2.getMonth()+1)+'/'+s2.getDate()+' ~ '+(e2.getMonth()+1)+'/'+e2.getDate()+' 주간'};}
+  return {start:d,end:d,label:d.getFullYear()+'년 '+(d.getMonth()+1)+'월 '+d.getDate()+'일'};
+}
+function prevCursor(){
+  var d=new Date(perCursor+'T00:00');
+  if(perUnit==='month')return _ymd(new Date(d.getFullYear(),d.getMonth()-1,1));
+  if(perUnit==='week')return _ymd(new Date(d.getTime()-7*86400000));
+  return _ymd(new Date(d.getTime()-86400000));
+}
+function setPerUnit(u){ perUnit=u; renderPeriodBar(); renderMonthly(); renderNewReturning(); renderTopProducts(); }
+function movePer(dir){
+  if(perUnit==='all'||!perCursor)return;
+  var c=new Date(perCursor+'T00:00');
+  if(perUnit==='month')c=new Date(c.getFullYear(),c.getMonth()+dir,1);
+  else if(perUnit==='week')c=new Date(c.getTime()+dir*7*86400000);
+  else c=new Date(c.getTime()+dir*86400000);
+  perCursor=_ymd(c); renderPeriodBar(); renderMonthly(); renderNewReturning(); renderTopProducts();
+}
+function renderPeriodBar(){
+  var el=document.getElementById('periodBar'); if(!el)return;
+  if(!ensurePer()){el.innerHTML='';return;}
+  var b=perBounds(), w=perWindow();
+  var nav;
+  if(perUnit==='all'){ nav='<div class="mnav" style="margin:0;"><span class="mnav-label">전체 기간</span></div>'; }
+  else { var pd=_ymd(w.start)<=b.min, nd=_ymd(w.end)>=b.max;
+    nav='<div class="mnav" style="margin:0;"><button class="mnav-btn" onclick="movePer(-1)"'+(pd?' disabled':'')+'>&#x2039;</button><span class="mnav-label" style="min-width:170px;">'+w.label+'</span><button class="mnav-btn" onclick="movePer(1)"'+(nd?' disabled':'')+'>&#x203a;</button></div>'; }
+  function b2(u,t){return '<button class="iv-segbtn'+(perUnit===u?' active':'')+'" onclick="setPerUnit(&#39;'+u+'&#39;)">'+t+'</button>';}
+  el.innerHTML='<div class="period-bar">'+nav+'<div class="iv-seg">'+b2('month','월')+b2('week','주')+b2('day','일')+b2('all','전체')+'</div></div>';
+}
 function renderMonthly(){
   var el=document.getElementById('ivMonthly'); if(!el) return;
-  var src=getFiltered(); if(!src.length){el.innerHTML='';return;}
-  var m={};
-  src.forEach(function(r){var k=String(r.date).slice(0,7); if(!m[k])m[k]={orig:0,net:0,coupon:0,orders:0,days:{}}; m[k].orig+=num(r.original_sales); m[k].net+=num(r.net_sales); m[k].coupon+=num(r.coupon); m[k].orders+=num(r.orders)||1; m[k].days[r.date]=1;});
-  var keys=Object.keys(m).sort();
-  if(!keys.length){el.innerHTML='';return;}
-  if(!monthCur || monthCur<keys[0] || monthCur>keys[keys.length-1]) monthCur=keys[keys.length-1];
-  var v=m[monthCur]||{orig:0,net:0,coupon:0,orders:0,days:{}};
-  var p=monthCur.split('-'); var label=p[0]+'년 '+Number(p[1])+'월';
-  function shift(k,d){var y=+k.slice(0,4),mo=+k.slice(5,7)-1+d; var dt=new Date(y,mo,1); return dt.getFullYear()+'-'+('0'+(dt.getMonth()+1)).slice(-2);}
-  var pv=m[shift(monthCur,-1)];
-  var mom=(pv&&pv.net>0)?Math.round((v.net-pv.net)/pv.net*1000)/10:null;
-  var nd=Object.keys(v.days).length||1;
-  var aov=v.orders>0?Math.round(v.net/v.orders):0;
-  var disc=v.orig>0?Math.round(v.coupon/v.orig*100):0;
-  var avg=Math.round(v.net/nd);
-  var atFirst=monthCur<=keys[0], atLast=monthCur>=keys[keys.length-1];
-  var momHtml=mom==null?'<i class="flat">전월 데이터 없음</i>':'<i class="'+(mom>=0?'up':'down')+'">'+(mom>=0?'▲ ':'▼ ')+Math.abs(mom)+'% 전월 대비</i>';
-  el.innerHTML='<div class="iv-shead"><span class="sec-title">월별 매출</span></div>'+
-   '<div class="chart-card"><div class="mnav"><button class="mnav-btn" onclick="moveMonthSummary(-1)"'+(atFirst?' disabled':'')+'>&#x2039;</button><span class="mnav-label">'+label+'</span><button class="mnav-btn" onclick="moveMonthSummary(1)"'+(atLast?' disabled':'')+'>&#x203a;</button></div>'+
-   '<div class="mbig"><span class="mbig-k">실 판매액</span><span class="mbig-v">'+fmt(v.net)+'</span>'+momHtml+'</div>'+
+  if(!ensurePer()){el.innerHTML='';return;}
+  var w=perWindow(); var src=getFiltered();
+  function agg(arr){var o={orig:0,net:0,coupon:0,orders:0,days:{}}; arr.forEach(function(r){o.orig+=num(r.original_sales);o.net+=num(r.net_sales);o.coupon+=num(r.coupon);o.orders+=num(r.orders)||1;o.days[r.date]=1;}); return o;}
+  function winAgg(win){ if(!win.start)return agg(src); var s=_ymd(win.start),e=_ymd(win.end); return agg(src.filter(function(r){return String(r.date)>=s&&String(r.date)<=e;})); }
+  var v=winAgg(w);
+  var mom=null;
+  if(perUnit!=='all'){ var pv=winAgg(perWindow(prevCursor(),perUnit)); if(pv.net>0)mom=Math.round((v.net-pv.net)/pv.net*1000)/10; }
+  var nd=Object.keys(v.days).length||1, aov=v.orders>0?Math.round(v.net/v.orders):0, disc=v.orig>0?Math.round(v.coupon/v.orig*100):0, avg=Math.round(v.net/nd);
+  var cmp=perUnit==='month'?'전월':perUnit==='week'?'전주':'전일';
+  var momHtml=(perUnit==='all')?'':(mom==null?'<i class="flat">이전 기간 데이터 없음</i>':'<i class="'+(mom>=0?'up':'down')+'">'+(mom>=0?'▲ ':'▼ ')+Math.abs(mom)+'% '+cmp+' 대비</i>');
+  el.innerHTML='<div class="iv-shead"><span class="sec-title">매출 요약</span></div>'+
+   '<div class="chart-card"><div class="mbig"><span class="mbig-k">실 판매액</span><span class="mbig-v">'+fmt(v.net)+'</span>'+momHtml+'</div>'+
    '<div class="mstat-grid"><div class="mstat"><span>총 판매액</span><b>'+fmt(v.orig)+'</b></div>'+
    '<div class="mstat"><span>주문</span><b>'+v.orders+'건</b></div>'+
    '<div class="mstat"><span>객단가</span><b>'+fmt(aov)+'</b></div>'+
    '<div class="mstat"><span>할인율</span><b>'+disc+'%</b></div>'+
    '<div class="mstat"><span>일평균</span><b>'+fmt(avg)+'</b></div></div></div>';
 }
-function moveMonthSummary(d){
-  if(!monthCur)return;
-  var y=+monthCur.slice(0,4), mo=+monthCur.slice(5,7)-1+d; var dt=new Date(y,mo,1);
-  monthCur=dt.getFullYear()+'-'+('0'+(dt.getMonth()+1)).slice(-2);
-  renderMonthly();
-}
+function _ymd(dt){return dt.getFullYear()+'-'+('0'+(dt.getMonth()+1)).slice(-2)+'-'+('0'+dt.getDate()).slice(-2);}
 function renderTopProducts(){
-  var el=document.getElementById('topProducts'); if(!el) return;
-  if(!salesDetail.length){el.innerHTML='<div style="color:#A09A94;font-size:13px;padding:10px 0;line-height:1.7;">29CM 주문상품 엑셀을 업로드하면<br>상품별 매출 TOP이 여기 표시돼요.</div>';return;}
-  var src=salesDetail.slice();
-  if(topRange!=='all'){
-    var maxd=src.reduce(function(m,r){return r.date>m?r.date:m;},'');
-    var anchor=new Date(maxd+'T00:00');
-    if(!isNaN(anchor.getTime())){var days=topRange==='day'?1:(topRange==='week'?7:30); var cutoff=new Date(anchor.getTime()-(days-1)*86400000); src=src.filter(function(r){var d=new Date(r.date+'T00:00');return !isNaN(d.getTime())&&d>=cutoff;});}
-  }
+  var el=document.getElementById('ivTop'); if(!el) return;
+  if(!salesDetail.length){ el.innerHTML='<div class="iv-shead"><span class="sec-title">상품별 매출 TOP</span></div><div class="chart-card"><div style="color:#A09A94;font-size:13px;padding:10px 0;line-height:1.7;">29CM 주문상품 엑셀을 업로드하면<br>상품별 매출 TOP이 여기 표시돼요.</div></div>'; return; }
+  if(!ensurePer()){el.innerHTML='';return;}
+  var w=perWindow(); var src=salesDetail;
+  if(w.start){var s=_ymd(w.start),e=_ymd(w.end);src=salesDetail.filter(function(r){return r.date>=s&&r.date<=e;});}
   var pmap={};
-  src.forEach(function(r){ if(!pmap[r.product])pmap[r.product]={net:0,qty:0}; pmap[r.product].net+=r.net; pmap[r.product].qty+=1; });
+  src.forEach(function(r){if(!pmap[r.product])pmap[r.product]={net:0,qty:0};pmap[r.product].net+=r.net;pmap[r.product].qty+=1;});
   var rows=Object.entries(pmap).sort(function(a,b){return b[1].net-a[1].net;}).slice(0,10);
-  if(!rows.length){el.innerHTML='<div style="color:#A09A94;font-size:13px;padding:8px 0;">해당 기간 데이터가 없어요.</div>';return;}
-  var mx=rows[0][1].net||1;
-  el.innerHTML=rows.map(function(e,i){var name=e[0],v=e[1];return '<div class="iv-toprow"><div class="iv-rank">'+(i+1)+'</div><div class="iv-tp"><div class="iv-tpname"><span>'+esc(name)+'</span><span class="amt">'+fmt(v.net)+'</span></div><div class="iv-tpbarwrap"><div class="iv-tpbar"><span style="width:'+Math.round(v.net/mx*100)+'%"></span></div><span class="iv-tpqty">'+v.qty+'건</span></div></div></div>';}).join('');
+  var inner;
+  if(!rows.length){ inner='<div style="color:#A09A94;font-size:13px;padding:14px 0;text-align:center;">이 기간엔 판매 데이터가 없어요.</div>'; }
+  else { var mx=rows[0][1].net||1; inner='<div class="platforms">'+rows.map(function(e,i){var name=e[0],v=e[1];return '<div class="iv-toprow"><div class="iv-rank">'+(i+1)+'</div><div class="iv-tp"><div class="iv-tpname"><span>'+esc(name)+'</span><span class="amt">'+fmt(v.net)+'</span></div><div class="iv-tpbarwrap"><div class="iv-tpbar"><span style="width:'+Math.round(v.net/mx*100)+'%"></span></div><span class="iv-tpqty">'+v.qty+'건</span></div></div></div>';}).join('')+'</div>'; }
+  el.innerHTML='<div class="iv-shead"><span class="sec-title">상품별 매출 TOP</span></div><div class="chart-card">'+inner+'</div>';
 }
 function renderNewReturning(){
   var el=document.getElementById('ivNR'); if(!el) return;
   if(!salesDetail.length){el.innerHTML='';return;}
+  if(!ensurePer()){el.innerHTML='';return;}
+  var w=perWindow();
   var orders={};
   salesDetail.forEach(function(r){ if(!r.order)return; if(!orders[r.order])orders[r.order]={buyer:r.buyer,date:r.date,net:0}; orders[r.order].net+=r.net; if(r.date<orders[r.order].date)orders[r.order].date=r.date; });
   var ol=Object.keys(orders).map(function(k){return {id:k,buyer:orders[k].buyer,date:orders[k].date,net:orders[k].net};});
   if(!ol.length){el.innerHTML='';return;}
   var first={};
   ol.forEach(function(o){var key=o.buyer||o.id; var f=first[key]; if(!f||o.date<f.date||(o.date===f.date&&o.id<f.id))first[key]=o;});
-  var ms={}; ol.forEach(function(o){ms[String(o.date).slice(0,7)]=1;});
-  nrMonths=Object.keys(ms).sort();
-  if(!nrMonthCur || nrMonths.indexOf(nrMonthCur)<0) nrMonthCur=nrMonths[nrMonths.length-1];
+  var inWin=function(d){ if(!w.start)return true; return d>=_ymd(w.start)&&d<=_ymd(w.end); };
   var nNew=0,nRe=0,sNew=0,sRe=0;
-  ol.forEach(function(o){ if(String(o.date).slice(0,7)!==nrMonthCur)return; var key=o.buyer||o.id; if(first[key].id===o.id){nNew++;sNew+=o.net;}else{nRe++;sRe+=o.net;} });
+  ol.forEach(function(o){ if(!inWin(o.date))return; var key=o.buyer||o.id; if(first[key].id===o.id){nNew++;sNew+=o.net;}else{nRe++;sRe+=o.net;} });
   var realTot=nNew+nRe; var pNew=realTot?Math.round(nNew/realTot*100):0; var pRe=realTot?100-pNew:0;
-  var p=nrMonthCur.split('-'); var label=p[0]+'년 '+Number(p[1])+'월';
-  var idx=nrMonths.indexOf(nrMonthCur); var atFirst=idx<=0, atLast=idx>=nrMonths.length-1;
-  var nav='<div class="mnav"><button class="mnav-btn" onclick="moveNRMonth(-1)"'+(atFirst?' disabled':'')+'>&#x2039;</button><span class="mnav-label">'+label+'</span><button class="mnav-btn" onclick="moveNRMonth(1)"'+(atLast?' disabled':'')+'>&#x203a;</button></div>';
-  if(!realTot){
-    el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span></div><div class="chart-card">'+nav+'<div style="text-align:center;color:#A09A94;font-size:13px;padding:8px 0;">이 달은 주문이 없어요.</div></div>';
-    return;
-  }
+  if(!realTot){ el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span></div><div class="chart-card"><div style="text-align:center;color:#A09A94;font-size:13px;padding:14px 0;">이 기간엔 주문이 없어요.</div></div>'; return; }
   el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span><span class="iv-nrnote">재구매율 '+pRe+'%</span></div>'+
-   '<div class="chart-card">'+nav+
-   '<div class="iv-nrbar"><span class="iv-nrnew" style="width:'+pNew+'%"></span><span class="iv-nrre" style="width:'+pRe+'%"></span></div>'+
+   '<div class="chart-card"><div class="iv-nrbar"><span class="iv-nrnew" style="width:'+pNew+'%"></span><span class="iv-nrre" style="width:'+pRe+'%"></span></div>'+
    '<div class="iv-nrrow"><div class="iv-nrcell"><span class="iv-nrk"><i class="dot new"></i>신규</span><b>'+nNew+'건 ('+pNew+'%)</b><span class="iv-nrsub">'+fmt(sNew)+'</span></div>'+
    '<div class="iv-nrcell"><span class="iv-nrk"><i class="dot re"></i>재구매</span><b>'+nRe+'건 ('+pRe+'%)</b><span class="iv-nrsub">'+fmt(sRe)+'</span></div></div>'+
-   '<div class="iv-nrcaption">'+label+' 주문 기준 · 첫 구매 고객=신규, 이전에 산 적 있으면=재구매</div></div>';
-}
-function moveNRMonth(d){
-  if(!nrMonths||!nrMonths.length)return;
-  var idx=nrMonths.indexOf(nrMonthCur); if(idx<0)idx=nrMonths.length-1;
-  var ni=idx+d; if(ni<0||ni>=nrMonths.length)return;
-  nrMonthCur=nrMonths[ni]; renderNewReturning();
+   '<div class="iv-nrcaption">첫 구매 고객=신규, 이전에 산 적 있으면=재구매</div></div>';
 }
 
 var platChart=null, oavChartI=null, cumChartI=null;
@@ -1200,6 +1242,8 @@ function parseRows(rows){
     var _m={}; salesDetail.forEach(function(r){_m[r.key]=r;}); previewDetail.forEach(function(r){_m[r.key]=r;});
     salesDetail=Object.values(_m);
     try{localStorage.setItem('anniz_sales_detail',JSON.stringify(salesDetail));}catch(_e){}
+    if(typeof saveDetailCloud==='function') saveDetailCloud();
+    if(typeof renderPeriodBar==='function') renderPeriodBar();
     renderTopProducts(); renderNewReturning();
   }
   previewDetail=[];
@@ -1243,7 +1287,7 @@ async function confirmUpload(){
 function handleDrop(e){e.preventDefault();handleFile(e.dataTransfer.files[0]);}
 function switchTab(name,btn){document.querySelectorAll('.input-tab').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.input-panel').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.getElementById('panel-'+name).classList.add('active');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
-function render(){renderToday();renderMetrics();renderInfo();renderNewReturning();renderMonthly();if(currentView==='calendar')renderCalendar();else renderChart();renderCumulative();renderPlatTrend();renderOAV();renderTopProducts();renderWeekday();renderTable();}
+function render(){renderToday();renderMetrics();renderInfo();renderPeriodBar();renderMonthly();renderNewReturning();renderTopProducts();if(currentView==='calendar')renderCalendar();else renderChart();renderCumulative();renderPlatTrend();renderOAV();renderWeekday();renderTable();}
 document.getElementById('inp-date').value=new Date().toISOString().slice(0,10);
 loadData();
 </script>
