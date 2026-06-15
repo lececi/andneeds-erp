@@ -982,13 +982,14 @@ function renderTopProducts(){
   var el=document.getElementById('ivTop'); if(!el) return;
   if(!salesDetail.length){ el.innerHTML='<div class="iv-shead"><span class="sec-title">상품별 매출 TOP</span></div><div class="chart-card"><div style="color:#A09A94;font-size:13px;padding:10px 0;line-height:1.7;">29CM 주문상품 엑셀을 업로드하면<br>상품별 매출 TOP이 여기 표시돼요.</div></div>'; return; }
   if(!ensurePer()){el.innerHTML='';return;}
-  var w=perWindow(); var src=salesDetail;
-  if(w.start){var s=_ymd(w.start),e=_ymd(w.end);src=salesDetail.filter(function(r){return r.date>=s&&r.date<=e;});}
+  var w=perWindow();
+  var src=salesDetail.filter(function(r){return platFilter==='전체'||(r.platform||'29CM')===platFilter;});
+  if(w.start){var s=_ymd(w.start),e=_ymd(w.end);src=src.filter(function(r){return r.date>=s&&r.date<=e;});}
   var pmap={};
   src.forEach(function(r){if(!pmap[r.product])pmap[r.product]={net:0,qty:0};pmap[r.product].net+=r.net;pmap[r.product].qty+=1;});
   var rows=Object.entries(pmap).sort(function(a,b){return b[1].net-a[1].net;}).slice(0,10);
   var inner;
-  if(!rows.length){ inner='<div style="color:#A09A94;font-size:13px;padding:18px 0;text-align:center;line-height:1.7;">이 기간엔 상품 데이터가 없어요.<br><span style="color:#C4BDB4;">(해당 기간 29CM 엑셀을 올리면 표시돼요)</span></div>'; }
+  if(!rows.length){ inner=''+(platFilter!=='전체'?'<div style="color:#A09A94;font-size:13px;padding:18px 0;text-align:center;line-height:1.7;">'+platFilter+' 상품 데이터가 없어요.<br><span style="color:#C4BDB4;">(상품·고객 분석은 29CM 상세 엑셀만 지원)</span></div>':'<div style="color:#A09A94;font-size:13px;padding:18px 0;text-align:center;line-height:1.7;">이 기간엔 상품 데이터가 없어요.<br><span style="color:#C4BDB4;">(해당 기간 29CM 엑셀을 올리면 표시돼요)</span></div>')+''; }
   else { var mx=rows[0][1].net||1; inner='<div class="platforms">'+rows.map(function(e,i){var name=e[0],v=e[1];return '<div class="iv-toprow"><div class="iv-rank">'+(i+1)+'</div><div class="iv-tp"><div class="iv-tpname"><span>'+esc(name)+'</span><span class="amt">'+fmt(v.net)+'</span></div><div class="iv-tpbarwrap"><div class="iv-tpbar"><span style="width:'+Math.round(v.net/mx*100)+'%"></span></div><span class="iv-tpqty">'+v.qty+'건</span></div></div></div>';}).join('')+'</div>'; }
   el.innerHTML='<div class="iv-shead"><span class="sec-title">상품별 매출 TOP</span></div><div class="chart-card">'+inner+'</div>';
 }
@@ -997,8 +998,10 @@ function renderNewReturning(){
   if(!salesDetail.length){el.innerHTML='';return;}
   if(!ensurePer()){el.innerHTML='';return;}
   var w=perWindow();
+  var pool=salesDetail.filter(function(r){return platFilter==='전체'||(r.platform||'29CM')===platFilter;});
+  if(!pool.length){ el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span></div><div class="chart-card"><div style="text-align:center;color:#A09A94;font-size:13px;padding:18px 0;line-height:1.7;">'+platFilter+' 고객 데이터가 없어요.<br><span style="color:#C4BDB4;">(신규/재구매 분석은 29CM 상세 엑셀만 지원)</span></div></div>'; return; }
   var orders={};
-  salesDetail.forEach(function(r){ if(!r.order)return; if(!orders[r.order])orders[r.order]={buyer:r.buyer,date:r.date,net:0}; orders[r.order].net+=r.net; if(r.date<orders[r.order].date)orders[r.order].date=r.date; });
+  pool.forEach(function(r){ if(!r.order)return; if(!orders[r.order])orders[r.order]={buyer:r.buyer,date:r.date,net:0}; orders[r.order].net+=r.net; if(r.date<orders[r.order].date)orders[r.order].date=r.date; });
   var ol=Object.keys(orders).map(function(k){return {id:k,buyer:orders[k].buyer,date:orders[k].date,net:orders[k].net};});
   if(!ol.length){el.innerHTML='';return;}
   var first={};
@@ -1288,7 +1291,7 @@ function parseRows(rows){
     const product=String(row['상품명']||'').trim();
     const buyer=String(row['주문자']||row['수령자']||'').trim();
     const orderNo=String(row['주문번호']||'').trim();
-    if(product && (netSales>0||original_sales>0)) previewDetail.push({key:orderNo+'|'+String(row['상품번호']||'')+'|'+String(row['옵션코드']||''), order:orderNo, date, product:product, buyer:buyer, net:Math.round(netSales), orig:Math.round(original_sales)});
+    if(product && (netSales>0||original_sales>0)) previewDetail.push({key:orderNo+'|'+String(row['상품번호']||'')+'|'+String(row['옵션코드']||''), order:orderNo, date, product:product, buyer:buyer, platform:selectedPlatform, net:Math.round(netSales), orig:Math.round(original_sales)});
     if(net_sales>0)previewRows.push({date,platform:selectedPlatform,original_sales:Math.round(original_sales),coupon:Math.round(coupon),net_sales:Math.round(net_sales),orders:1});
   });
   // 상품 상세 즉시 반영 (클라우드 저장과 무관)
