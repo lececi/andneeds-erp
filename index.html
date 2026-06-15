@@ -420,6 +420,18 @@ body{padding-bottom:34px;}
 .iv-nrsub{font-size:12px;color:#A09A94;}
 .iv-nrcaption{font-size:11px;color:#C4BDB4;margin-top:16px;line-height:1.5;}
 </style>
+<style id="mvp-v6">
+.mtblcard{padding:0 !important;overflow:hidden;}
+.mtbl{width:100%;border-collapse:collapse;font-size:13px;}
+.mtbl th{text-align:left;padding:13px 16px;font-size:11px;font-weight:600;color:#A09A94;border-bottom:1px solid rgba(26,23,20,0.08);background:#FAFAF8;}
+.mtbl th.num,.mtbl td.num{text-align:right;}
+.mtbl td{padding:12px 16px;border-bottom:1px solid rgba(26,23,20,0.05);color:#1A1714;font-variant-numeric:tabular-nums;}
+.mtbl td.mh{font-weight:600;}
+.mtbl td.b{font-weight:600;}
+.mtbl td.g{color:#A09A94;}
+.mtbl tr.mtot td{background:#FAFAF8;font-weight:700;border-top:1.5px solid rgba(26,23,20,0.12);border-bottom:none;}
+.mtbl tr.mtot td.g{font-weight:600;}
+</style>
 </head>
 <body>
 <div class="layout">
@@ -487,6 +499,7 @@ body{padding-bottom:34px;}
     <div class="metrics" id="metrics"><div class="loading">불러오는 중...</div></div>
     <div class="iv-info" id="ivInfo"></div>
     <div id="ivNR"></div>
+    <div id="ivMonthly"></div>
     <div class="chart-card" id="chartSection">
       <div class="iv-chead"><span class="iv-ctitle">매출 추이</span><div class="iv-seg" id="trendSeg"><button class="iv-segbtn active" onclick="setTrendGran('monthly',this)">월별</button><button class="iv-segbtn" onclick="setTrendGran('weekly',this)">주별</button><button class="iv-segbtn" onclick="setTrendGran('daily',this)">일별</button></div></div>
       <div class="chart-legend">
@@ -831,6 +844,19 @@ function moveMonth(dir){
 }
 
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function renderMonthly(){
+  var el=document.getElementById('ivMonthly'); if(!el) return;
+  var src=getFiltered(); var m={};
+  src.forEach(function(r){ var k=String(r.date).slice(0,7); if(!m[k])m[k]={orig:0,net:0,coupon:0,orders:0}; m[k].orig+=num(r.original_sales); m[k].net+=num(r.net_sales); m[k].coupon+=num(r.coupon); m[k].orders+=num(r.orders)||1; });
+  var keys=Object.keys(m).sort();
+  if(!keys.length){el.innerHTML='';return;}
+  var tNet=0,tOrig=0,tOrd=0,tCoup=0;
+  var body=keys.map(function(k){var v=m[k]; tNet+=v.net;tOrig+=v.orig;tOrd+=v.orders;tCoup+=v.coupon; var p=k.split('-'); var disc=v.orig>0?Math.round(v.coupon/v.orig*100):0; return '<tr><td class="mh">'+p[0].slice(2)+'.'+p[1]+'</td><td class="num b">'+fmt(v.net)+'</td><td class="num g">'+fmt(v.orig)+'</td><td class="num">'+v.orders+'</td><td class="num g">'+disc+'%</td></tr>';}).join('');
+  var tdisc=tOrig>0?Math.round(tCoup/tOrig*100):0;
+  el.innerHTML='<div class="iv-shead"><span class="sec-title">월별 매출 요약</span><span class="iv-nrnote">총 '+keys.length+'개월</span></div>'+
+    '<div class="chart-card mtblcard"><table class="mtbl"><thead><tr><th>월</th><th class="num">실 판매액</th><th class="num">총 판매액</th><th class="num">주문</th><th class="num">할인율</th></tr></thead><tbody>'+body+
+    '<tr class="mtot"><td class="mh">합계</td><td class="num b">'+fmt(tNet)+'</td><td class="num g">'+fmt(tOrig)+'</td><td class="num">'+tOrd+'</td><td class="num g">'+tdisc+'%</td></tr></tbody></table></div>';
+}
 function renderTopProducts(){
   var el=document.getElementById('topProducts'); if(!el) return;
   if(!salesDetail.length){el.innerHTML='<div style="color:#A09A94;font-size:13px;padding:10px 0;line-height:1.7;">29CM 주문상품 엑셀을 업로드하면<br>상품별 매출 TOP이 여기 표시돼요.</div>';return;}
@@ -1081,22 +1107,17 @@ function handleFile(file){
 function parseRows(rows){
   let skipped=0; previewRows=[]; previewDetail=[];
   rows.forEach(row=>{
-    // 무신사 형식 감지 (입금일자 컬럼 존재)
+    // 무신사 형식 (입금일자 컬럼)
     if(row['입금일자']!==undefined) {
       const rawDate=String(row['입금일자']||'');
       if(!rawDate||rawDate==='평균'||rawDate==='입금일자')return;
-      // 날짜 변환 (20260101 → 2026-01-01)
       const dateStr=rawDate.toString().replace(/[^0-9]/g,'');
       if(dateStr.length!==8)return;
       const date=dateStr.slice(0,4)+'-'+dateStr.slice(4,6)+'-'+dateStr.slice(6,8);
       const original_sales=parseFloat(String(row['결제금액+적립금']||'0').replace(/[,\s]/g,''))||0;
       const net_sales=parseFloat(String(row['결제금액']||'0').replace(/[,\s]/g,''))||0;
       const coupon=Math.max(0,original_sales-net_sales);
-      const _prod=String(row['상품명']||'').trim();
-    const _buyer=String(row['주문자']||row['수령자']||'').trim();
-    const _ord=String(row['주문번호']||'').trim();
-    if(_prod && (netSales>0||original_sales>0)) previewDetail.push({key:_ord+'|'+String(row['상품번호']||'')+'|'+String(row['옵션코드']||''), order:_ord, date, product:_prod, buyer:_buyer, net:Math.round(netSales), orig:Math.round(original_sales)});
-    if(net_sales>0)previewRows.push({date,platform:selectedPlatform,original_sales:Math.round(original_sales),coupon:Math.round(coupon),net_sales:Math.round(net_sales),orders:1});
+      if(net_sales>0)previewRows.push({date,platform:selectedPlatform,original_sales:Math.round(original_sales),coupon:Math.round(coupon),net_sales:Math.round(net_sales),orders:1});
       return;
     }
     // 29CM 형식
@@ -1111,27 +1132,32 @@ function parseRows(rows){
     const shipping=parseFloat(String(row['배송비']||'0').replace(/[,₩\s]/g,''))||0;
     const islandShip=parseFloat(String(row['도서산간 배송비']||'0').replace(/[,₩\s]/g,''))||0;
     const net_sales=netSales+shipping+islandShip;
+    const product=String(row['상품명']||'').trim();
+    const buyer=String(row['주문자']||row['수령자']||'').trim();
+    const orderNo=String(row['주문번호']||'').trim();
+    if(product && (netSales>0||original_sales>0)) previewDetail.push({key:orderNo+'|'+String(row['상품번호']||'')+'|'+String(row['옵션코드']||''), order:orderNo, date, product:product, buyer:buyer, net:Math.round(netSales), orig:Math.round(original_sales)});
     if(net_sales>0)previewRows.push({date,platform:selectedPlatform,original_sales:Math.round(original_sales),coupon:Math.round(coupon),net_sales:Math.round(net_sales),orders:1});
   });
+  // 상품 상세 즉시 반영 (클라우드 저장과 무관)
+  var detailCount=previewDetail.length;
+  if(detailCount){
+    var _m={}; salesDetail.forEach(function(r){_m[r.key]=r;}); previewDetail.forEach(function(r){_m[r.key]=r;});
+    salesDetail=Object.values(_m);
+    try{localStorage.setItem('anniz_sales_detail',JSON.stringify(salesDetail));}catch(_e){}
+    renderTopProducts(); renderNewReturning();
+  }
+  previewDetail=[];
   const resultEl=document.getElementById('uploadResult');
-  if(previewRows.length===0){resultEl.innerHTML='<span style="color:var(--danger)">인식된 데이터가 없습니다.</span>';return;}
+  if(previewRows.length===0){resultEl.innerHTML='<span style="color:var(--danger)">인식된 데이터가 없습니다.</span>'+(detailCount?'<div style="color:#2B6CB8;margin-top:8px;font-size:12px;">단, 상품별 TOP·신규/재구매엔 '+detailCount+'개 상품줄이 반영됐어요.</div>':'');return;}
   const preview={};
   previewRows.forEach(r=>{if(!preview[r.date])preview[r.date]={original_sales:0,net_sales:0,count:0};preview[r.date].original_sales+=r.original_sales;preview[r.date].net_sales+=r.net_sales;preview[r.date].count++;});
   const previewDates=Object.keys(preview).sort();
   const previewHtml=previewDates.slice(0,5).map(d=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px;"><span style="color:var(--text-2)">${d}</span><span>${preview[d].count}건 · <strong>${fmt(preview[d].original_sales)}</strong> (실 ${fmt(preview[d].net_sales)})</span></div>`).join('');
   const moreText=previewDates.length>5?`<div style="font-size:11px;color:var(--text-3);margin-top:6px;">외 ${previewDates.length-5}일 더...</div>`:'';
   resultEl.innerHTML=`
-    <div style="margin-bottom:10px;font-size:13px;color:var(--text-2)"><strong style="color:var(--text)">${previewRows.length}건</strong> 인식됨 · ${skipped>0?`<span style="color:var(--danger)">${skipped}건 제외(취소/반품)</span>`:'취소 없음'}</div>
+    <div style="margin-bottom:10px;font-size:13px;color:var(--text-2)"><strong style="color:var(--text)">${previewRows.length}건</strong> 인식됨 · ${skipped>0?`<span style="color:var(--danger)">${skipped}건 제외(취소/반품)</span>`:'취소 없음'}${detailCount?` · <span style="color:#2B6CB8">상품 ${detailCount}줄</span>`:''}</div>
     <div style="background:var(--surface2);border-radius:8px;padding:10px 14px;margin-bottom:12px;">${previewHtml}${moreText}</div>
     <button class="btn-primary" id="confirmBtn" onclick="confirmUpload()" style="width:100%;">✓ 이 데이터로 저장하기</button>`;
-  if(previewDetail.length){
-    var _m={}; salesDetail.forEach(function(r){_m[r.key]=r;}); previewDetail.forEach(function(r){_m[r.key]=r;});
-    salesDetail=Object.values(_m);
-    try{localStorage.setItem('anniz_sales_detail',JSON.stringify(salesDetail));}catch(_e){}
-    renderTopProducts(); renderNewReturning();
-    var rEl=document.getElementById('uploadResult');
-    if(rEl){ var note=document.createElement('div'); note.style.cssText='margin-top:10px;font-size:12px;color:#2B6CB8;'; note.textContent='✓ 상품별 매출 TOP · 신규/재구매에 '+previewDetail.length+'개 상품줄 반영됨'; rEl.appendChild(note); }
-  }
 }
 
 async function confirmUpload(){
@@ -1161,7 +1187,7 @@ async function confirmUpload(){
 function handleDrop(e){e.preventDefault();handleFile(e.dataTransfer.files[0]);}
 function switchTab(name,btn){document.querySelectorAll('.input-tab').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.input-panel').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.getElementById('panel-'+name).classList.add('active');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
-function render(){renderToday();renderMetrics();renderInfo();renderNewReturning();if(currentView==='calendar')renderCalendar();else renderChart();renderCumulative();renderPlatTrend();renderOAV();renderTopProducts();renderWeekday();renderTable();}
+function render(){renderToday();renderMetrics();renderInfo();renderNewReturning();renderMonthly();if(currentView==='calendar')renderCalendar();else renderChart();renderCumulative();renderPlatTrend();renderOAV();renderTopProducts();renderWeekday();renderTable();}
 document.getElementById('inp-date').value=new Date().toISOString().slice(0,10);
 loadData();
 </script>
