@@ -1124,6 +1124,14 @@ function parseRows(rows){
     <div style="margin-bottom:10px;font-size:13px;color:var(--text-2)"><strong style="color:var(--text)">${previewRows.length}건</strong> 인식됨 · ${skipped>0?`<span style="color:var(--danger)">${skipped}건 제외(취소/반품)</span>`:'취소 없음'}</div>
     <div style="background:var(--surface2);border-radius:8px;padding:10px 14px;margin-bottom:12px;">${previewHtml}${moreText}</div>
     <button class="btn-primary" id="confirmBtn" onclick="confirmUpload()" style="width:100%;">✓ 이 데이터로 저장하기</button>`;
+  if(previewDetail.length){
+    var _m={}; salesDetail.forEach(function(r){_m[r.key]=r;}); previewDetail.forEach(function(r){_m[r.key]=r;});
+    salesDetail=Object.values(_m);
+    try{localStorage.setItem('anniz_sales_detail',JSON.stringify(salesDetail));}catch(_e){}
+    renderTopProducts(); renderNewReturning();
+    var rEl=document.getElementById('uploadResult');
+    if(rEl){ var note=document.createElement('div'); note.style.cssText='margin-top:10px;font-size:12px;color:#2B6CB8;'; note.textContent='✓ 상품별 매출 TOP · 신규/재구매에 '+previewDetail.length+'개 상품줄 반영됨'; rEl.appendChild(note); }
+  }
 }
 
 async function confirmUpload(){
@@ -1141,8 +1149,7 @@ async function confirmUpload(){
       btn.textContent=`저장 중... ${saved}/${total}건`;
     }
     document.getElementById('uploadResult').innerHTML=`<span style="color:var(--success)">✓ ${total}건이 모두 저장되었습니다</span>`;
-    previewRows=[];
-    if(previewDetail.length){ var _m={}; salesDetail.forEach(function(r){_m[r.key]=r;}); previewDetail.forEach(function(r){_m[r.key]=r;}); salesDetail=Object.values(_m); try{localStorage.setItem('anniz_sales_detail',JSON.stringify(salesDetail));}catch(_e){} previewDetail=[]; }
+    previewRows=[]; previewDetail=[];
     await loadData();
     showToast(total+'건 저장 완료 ✓');
   }catch(e){
