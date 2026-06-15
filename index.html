@@ -937,14 +937,14 @@ function prevCursor(){
   if(perUnit==='week')return _ymd(new Date(d.getTime()-7*86400000));
   return _ymd(new Date(d.getTime()-86400000));
 }
-function setPerUnit(u){ perUnit=u; renderPeriodBar(); renderMonthly(); renderNewReturning(); renderTopProducts(); }
+function setPerUnit(u){ perUnit=u; renderPeriodBar(); renderMonthly(); renderNewReturning(); renderTopProducts(); renderWeekday(); }
 function movePer(dir){
   if(perUnit==='all'||!perCursor)return;
   var c=new Date(perCursor+'T00:00');
   if(perUnit==='month')c=new Date(c.getFullYear(),c.getMonth()+dir,1);
   else if(perUnit==='week')c=new Date(c.getTime()+dir*7*86400000);
   else c=new Date(c.getTime()+dir*86400000);
-  perCursor=_ymd(c); renderPeriodBar(); renderMonthly(); renderNewReturning(); renderTopProducts();
+  perCursor=_ymd(c); renderPeriodBar(); renderMonthly(); renderNewReturning(); renderTopProducts(); renderWeekday();
 }
 function renderPeriodBar(){
   var el=document.getElementById('periodBar'); if(!el)return;
