@@ -495,6 +495,10 @@ body{padding-bottom:34px;}
 .iv-wdcap b{color:#2B6CB8;font-weight:700;}
 .iv-wdcap .iv-wdper{color:#A09A94;font-weight:600;}
 </style>
+<style id="platlink-v1">
+#platFilters .plat-link{margin-left:10px;background:#1A1714;border-color:#1A1714;color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:3px;border-radius:20px;padding:5px 14px;font-size:12px;}
+#platFilters .plat-link:hover{background:#2B6CB8;border-color:#2B6CB8;color:#fff;}
+</style>
 </head>
 <body>
 <div class="layout">
@@ -509,7 +513,7 @@ body{padding-bottom:34px;}
       <button type="button" class="nav-group-head"><span class="nav-htxt">PERFORMANCE</span><span class="nav-chev">›</span></button>
       <div class="nav-group-body">
         <a href="index.html" class="nav-item"><span class="nav-label">매출현황</span></a>
-        <a href="sku.html" class="nav-item"><span class="nav-label">손익관리</span></a><a href="margin.html" class="nav-item"><span class="nav-label">PROFIT PREVIEW</span></a><a href="unitmargin.html" class="nav-item"><span class="nav-label">상품별 마진</span></a><a href="cafe24.html" class="nav-item"><span class="nav-label">자사몰 매출</span></a>
+        <a href="sku.html" class="nav-item"><span class="nav-label">손익관리</span></a><a href="margin.html" class="nav-item"><span class="nav-label">PROFIT PREVIEW</span></a><a href="unitmargin.html" class="nav-item"><span class="nav-label">상품별 마진</span></a><a href="cafe24.html" class="nav-item"><span class="nav-label">자사몰 매출</span></a><a href="seongsu.html" class="nav-item"><span class="nav-label">성수스토어</span></a>
       </div>
     </div>
     <div class="nav-group">
@@ -547,9 +551,11 @@ body{padding-bottom:34px;}
       <span class="topbar-title">매출현황</span>
       <div style="display:flex;gap:4px;margin-left:8px;" id="platFilters">
         <button class="plat-filter-btn active" onclick="setPlatFilter('전체',this)">전체</button>
+        <button class="plat-filter-btn" onclick="setPlatFilter('온라인',this)">온라인</button>
         <button class="plat-filter-btn" onclick="setPlatFilter('29CM',this)">29CM</button>
         <button class="plat-filter-btn" onclick="setPlatFilter('무신사',this)">무신사</button>
         <button class="plat-filter-btn" onclick="setPlatFilter('자사몰',this)">자사몰</button>
+        <button class="plat-filter-btn" onclick="setPlatFilter('성수',this)">성수</button>
       </div>
     </div>
     <div style="display:flex;gap:6px;" id="viewTabs">
@@ -677,8 +683,24 @@ function setPlatFilter(name, btn){
   render();
 }
 
+var seongsuSales=[];
+async function loadSeongsu(){
+  try{var r=localStorage.getItem('anniz_seongsu_sales'); if(r){var a=JSON.parse(r); if(Array.isArray(a))seongsuSales=a;}}catch(e){}
+  try{var c=await sbFetch('sku_state?id=eq.seongsu_sales&select=payload'); if(c&&c[0]&&Array.isArray(c[0].payload)){var seen={};seongsuSales.forEach(function(x){seen[x.id]=1;});c[0].payload.forEach(function(x){if(x&&!seen[x.id]){seongsuSales.push(x);seen[x.id]=1;}});}}catch(e){}
+}
+function applySeongsu(){
+  records=records.filter(function(r){return (r.platform||'')!=='성수';});
+  var byDate={};
+  seongsuSales.forEach(function(x){var d=x.date; if(!d)return; if(!byDate[d])byDate[d]={amt:0,cnt:0}; byDate[d].amt+=num(x.amount); byDate[d].cnt+=1;});
+  Object.keys(byDate).forEach(function(d){records.push({date:d,platform:'성수',original_sales:byDate[d].amt,net_sales:byDate[d].amt,coupon:0,orders:byDate[d].cnt});});
+  records.sort(function(a,b){return String(a.date)<String(b.date)?-1:1;});
+}
+function seongsuDetail(){
+  return seongsuSales.map(function(x){return {key:'seongsu|'+x.id,order:'SS_'+x.id,date:x.date,product:x.product||'(미입력)',buyer:'',platform:'성수',net:num(x.amount),orig:num(x.amount)};});
+}
 function getFiltered(){
   if(platFilter==='전체') return records;
+  if(platFilter==='온라인') return records.filter(r=>(r.platform||'')!=='성수');
   return records.filter(r=>r.platform===platFilter);
 }
 
@@ -698,6 +720,8 @@ async function loadData() {
     }
     records = all;
     await loadDetailCloud();
+    await loadSeongsu();
+    applySeongsu();
     render();
   } catch(e) { showToast('데이터 불러오기 실패: ' + e.message); }
 }
@@ -980,10 +1004,10 @@ function renderMonthly(){
 function _ymd(dt){return dt.getFullYear()+'-'+('0'+(dt.getMonth()+1)).slice(-2)+'-'+('0'+dt.getDate()).slice(-2);}
 function renderTopProducts(){
   var el=document.getElementById('ivTop'); if(!el) return;
-  if(!salesDetail.length){ el.innerHTML='<div class="iv-shead"><span class="sec-title">상품별 매출 TOP</span></div><div class="chart-card"><div style="color:#A09A94;font-size:13px;padding:10px 0;line-height:1.7;">29CM 주문상품 엑셀을 업로드하면<br>상품별 매출 TOP이 여기 표시돼요.</div></div>'; return; }
+  if(!salesDetail.length && !seongsuSales.length){ el.innerHTML='<div class="iv-shead"><span class="sec-title">상품별 매출 TOP</span></div><div class="chart-card"><div style="color:#A09A94;font-size:13px;padding:10px 0;line-height:1.7;">29CM 주문상품 엑셀을 업로드하면<br>상품별 매출 TOP이 여기 표시돼요.</div></div>'; return; }
   if(!ensurePer()){el.innerHTML='';return;}
   var w=perWindow();
-  var src=salesDetail.filter(function(r){return platFilter==='전체'||(r.platform||'29CM')===platFilter;});
+  var src=salesDetail.concat(seongsuDetail()).filter(function(r){var p=(r.platform||'29CM'); if(platFilter==='전체')return true; if(platFilter==='온라인')return p!=='성수'; return p===platFilter;});
   if(w.start){var s=_ymd(w.start),e=_ymd(w.end);src=src.filter(function(r){return r.date>=s&&r.date<=e;});}
   var pmap={};
   src.forEach(function(r){if(!pmap[r.product])pmap[r.product]={net:0,qty:0};pmap[r.product].net+=r.net;pmap[r.product].qty+=1;});
@@ -998,7 +1022,8 @@ function renderNewReturning(){
   if(!salesDetail.length){el.innerHTML='';return;}
   if(!ensurePer()){el.innerHTML='';return;}
   var w=perWindow();
-  var pool=salesDetail.filter(function(r){return platFilter==='전체'||(r.platform||'29CM')===platFilter;});
+  if(platFilter==='성수'){ el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span></div><div class="chart-card"><div style="text-align:center;color:#A09A94;font-size:13px;padding:18px 0;line-height:1.7;">오프라인(성수)은 재구매 추적이 안 돼요.<br><span style="color:#C4BDB4;">(매장은 고객 식별이 어려워요)</span></div></div>'; return; }
+  var pool=salesDetail.filter(function(r){var p=(r.platform||'29CM'); if(p==='성수')return false; if(platFilter==='전체'||platFilter==='온라인')return true; return p===platFilter;});
   if(!pool.length){ el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span></div><div class="chart-card"><div style="text-align:center;color:#A09A94;font-size:13px;padding:18px 0;line-height:1.7;">'+platFilter+' 고객 데이터가 없어요.<br><span style="color:#C4BDB4;">(신규/재구매 분석은 29CM 상세 엑셀만 지원)</span></div></div>'; return; }
   var orders={};
   pool.forEach(function(r){ if(!r.order)return; if(!orders[r.order])orders[r.order]={buyer:r.buyer,date:r.date,net:0}; orders[r.order].net+=r.net; if(r.date<orders[r.order].date)orders[r.order].date=r.date; });
@@ -1053,7 +1078,7 @@ function renderPlatTrend(){
   var byKey={},plats={};
   records.forEach(function(r){var key=currentView==='monthly'?String(r.date).slice(0,7):String(r.date); byKey[key]=byKey[key]||{}; byKey[key][r.platform]=(byKey[key][r.platform]||0)+num(r.net_sales); plats[r.platform]=1;});
   var keys=Object.keys(byKey).sort();
-  var pal={'29CM':'#2B6CB8','무신사':'#1A1714','자사몰':'#7FA8C9'}; var ex=['#C2453B','#3E8E5A','#A09A94','#D98C2B']; var ei=0;
+  var pal={'29CM':'#2B6CB8','무신사':'#1A1714','자사몰':'#7FA8C9','성수':'#C2705A'}; var ex=['#C2453B','#3E8E5A','#A09A94','#D98C2B']; var ei=0;
   var datasets=Object.keys(plats).map(function(p){var c=pal[p]||ex[ei++%ex.length]; return {label:p,data:keys.map(function(k){return byKey[k][p]||0;}),borderColor:c,backgroundColor:'transparent',fill:false,tension:0.4,pointRadius:0,borderWidth:2};});
   var labels=keys.map(function(k){return currentView==='monthly'?k:k.slice(5);});
   var glabel=currentView==='monthly'?'monthly':'daily';
@@ -1358,7 +1383,7 @@ loadData();
   <a href="home.html" class="mobile-menu-item">HOME</a>
   <div class="mobile-menu-section">PERFORMANCE</div>
   <a href="index.html" class="mobile-menu-item">매출현황</a>
-  <a href="sku.html" class="mobile-menu-item">손익관리</a><a href="margin.html" class="mobile-menu-item">PROFIT PREVIEW</a><a href="unitmargin.html" class="mobile-menu-item">상품별 마진</a><a href="cafe24.html" class="mobile-menu-item">자사몰 매출</a>
+  <a href="sku.html" class="mobile-menu-item">손익관리</a><a href="margin.html" class="mobile-menu-item">PROFIT PREVIEW</a><a href="unitmargin.html" class="mobile-menu-item">상품별 마진</a><a href="cafe24.html" class="mobile-menu-item">자사몰 매출</a><a href="seongsu.html" class="mobile-menu-item">성수스토어</a>
   <div class="mobile-menu-section">COLLECTION</div>
   <a href="production.html" class="mobile-menu-item">생산관리</a>
   <a href="studio.html" class="mobile-menu-item">이미지</a>
