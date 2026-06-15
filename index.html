@@ -897,7 +897,12 @@ function perBounds(){
   var min=ds[0],max=ds[0]; ds.forEach(function(d){if(d<min)min=d;if(d>max)max=d;});
   return {min:min,max:max};
 }
-function ensurePer(){ var b=perBounds(); if(!b)return false; if(!perCursor||perCursor<b.min||perCursor>b.max)perCursor=b.max; return true; }
+function ensurePer(){ var b=perBounds(); if(!b)return false;
+  if(!perCursor||perCursor<b.min||perCursor>b.max){
+    if(salesDetail&&salesDetail.length){ var pmax=salesDetail[0].date; salesDetail.forEach(function(r){if(r.date>pmax)pmax=r.date;}); perCursor=pmax; }
+    else { perCursor=b.max; }
+  }
+  return true; }
 function perWindow(cur,unit){
   cur=cur||perCursor; unit=unit||perUnit;
   if(unit==='all') return {start:null,end:null,label:'전체 기간'};
@@ -963,7 +968,7 @@ function renderTopProducts(){
   src.forEach(function(r){if(!pmap[r.product])pmap[r.product]={net:0,qty:0};pmap[r.product].net+=r.net;pmap[r.product].qty+=1;});
   var rows=Object.entries(pmap).sort(function(a,b){return b[1].net-a[1].net;}).slice(0,10);
   var inner;
-  if(!rows.length){ inner='<div style="color:#A09A94;font-size:13px;padding:14px 0;text-align:center;">이 기간엔 판매 데이터가 없어요.</div>'; }
+  if(!rows.length){ inner='<div style="color:#A09A94;font-size:13px;padding:18px 0;text-align:center;line-height:1.7;">이 기간엔 상품 데이터가 없어요.<br><span style="color:#C4BDB4;">(해당 기간 29CM 엑셀을 올리면 표시돼요)</span></div>'; }
   else { var mx=rows[0][1].net||1; inner='<div class="platforms">'+rows.map(function(e,i){var name=e[0],v=e[1];return '<div class="iv-toprow"><div class="iv-rank">'+(i+1)+'</div><div class="iv-tp"><div class="iv-tpname"><span>'+esc(name)+'</span><span class="amt">'+fmt(v.net)+'</span></div><div class="iv-tpbarwrap"><div class="iv-tpbar"><span style="width:'+Math.round(v.net/mx*100)+'%"></span></div><span class="iv-tpqty">'+v.qty+'건</span></div></div></div>';}).join('')+'</div>'; }
   el.innerHTML='<div class="iv-shead"><span class="sec-title">상품별 매출 TOP</span></div><div class="chart-card">'+inner+'</div>';
 }
@@ -982,7 +987,7 @@ function renderNewReturning(){
   var nNew=0,nRe=0,sNew=0,sRe=0;
   ol.forEach(function(o){ if(!inWin(o.date))return; var key=o.buyer||o.id; if(first[key].id===o.id){nNew++;sNew+=o.net;}else{nRe++;sRe+=o.net;} });
   var realTot=nNew+nRe; var pNew=realTot?Math.round(nNew/realTot*100):0; var pRe=realTot?100-pNew:0;
-  if(!realTot){ el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span></div><div class="chart-card"><div style="text-align:center;color:#A09A94;font-size:13px;padding:14px 0;">이 기간엔 주문이 없어요.</div></div>'; return; }
+  if(!realTot){ el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span></div><div class="chart-card"><div style="text-align:center;color:#A09A94;font-size:13px;padding:18px 0;line-height:1.7;">이 기간엔 주문 데이터가 없어요.<br><span style="color:#C4BDB4;">(해당 기간 29CM 엑셀을 올리면 표시돼요)</span></div></div>'; return; }
   el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span><span class="iv-nrnote">재구매율 '+pRe+'%</span></div>'+
    '<div class="chart-card"><div class="iv-nrbar"><span class="iv-nrnew" style="width:'+pNew+'%"></span><span class="iv-nrre" style="width:'+pRe+'%"></span></div>'+
    '<div class="iv-nrrow"><div class="iv-nrcell"><span class="iv-nrk"><i class="dot new"></i>신규</span><b>'+nNew+'건 ('+pNew+'%)</b><span class="iv-nrsub">'+fmt(sNew)+'</span></div>'+
