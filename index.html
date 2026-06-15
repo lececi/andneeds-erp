@@ -480,6 +480,21 @@ body{padding-bottom:34px;}
 .cal-legend-bar{width:120px;height:8px;border-radius:5px;background:linear-gradient(90deg,rgba(43,108,184,0.12),#2B6CB8);}
 @media(max-width:600px){.cal-cell{min-height:56px;padding:5px;border-radius:9px;}.cal-amt{font-size:9px;left:5px;right:5px;bottom:5px;letter-spacing:-0.03em;}.cal-month-total{display:none;}}
 </style>
+<style id="mvp-v10">
+.iv-wdbar{position:relative;transition:filter .14s;}
+.iv-wdbar.best{background:#2B6CB8;}
+.iv-wdname.best{color:#2B6CB8;font-weight:700;}
+.iv-wdcol:hover .iv-wdbar{filter:brightness(1.2);}
+.iv-wdtip{position:absolute;bottom:100%;left:50%;transform:translateX(-50%) translateY(-9px);background:rgba(26,23,20,0.96);border-radius:10px;padding:8px 12px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .14s;z-index:6;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,0.20);}
+.iv-wdtip .t1{font-size:11px;color:rgba(255,255,255,0.7);}
+.iv-wdtip b{display:block;font-size:14px;font-weight:700;color:#fff;margin:2px 0 1px;letter-spacing:-0.01em;}
+.iv-wdtip .t2{font-size:10.5px;color:rgba(255,255,255,0.6);}
+.iv-wdtip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:rgba(26,23,20,0.96);}
+.iv-wdcol:hover .iv-wdtip{opacity:1;}
+.iv-wdcap{text-align:center;margin-top:16px;font-size:12.5px;color:#6B6560;}
+.iv-wdcap b{color:#2B6CB8;font-weight:700;}
+.iv-wdcap .iv-wdper{color:#A09A94;font-weight:600;}
+</style>
 </head>
 <body>
 <div class="layout">
@@ -1080,10 +1095,26 @@ function renderInfo(){
     '<div class="iv-icard"><div class="iv-ititle">일평균 매출</div><div class="iv-bignum">'+fmt(avg)+'</div><div class="iv-sub">'+nd+'일 기준 · 총 '+fmt(ts)+'</div></div>';
 }
 function renderWeekday(){
-  var wd=[0,0,0,0,0,0,0];
-  getFiltered().forEach(function(r){var d=new Date(String(r.date)+'T00:00'); if(!isNaN(d.getTime())) wd[d.getDay()]+=num(r.original_sales);});
-  var wn=['일','월','화','수','목','금','토']; var mx=Math.max.apply(null,wd.concat([1]));
-  document.getElementById('ivWeekday').innerHTML='<div class="iv-wdbars">'+wd.map(function(v,i){var h=Math.max(6,v/mx*120);return '<div class="iv-wdcol"><div class="iv-wdbar" style="height:'+h+'px"></div><div class="iv-wdname">'+wn[i]+'</div></div>';}).join('')+'</div>';
+  var el=document.getElementById('ivWeekday'); if(!el) return;
+  ensurePer(); var w=perWindow();
+  var src=getFiltered();
+  if(w.start){ var ws=_ymd(w.start), we=_ymd(w.end); src=src.filter(function(r){return String(r.date)>=ws && String(r.date)<=we;}); }
+  var wd=[0,0,0,0,0,0,0], wo=[0,0,0,0,0,0,0];
+  src.forEach(function(r){var d=new Date(String(r.date)+'T00:00'); if(!isNaN(d.getTime())){var g=d.getDay(); wd[g]+=num(r.net_sales); wo[g]+=num(r.orders)||1;}});
+  var wn=['일','월','화','수','목','금','토'];
+  var mx=Math.max.apply(null,wd.concat([1]));
+  var total=wd.reduce(function(s,v){return s+v;},0)||1;
+  var bestIdx=0; for(var k=1;k<7;k++){if(wd[k]>wd[bestIdx])bestIdx=k;}
+  var bars=wd.map(function(v,i){
+    var h=Math.max(5,v/mx*108);
+    var pct=Math.round(v/total*100);
+    var best=(i===bestIdx && v>0);
+    var tip=v>0?'<div class="iv-wdtip"><span class="t1">'+wn[i]+'요일</span><b>'+fmt(v)+'</b><span class="t2">주문 '+wo[i]+'건 · '+pct+'%</span></div>':'';
+    return '<div class="iv-wdcol"><div class="iv-wdbar'+(best?' best':'')+'" style="height:'+h+'px">'+tip+'</div><div class="iv-wdname'+(best?' best':'')+'">'+wn[i]+'</div></div>';
+  }).join('');
+  var plabel=(perUnit==='all')?'전체 기간':w.label;
+  var cap = wd[bestIdx]>0 ? '<div class="iv-wdcap"><span class="iv-wdper">'+plabel+'</span> · 가장 잘 팔리는 요일 <b>'+wn[bestIdx]+'요일</b></div>' : '<div class="iv-wdcap" style="color:#A09A94;">'+plabel+' · 데이터가 없어요</div>';
+  el.innerHTML='<div class="iv-wdbars">'+bars+'</div>'+cap;
 }
 function renderTable(){
   const agg=getAgg();
