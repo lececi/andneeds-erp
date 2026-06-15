@@ -432,6 +432,23 @@ body{padding-bottom:34px;}
 .mtbl tr.mtot td{background:#FAFAF8;font-weight:700;border-top:1.5px solid rgba(26,23,20,0.12);border-bottom:none;}
 .mtbl tr.mtot td.g{font-weight:600;}
 </style>
+<style id="mvp-v7">
+.mnav{display:flex;align-items:center;justify-content:center;gap:22px;margin-bottom:22px;}
+.mnav-btn{width:38px;height:38px;border:1px solid rgba(26,23,20,0.12);background:#fff;border-radius:10px;font-size:18px;color:#1A1714;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.mnav-btn:hover:not(:disabled){background:#1A1714;color:#fff;border-color:#1A1714;}
+.mnav-btn:disabled{opacity:.28;cursor:default;}
+.mnav-label{font-size:17px;font-weight:600;color:#1A1714;min-width:128px;text-align:center;}
+.mbig{text-align:center;padding:16px 0 22px;border-bottom:1px solid rgba(26,23,20,0.06);margin-bottom:18px;}
+.mbig-k{display:block;font-size:12px;color:#A09A94;margin-bottom:8px;}
+.mbig-v{display:block;font-size:32px;font-weight:600;letter-spacing:-0.02em;color:#1A1714;line-height:1;font-variant-numeric:tabular-nums;}
+.mbig i{display:inline-block;margin-top:10px;font-size:13px;font-style:normal;font-weight:600;}
+.mbig i.up{color:#2F8F5B;}.mbig i.down{color:#C2453B;}.mbig i.flat{color:#A09A94;font-weight:500;}
+.mstat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.mstat{text-align:center;padding:12px 6px;background:#FAFAF8;border-radius:10px;}
+.mstat span{display:block;font-size:11px;color:#A09A94;margin-bottom:6px;}
+.mstat b{font-size:14px;font-weight:600;color:#1A1714;font-variant-numeric:tabular-nums;}
+@media(max-width:600px){.mstat-grid{grid-template-columns:repeat(2,1fr);}.mnav-label{font-size:16px;}}
+</style>
 </head>
 <body>
 <div class="layout">
@@ -561,6 +578,7 @@ body{padding-bottom:34px;}
           <div style="font-size:12px;color:var(--text-3);margin-bottom:16px;">29CM 주문 데이터 · 취소/반품 자동 제외</div>
           <button class="upload-btn" onclick="document.getElementById('fileInput').click()">파일 선택</button>
           <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" onchange="handleFile(this.files[0])">
+          <div style="margin-top:10px;font-size:11px;color:#2B6CB8;display:flex;align-items:center;gap:5px;">✓ 업로드 엔진 v7 · 상품·신규/재구매 인식 지원</div>
         </div>
         <div id="uploadResult" style="margin-top:14px;"></div>
       </div>
@@ -676,7 +694,7 @@ function renderMetrics() {
 }
 
 var trendGran='monthly', topRange='all';
-var previewDetail=[]; var salesDetail=[]; try{salesDetail=JSON.parse(localStorage.getItem('anniz_sales_detail')||'[]');}catch(_e){salesDetail=[];}
+var monthCur=null; var previewDetail=[]; var salesDetail=[]; try{salesDetail=JSON.parse(localStorage.getItem('anniz_sales_detail')||'[]');}catch(_e){salesDetail=[];}
 function setTrendGran(g,btn){trendGran=g; var seg=document.getElementById('trendSeg'); if(seg)seg.querySelectorAll('.iv-segbtn').forEach(function(b){b.classList.remove('active');}); if(btn)btn.classList.add('active'); renderChart();}
 function setTopRange(r,btn){topRange=r; var seg=document.getElementById('topSeg'); if(seg)seg.querySelectorAll('.iv-segbtn').forEach(function(b){b.classList.remove('active');}); if(btn)btn.classList.add('active'); renderTopProducts();}
 function periodLabel(key, gran){
@@ -846,16 +864,37 @@ function moveMonth(dir){
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function renderMonthly(){
   var el=document.getElementById('ivMonthly'); if(!el) return;
-  var src=getFiltered(); var m={};
-  src.forEach(function(r){ var k=String(r.date).slice(0,7); if(!m[k])m[k]={orig:0,net:0,coupon:0,orders:0}; m[k].orig+=num(r.original_sales); m[k].net+=num(r.net_sales); m[k].coupon+=num(r.coupon); m[k].orders+=num(r.orders)||1; });
+  var src=getFiltered(); if(!src.length){el.innerHTML='';return;}
+  var m={};
+  src.forEach(function(r){var k=String(r.date).slice(0,7); if(!m[k])m[k]={orig:0,net:0,coupon:0,orders:0,days:{}}; m[k].orig+=num(r.original_sales); m[k].net+=num(r.net_sales); m[k].coupon+=num(r.coupon); m[k].orders+=num(r.orders)||1; m[k].days[r.date]=1;});
   var keys=Object.keys(m).sort();
   if(!keys.length){el.innerHTML='';return;}
-  var tNet=0,tOrig=0,tOrd=0,tCoup=0;
-  var body=keys.map(function(k){var v=m[k]; tNet+=v.net;tOrig+=v.orig;tOrd+=v.orders;tCoup+=v.coupon; var p=k.split('-'); var disc=v.orig>0?Math.round(v.coupon/v.orig*100):0; return '<tr><td class="mh">'+p[0].slice(2)+'.'+p[1]+'</td><td class="num b">'+fmt(v.net)+'</td><td class="num g">'+fmt(v.orig)+'</td><td class="num">'+v.orders+'</td><td class="num g">'+disc+'%</td></tr>';}).join('');
-  var tdisc=tOrig>0?Math.round(tCoup/tOrig*100):0;
-  el.innerHTML='<div class="iv-shead"><span class="sec-title">월별 매출 요약</span><span class="iv-nrnote">총 '+keys.length+'개월</span></div>'+
-    '<div class="chart-card mtblcard"><table class="mtbl"><thead><tr><th>월</th><th class="num">실 판매액</th><th class="num">총 판매액</th><th class="num">주문</th><th class="num">할인율</th></tr></thead><tbody>'+body+
-    '<tr class="mtot"><td class="mh">합계</td><td class="num b">'+fmt(tNet)+'</td><td class="num g">'+fmt(tOrig)+'</td><td class="num">'+tOrd+'</td><td class="num g">'+tdisc+'%</td></tr></tbody></table></div>';
+  if(!monthCur || monthCur<keys[0] || monthCur>keys[keys.length-1]) monthCur=keys[keys.length-1];
+  var v=m[monthCur]||{orig:0,net:0,coupon:0,orders:0,days:{}};
+  var p=monthCur.split('-'); var label=p[0]+'년 '+Number(p[1])+'월';
+  function shift(k,d){var y=+k.slice(0,4),mo=+k.slice(5,7)-1+d; var dt=new Date(y,mo,1); return dt.getFullYear()+'-'+('0'+(dt.getMonth()+1)).slice(-2);}
+  var pv=m[shift(monthCur,-1)];
+  var mom=(pv&&pv.net>0)?Math.round((v.net-pv.net)/pv.net*1000)/10:null;
+  var nd=Object.keys(v.days).length||1;
+  var aov=v.orders>0?Math.round(v.net/v.orders):0;
+  var disc=v.orig>0?Math.round(v.coupon/v.orig*100):0;
+  var avg=Math.round(v.net/nd);
+  var atFirst=monthCur<=keys[0], atLast=monthCur>=keys[keys.length-1];
+  var momHtml=mom==null?'<i class="flat">전월 데이터 없음</i>':'<i class="'+(mom>=0?'up':'down')+'">'+(mom>=0?'▲ ':'▼ ')+Math.abs(mom)+'% 전월 대비</i>';
+  el.innerHTML='<div class="iv-shead"><span class="sec-title">월별 매출</span></div>'+
+   '<div class="chart-card"><div class="mnav"><button class="mnav-btn" onclick="moveMonthSummary(-1)"'+(atFirst?' disabled':'')+'>&#x2039;</button><span class="mnav-label">'+label+'</span><button class="mnav-btn" onclick="moveMonthSummary(1)"'+(atLast?' disabled':'')+'>&#x203a;</button></div>'+
+   '<div class="mbig"><span class="mbig-k">실 판매액</span><span class="mbig-v">'+fmt(v.net)+'</span>'+momHtml+'</div>'+
+   '<div class="mstat-grid"><div class="mstat"><span>총 판매액</span><b>'+fmt(v.orig)+'</b></div>'+
+   '<div class="mstat"><span>주문</span><b>'+v.orders+'건</b></div>'+
+   '<div class="mstat"><span>객단가</span><b>'+fmt(aov)+'</b></div>'+
+   '<div class="mstat"><span>할인율</span><b>'+disc+'%</b></div>'+
+   '<div class="mstat"><span>일평균</span><b>'+fmt(avg)+'</b></div></div></div>';
+}
+function moveMonthSummary(d){
+  if(!monthCur)return;
+  var y=+monthCur.slice(0,4), mo=+monthCur.slice(5,7)-1+d; var dt=new Date(y,mo,1);
+  monthCur=dt.getFullYear()+'-'+('0'+(dt.getMonth()+1)).slice(-2);
+  renderMonthly();
 }
 function renderTopProducts(){
   var el=document.getElementById('topProducts'); if(!el) return;
