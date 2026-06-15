@@ -628,6 +628,66 @@ thead .ss-sc-name{background:#FAFAF8;}
 }
 </style>
 
+<style id="seongsu-sched2">
+.ss-sched-scroll{overflow:auto;max-height:560px;border:1px solid #F0EEEA;border-radius:12px;}
+table.ss-sched2{border-collapse:collapse;width:100%;font-size:13px;}
+.ss-sched2 th,.ss-sched2 td{border-bottom:1px solid #F4F2EE;text-align:center;}
+.ss-sched2 thead th{position:sticky;top:0;background:#FAFAF8;padding:11px 6px;font-size:12.5px;font-weight:700;color:#1A1714;z-index:3;border-bottom:1px solid #ECE9E4;}
+.ss-emp-pos{display:block;font-size:10.5px;color:#A09A94;font-weight:500;margin-top:2px;}
+.ss-d-head{text-align:left!important;padding-left:14px!important;}
+.ss-d-cell{text-align:left;padding:10px 14px;font-size:13px;color:#1A1714;font-weight:600;white-space:nowrap;}
+.ss-d-cell span{color:#A09A94;font-weight:500;margin-left:5px;font-size:12px;}
+.ss-sched2 tbody td{padding:7px 4px;}
+.ss-sched2 .ss-sh{min-width:30px;height:24px;font-size:12px;}
+.ss-off{color:#D8D2CA;font-size:14px;}
+.ss-off-leg{background:#F4F2EE;color:#C4BDB4;}
+tr.wknd-sat,tr.wknd-sun{background:#FBFAF8;}
+tr.wknd-sat .ss-d-cell span{color:#5B86B5;}
+tr.wknd-sun .ss-d-cell span{color:#C2705A;}
+tr.today-row{background:#EAF2FB!important;}
+tr.today-row .ss-d-cell{color:#2B6CB8;font-weight:700;}
+.ss-sched-note{font-size:11.5px;color:#A09A94;margin-top:10px;line-height:1.6;}
+</style>
+<style id="seongsu-cal">
+.ss-cal-top{display:flex;align-items:center;justify-content:center;margin-top:-14px;margin-bottom:26px;}
+.ss-cal-nav{display:flex;align-items:center;gap:14px;}
+.ss-cal-label{font-size:16px;font-weight:700;color:#1A1714;min-width:120px;text-align:center;}
+.ss-roster{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.ss-emp-chip{border:none;border-radius:20px;padding:6px 13px;font-size:12.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+.ss-emp-chip em{font-style:normal;opacity:0.6;font-size:11px;font-weight:500;margin-left:2px;}
+.ss-emp-add{border:1px dashed #D6D0C8;background:#fff;border-radius:20px;padding:6px 13px;font-size:12.5px;color:#6B6560;cursor:pointer;font-weight:600;}
+.ss-emp-add:hover{border-color:#2B6CB8;color:#2B6CB8;}
+.ss-de-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0;}
+.ss-cal-grid-h{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px;}
+.ss-cal-wh{text-align:center;font-size:12px;font-weight:700;color:#A09A94;padding:4px 0;}
+.ss-cal-wh.sun{color:#C2705A;} .ss-cal-wh.sat{color:#5B86B5;}
+.ss-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+.ss-cal-cell{min-height:76px;border:1px solid #F0EEEA;border-radius:10px;padding:6px;cursor:pointer;transition:border-color .15s,background .15s;display:flex;flex-direction:column;gap:4px;}
+.ss-cal-cell:hover{border-color:#2B6CB8;background:#FAFCFF;}
+.ss-cal-cell.empty{border:none;background:none;cursor:default;}
+.ss-cal-cell.sun .ss-cal-d{color:#C2705A;} .ss-cal-cell.sat .ss-cal-d{color:#5B86B5;}
+.ss-cal-cell.today{border-color:#2B6CB8;background:#EAF2FB;}
+.ss-cal-cell.today .ss-cal-d{color:#2B6CB8;font-weight:800;}
+.ss-cal-d{font-size:12.5px;font-weight:700;color:#1A1714;}
+.ss-cal-emps{display:flex;flex-direction:column;gap:3px;}
+.ss-cal-emp{font-size:10.5px;font-weight:600;border-radius:5px;padding:2px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35;}
+.ss-cal-note{font-size:12px;color:#6B6560;margin-top:14px;line-height:1.6;}
+.ss-cal-note b{color:#1A1714;font-weight:700;}
+.ss-de-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid #F4F2EE;}
+.ss-de-name{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:#1A1714;}
+.ss-de-right{display:flex;align-items:center;gap:10px;}
+.ss-de-toggle{border:1px solid #ECE9E4;background:#F7F5F2;color:#A09A94;border-radius:8px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer;}
+.ss-de-toggle.on{background:#2B6CB8;border-color:#2B6CB8;color:#fff;}
+.ss-de-time{display:flex;align-items:center;gap:4px;font-size:12px;color:#A09A94;}
+.ss-de-time input{border:1px solid #ECE9E4;border-radius:7px;padding:5px 7px;font-size:12.5px;font-family:inherit;color:#1A1714;}
+@media(max-width:768px){.ss-cal-cell{min-height:62px;padding:4px;}.ss-cal-emp{font-size:9px;padding:1px 3px;}.ss-de-time input{width:74px;}.ss-roster{gap:6px;}}
+</style>
+<style id="seongsu-emp">
+.ss-del-btn{width:100%;background:none;border:none;color:#C2705A;font-size:13px;font-weight:600;cursor:pointer;margin-top:10px;padding:9px;border-radius:10px;transition:all .15s;}
+.ss-del-btn:hover{background:#FBF1EF;}
+.ss-del-btn.arm{color:#fff;background:#C2705A;}
+.ss-del-btn.arm:hover{background:#b0604f;}
+</style>
 </head>
 <body>
 <div class="layout">
@@ -711,10 +771,7 @@ thead .ss-sc-name{background:#FAFAF8;}
   <div class="ss-card">
     <div class="ss-card-h">
       <span class="ss-card-t">직원 스케줄</span>
-      <div class="ss-sched-ctrl">
-        <select id="ssSchedMonth" onchange="ssRenderSched()"></select>
-        <label class="ss-upload">스케줄 업로드<input type="file" id="ssSchedFile" accept=".xlsx,.xls" onchange="ssSchedUpload(event)" hidden></label>
-      </div>
+      <label class="ss-upload">엑셀에서 가져오기<input type="file" id="ssSchedFile" accept=".xlsx,.xls" onchange="ssSchedUpload(event)" hidden></label>
     </div>
     <div id="ssSchedBody"></div>
   </div>
@@ -740,6 +797,22 @@ thead .ss-sc-name{background:#FAFAF8;}
   </div>
 </div>
 
+<div class="ss-modal-ov" id="ssDayOv" onclick="ssCloseDay()"></div>
+<div class="ss-modal" id="ssDayModal">
+  <div class="ss-modal-t" id="ssDayTitle">근무 편집</div>
+  <div class="ss-modal-d">'근무'로 켜면 기본 11:00–20:00로 들어가요. (점심 13:00–14:00) 시간은 바꿀 수 있어요.</div>
+  <div id="ssDayList"></div>
+  <button class="ss-add-btn" style="margin-top:16px;" onclick="ssSaveDay()">저장</button>
+</div>
+<div class="ss-modal-ov" id="ssEmpOv" onclick="ssCloseEmp()"></div>
+<div class="ss-modal" id="ssEmpModal">
+  <div class="ss-modal-t" id="ssEmpTitle">직원 추가</div>
+  <div class="ss-modal-d">직원 이름과 직급을 입력하세요.</div>
+  <div class="ss-frow"><div class="ss-field"><label>이름</label><input type="text" id="ssEmpName" placeholder="예) 김태경" oninput="this.style.borderColor=''"></div></div>
+  <div class="ss-frow"><div class="ss-field"><label>직급 (선택)</label><input type="text" id="ssEmpPos" placeholder="예) 매니저 / 알바"></div></div>
+  <button class="ss-add-btn" onclick="ssSaveEmp()">저장</button>
+  <button class="ss-del-btn" id="ssEmpDel" onclick="ssDeleteEmp()" style="display:none;">직원 삭제</button>
+</div>
 </main>
 </div>
 </div>
@@ -769,7 +842,12 @@ async function sbFetch(path, opts){
 }
 
 var ssSales=[];
-var ssSched={};
+var ssRoster=[];
+var ssShift={};
+var ssCalCursor=null;
+var ssDayDraft=null;
+var SS_DEF_S='11:00', SS_DEF_E='20:00';
+var SS_EMP_COLORS=[['#E8F1FA','#2B6CB8'],['#E6F2EC','#3E8E5A'],['#FBF1E2','#C77F2B'],['#F3EAFA','#7D5BA6'],['#FCEFEA','#C2705A'],['#E9EDFA','#4A5B8A'],['#E4F3F1','#2F8F88'],['#FCEAF1','#B5476E']];
 var ssPerUnit='month', ssPerCursor=null;
 var ssTrendChart=null;
 
@@ -916,94 +994,169 @@ function ssRenderInList(){
   el.innerHTML=rows.map(function(s){var md=String(s.date).slice(5);return '<div class="ss-in-row"><span class="ss-in-d">'+md+'</span><span class="ss-in-p">'+esc(s.product)+'</span><span class="ss-in-a">'+fmt(s.amount)+'</span><button class="ss-in-del" onclick="ssDelSale(\''+s.id+'\')">×</button></div>';}).join('');
 }
 
-/* ===== 스케줄 ===== */
+/* ===== 스케줄 (달력형 · 직접 편집) ===== */
+function ssEmpColorOf(idx){return SS_EMP_COLORS[idx%SS_EMP_COLORS.length];}
+function ssEmpIndex(id){for(var i=0;i<ssRoster.length;i++){if(ssRoster[i].id===id)return i;}return 0;}
+function ssCalMove(dir){ if(!ssCalCursor)ssCalCursor=new Date(); var c=new Date(ssCalCursor); c.setMonth(c.getMonth()+dir); ssCalCursor=c; ssRenderSched(); }
+
+var ssEmpEditId=null, ssEmpDelArm=false;
+function ssAddEmp(){ ssEmpEditId=null; ssEmpDelArm=false;
+  document.getElementById('ssEmpTitle').textContent='직원 추가';
+  document.getElementById('ssEmpName').value=''; document.getElementById('ssEmpPos').value='';
+  document.getElementById('ssEmpDel').style.display='none';
+  ssOpenEmp();
+}
+function ssEditEmp(id){
+  var emp=null; ssRoster.forEach(function(e){if(e.id===id)emp=e;}); if(!emp)return;
+  ssEmpEditId=id; ssEmpDelArm=false;
+  document.getElementById('ssEmpTitle').textContent='직원 수정';
+  document.getElementById('ssEmpName').value=emp.name; document.getElementById('ssEmpPos').value=emp.pos||'';
+  var db=document.getElementById('ssEmpDel'); db.style.display='block'; db.textContent='직원 삭제'; db.classList.remove('arm');
+  ssOpenEmp();
+}
+function ssOpenEmp(){ document.getElementById('ssEmpOv').classList.add('open'); document.getElementById('ssEmpModal').classList.add('open'); var n=document.getElementById('ssEmpName'); if(n){n.style.borderColor=''; setTimeout(function(){n.focus();},60);} }
+function ssCloseEmp(){ document.getElementById('ssEmpOv').classList.remove('open'); document.getElementById('ssEmpModal').classList.remove('open'); }
+function ssSaveEmp(){
+  var ni=document.getElementById('ssEmpName'); var name=ni.value.trim(); var pos=document.getElementById('ssEmpPos').value.trim();
+  if(!name){ ni.style.borderColor='#C2705A'; ni.focus(); return; }
+  if(ssEmpEditId){ ssRoster.forEach(function(e){if(e.id===ssEmpEditId){e.name=name;e.pos=pos;}}); }
+  else { ssRoster.push({id:'e'+Date.now().toString(36)+Math.floor(Math.random()*99),name:name,pos:pos}); }
+  ssSaveRoster(); ssCloseEmp(); ssRenderSched();
+}
+function ssDeleteEmp(){
+  if(!ssEmpEditId)return; var db=document.getElementById('ssEmpDel');
+  if(!ssEmpDelArm){ ssEmpDelArm=true; db.textContent='한 번 더 누르면 삭제돼요'; db.classList.add('arm'); return; }
+  ssRoster=ssRoster.filter(function(e){return e.id!==ssEmpEditId;});
+  ssSaveRoster(); ssCloseEmp(); ssRenderSched();
+}
+
+function ssOpenDay(dateStr){
+  ssDayDraft={date:dateStr, rows:{}};
+  var dayShift=ssShift[dateStr]||{};
+  ssRoster.forEach(function(e){
+    var cur=dayShift[e.id];
+    ssDayDraft.rows[e.id]= cur ? {w:1,s:cur.s||SS_DEF_S,e:cur.e||SS_DEF_E} : {w:0,s:SS_DEF_S,e:SS_DEF_E};
+  });
+  var d=new Date(dateStr+'T00:00'); var wn=['일','월','화','수','목','금','토'][d.getDay()];
+  document.getElementById('ssDayTitle').textContent=(d.getMonth()+1)+'월 '+d.getDate()+'일 ('+wn+') 근무';
+  ssRenderDayList();
+  document.getElementById('ssDayOv').classList.add('open');
+  document.getElementById('ssDayModal').classList.add('open');
+}
+function ssCloseDay(){ document.getElementById('ssDayOv').classList.remove('open'); document.getElementById('ssDayModal').classList.remove('open'); ssDayDraft=null; }
+function ssRenderDayList(){
+  if(!ssDayDraft)return;
+  if(!ssRoster.length){ document.getElementById('ssDayList').innerHTML='<div style="color:#A09A94;font-size:13px;padding:12px 0;text-align:center;">먼저 직원을 추가하세요.</div>'; return; }
+  var html=ssRoster.map(function(e){
+    var r=ssDayDraft.rows[e.id]||{w:0,s:SS_DEF_S,e:SS_DEF_E};
+    var col=ssEmpColorOf(ssEmpIndex(e.id));
+    return '<div class="ss-de-row">'+
+      '<span class="ss-de-name"><i class="ss-de-dot" style="background:'+col[1]+'"></i>'+esc(e.name)+'</span>'+
+      '<div class="ss-de-right">'+
+        (r.w?'<span class="ss-de-time"><input type="time" value="'+r.s+'" onchange="ssDeTime(\''+e.id+'\',\'s\',this.value)"> ~ <input type="time" value="'+r.e+'" onchange="ssDeTime(\''+e.id+'\',\'e\',this.value)"></span>':'')+
+        '<button class="ss-de-toggle '+(r.w?'on':'')+'" onclick="ssDeToggle(\''+e.id+'\')">'+(r.w?'근무':'휴무')+'</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  document.getElementById('ssDayList').innerHTML=html;
+}
+function ssDeToggle(id){ var r=ssDayDraft.rows[id]; r.w=r.w?0:1; ssRenderDayList(); }
+function ssDeTime(id,k,v){ if(ssDayDraft&&ssDayDraft.rows[id])ssDayDraft.rows[id][k]=v; }
+function ssSaveDay(){
+  if(!ssDayDraft)return;
+  var date=ssDayDraft.date; var obj={};
+  Object.keys(ssDayDraft.rows).forEach(function(id){var r=ssDayDraft.rows[id]; if(r.w)obj[id]={s:r.s,e:r.e};});
+  if(Object.keys(obj).length)ssShift[date]=obj; else delete ssShift[date];
+  ssSaveShift(); ssCloseDay(); ssRenderSched();
+}
+
+function ssRenderSched(){
+  var body=document.getElementById('ssSchedBody'); if(!body)return;
+  if(!ssCalCursor)ssCalCursor=new Date();
+  var y=ssCalCursor.getFullYear(), m=ssCalCursor.getMonth();
+  var first=new Date(y,m,1), last=new Date(y,m+1,0), nd=last.getDate(), startDow=first.getDay();
+  var todayStr=_ymd(new Date());
+  var roster=ssRoster.map(function(e,i){var col=ssEmpColorOf(i);return '<button class="ss-emp-chip" style="background:'+col[0]+';color:'+col[1]+'" onclick="ssEditEmp(\''+e.id+'\')"><i class="ss-de-dot" style="background:'+col[1]+'"></i>'+esc(e.name)+(e.pos?'<em>'+esc(e.pos)+'</em>':'')+'</button>';}).join('');
+  roster+='<button class="ss-emp-add" onclick="ssAddEmp()">+ 직원</button>';
+  var WN=['일','월','화','수','목','금','토'];
+  var heads=WN.map(function(w,i){var c=(i===0)?' sun':(i===6)?' sat':'';return '<div class="ss-cal-wh'+c+'">'+w+'</div>';}).join('');
+  var cells='';
+  for(var b=0;b<startDow;b++)cells+='<div class="ss-cal-cell empty"></div>';
+  for(var d=1;d<=nd;d++){
+    var mm=(m+1<10?'0'+(m+1):(m+1)), dd=(d<10?'0'+d:d), ds=y+'-'+mm+'-'+dd;
+    var dow=new Date(y,m,d).getDay();
+    var c=(dow===0)?' sun':(dow===6)?' sat':'';
+    var tod=(ds===todayStr)?' today':'';
+    var dayShift=ssShift[ds]||{};
+    var chips=ssRoster.filter(function(e){return dayShift[e.id];}).map(function(e){var col=ssEmpColorOf(ssEmpIndex(e.id)); var sh=dayShift[e.id]; var tl=(sh.s===SS_DEF_S&&sh.e===SS_DEF_E)?'':(' '+String(sh.s).slice(0,5)); return '<span class="ss-cal-emp" style="background:'+col[0]+';color:'+col[1]+'">'+esc(e.name)+tl+'</span>';}).join('');
+    cells+='<div class="ss-cal-cell'+c+tod+'" onclick="ssOpenDay(\''+ds+'\')"><span class="ss-cal-d">'+d+'</span><div class="ss-cal-emps">'+chips+'</div></div>';
+  }
+  body.innerHTML=
+    '<div class="ss-cal-top"><div class="ss-cal-nav"><button class="ss-pb-arrow" onclick="ssCalMove(-1)">‹</button><span class="ss-cal-label">'+y+'년 '+(m+1)+'월</span><button class="ss-pb-arrow" onclick="ssCalMove(1)">›</button></div></div>'+
+    '<div class="ss-roster">'+roster+'</div>'+
+    '<div class="ss-cal-grid-h">'+heads+'</div>'+
+    '<div class="ss-cal-grid">'+cells+'</div>'+
+    '<div class="ss-cal-note">기본 근무 <b>11:00–20:00</b> · 점심 <b>13:00–14:00</b> · 날짜를 누르면 근무/휴무를 바로 수정해요.</div>';
+}
+
+/* 엑셀에서 가져오기 (선택) — 근무 코드가 있으면 근무(기본 11–20시)로 변환 */
 function ssSchedUpload(e){
   var f=e.target.files[0]; if(!f)return;
   var r=new FileReader();
   r.onload=function(ev){
     try{
       var wb=XLSX.read(new Uint8Array(ev.target.result),{type:'array'});
-      var parsed={};
+      var rosterByName={}; ssRoster.forEach(function(emp){rosterByName[emp.name]=emp;});
+      var firstMonth=null;
       wb.SheetNames.forEach(function(sn){
         if(sn.indexOf('월스케줄')<0)return;
         var rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,defval:''});
-        var year=(rows[2]&&rows[2][1])||''; var month=(rows[2]&&rows[2][3])||sn.replace('월스케줄','');
-        var wdrow=rows[5]||[]; var wd=[]; var WD=['월','화','수','목','금','토','일'];
-        for(var c=6;c<wdrow.length;c++){var v=String(wdrow[c]||'').trim(); if(WD.indexOf(v)>=0)wd.push(v); else if(wd.length)break;}
-        var emps=[];
+        var year=num((rows[2]&&rows[2][1])||0); var month=num((rows[2]&&rows[2][3])||sn.replace('월스케줄',''));
+        if(!year||!month)return;
+        if(firstMonth===null)firstMonth=new Date(year,month-1,1);
+        var wdrow=rows[5]||[]; var nday=0; var WD=['월','화','수','목','금','토','일'];
+        for(var c=6;c<wdrow.length;c++){var v=String(wdrow[c]||'').trim(); if(WD.indexOf(v)>=0)nday++; else if(nday)break;}
         for(var i=10;i<rows.length;i++){var row=rows[i]||[]; var name=row[3]; if(!name||String(name).trim()==='')continue;
-          var no=row[1]; var noOk=(typeof no==='number'&&no>0)||/^[0-9]+$/.test(String(no).trim());
-          if(!noOk)continue;
+          var no=row[1]; var noOk=(typeof no==='number'&&no>0)||/^[0-9]+$/.test(String(no).trim()); if(!noOk)continue;
           if(String(name).indexOf(':')>=0)continue;
-          var shifts=[],has=false;
-          for(var d=0;d<wd.length;d++){var s=row[6+d]; s=(s===undefined||s===null)?'':String(s).trim(); shifts.push(s); if(s)has=true;}
-          if(has)emps.push({no:row[1],pos:String(row[2]||''),name:String(name).trim(),shifts:shifts});
+          name=String(name).trim();
+          var emp=rosterByName[name]; if(!emp){emp={id:'e'+Date.now().toString(36)+Math.floor(Math.random()*999),name:name,pos:String(row[2]||'').trim()}; ssRoster.push(emp); rosterByName[name]=emp;}
+          for(var d=0;d<nday;d++){var sft=row[6+d]; sft=(sft===undefined||sft===null)?'':String(sft).trim();
+            var dd=(d+1<10?'0'+(d+1):(d+1)), mm=(month<10?'0'+month:month), ds=year+'-'+mm+'-'+dd;
+            if(sft && sft.toUpperCase()!=='X' && sft.indexOf('휴')<0){ if(!ssShift[ds])ssShift[ds]={}; ssShift[ds][emp.id]={s:SS_DEF_S,e:SS_DEF_E}; }
+          }
         }
-        if(wd.length&&emps.length)parsed[sn]={year:year,month:month,weekdays:wd,employees:emps};
       });
-      if(!Object.keys(parsed).length){alert('스케줄 시트를 찾지 못했어요. (월스케줄 형식 확인)');return;}
-      ssSched=parsed; ssSaveSchedLocal(); ssSaveSchedCloud();
-      ssFillSchedMonths(); ssRenderSched();
-      if(window.showToast)showToast('스케줄을 불러왔어요');
+      if(firstMonth)ssCalCursor=firstMonth;
+      ssSaveRoster(); ssSaveShift(); ssRenderSched();
+      if(window.showToast)showToast('엑셀에서 가져왔어요 (근무=기본 11–20시)');
     }catch(err){alert('스케줄 파일을 읽지 못했어요.');}
     e.target.value='';
   };
   r.readAsArrayBuffer(f);
 }
-function ssFillSchedMonths(){
-  var sel=document.getElementById('ssSchedMonth'); if(!sel)return;
-  var keys=Object.keys(ssSched);
-  if(!keys.length){sel.innerHTML='<option>월 선택</option>';return;}
-  keys.sort(function(a,b){return num(a)-num(b);});
-  var cur=(new Date().getMonth()+1)+'월스케줄';
-  var prev=sel.value;
-  sel.innerHTML=keys.map(function(k){return '<option value="'+k+'">'+k.replace('스케줄','')+'</option>';}).join('');
-  if(keys.indexOf(prev)>=0)sel.value=prev; else if(keys.indexOf(cur)>=0)sel.value=cur; else sel.value=keys[keys.length-1];
-}
-function ssShiftCls(s){s=(s||'').trim(); if(!s)return 'sh-e'; if(s.indexOf('대')>=0)return 'sh-h'; var u=s.toUpperCase(); if(u==='A')return 'sh-a'; if(u==='B')return 'sh-b'; if(u==='C')return 'sh-c'; if(u==='X')return 'sh-x'; return 'sh-o';}
-function ssSchedLegend(){
-  return '<div class="ss-sc-legend">'+
-    '<span><i class="ss-sh sh-a">A</i>오픈</span>'+
-    '<span><i class="ss-sh sh-b">B</i>미들</span>'+
-    '<span><i class="ss-sh sh-c">C</i>마감</span>'+
-    '<span><i class="ss-sh sh-x">X</i>휴무</span>'+
-    '<span><i class="ss-sh sh-h">대휴</i>대체휴무</span>'+
-    '</div>';
-}
-function ssRenderSched(){
-  var sel=document.getElementById('ssSchedMonth'); var key=sel&&sel.value;
-  var body=document.getElementById('ssSchedBody'); if(!body)return;
-  var data=ssSched[key];
-  if(!data){body.innerHTML='<div class="ss-empty">스케줄 엑셀을 업로드하면 직원 근무표가 표시돼요.<br><span>(성수 스케줄 .xlsx · 월별 시트)</span></div>';return;}
-  var wd=data.weekdays;
-  var th='<th class="ss-sc-name">이름</th>';
-  for(var d=0;d<wd.length;d++){var wknd=(wd[d]==='토')?' sat':(wd[d]==='일')?' sun':''; th+='<th class="ss-sc-day'+wknd+'"><span class="ss-sc-dn">'+(d+1)+'</span><span class="ss-sc-wd">'+wd[d]+'</span></th>';}
-  var trs='';
-  data.employees.forEach(function(emp){
-    var tds='';
-    for(var d=0;d<wd.length;d++){var s=emp.shifts[d]||''; var cls=ssShiftCls(s); var wknd=(wd[d]==='토'||wd[d]==='일')?' wknd':''; tds+='<td class="ss-sc-cell'+wknd+'"><span class="ss-sh '+cls+'">'+esc(s)+'</span></td>';}
-    trs+='<tr><td class="ss-sc-name"><b>'+esc(emp.name)+'</b><span class="ss-sc-pos">'+esc(emp.pos)+'</span></td>'+tds+'</tr>';
-  });
-  body.innerHTML='<div class="ss-sched-scroll"><table class="ss-sched"><thead><tr>'+th+'</tr></thead><tbody>'+trs+'</tbody></table></div>'+ssSchedLegend();
-}
 
 /* ===== 저장/로드 ===== */
 function ssSaveLocal(){ try{localStorage.setItem('anniz_seongsu_sales',JSON.stringify(ssSales));}catch(e){} }
 function ssLoadLocal(){ try{var r=localStorage.getItem('anniz_seongsu_sales'); if(r)ssSales=JSON.parse(r)||[];}catch(e){} }
-function ssSaveSchedLocal(){ try{localStorage.setItem('anniz_seongsu_sched',JSON.stringify(ssSched));}catch(e){} }
-function ssLoadSchedLocal(){ try{var r=localStorage.getItem('anniz_seongsu_sched'); if(r)ssSched=JSON.parse(r)||{};}catch(e){} }
+function ssSaveRoster(){ try{localStorage.setItem('anniz_seongsu_roster',JSON.stringify(ssRoster));}catch(e){} ssSaveRosterCloud(); }
+function ssSaveShift(){ try{localStorage.setItem('anniz_seongsu_shift',JSON.stringify(ssShift));}catch(e){} ssSaveShiftCloud(); }
+function ssLoadSchedLocal(){ try{var a=localStorage.getItem('anniz_seongsu_roster'); if(a)ssRoster=JSON.parse(a)||[];}catch(e){} try{var b=localStorage.getItem('anniz_seongsu_shift'); if(b)ssShift=JSON.parse(b)||{};}catch(e){} }
 async function ssSaveCloud(){ try{await sbFetch('sku_state',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify([{id:'seongsu_sales',payload:ssSales}])});}catch(e){} }
-async function ssSaveSchedCloud(){ try{await sbFetch('sku_state',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify([{id:'seongsu_sched',payload:ssSched}])});}catch(e){} }
+async function ssSaveRosterCloud(){ try{await sbFetch('sku_state',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify([{id:'seongsu_roster',payload:ssRoster}])});}catch(e){} }
+async function ssSaveShiftCloud(){ try{await sbFetch('sku_state',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify([{id:'seongsu_shift',payload:ssShift}])});}catch(e){} }
 async function ssLoadCloud(){ try{var r=await sbFetch('sku_state?id=eq.seongsu_sales&select=payload'); if(r&&r[0]&&Array.isArray(r[0].payload)){var seen={}; ssSales.forEach(function(s){seen[s.id]=1;}); r[0].payload.forEach(function(s){if(s&&!seen[s.id]){ssSales.push(s);seen[s.id]=1;}});}}catch(e){} }
-async function ssLoadSchedCloud(){ try{var r=await sbFetch('sku_state?id=eq.seongsu_sched&select=payload'); if(r&&r[0]&&r[0].payload&&typeof r[0].payload==='object'){ if(!Object.keys(ssSched).length) ssSched=r[0].payload; }}catch(e){} }
+async function ssLoadSchedCloud(){ try{var r=await sbFetch('sku_state?id=eq.seongsu_roster&select=payload'); if(r&&r[0]&&Array.isArray(r[0].payload)&&r[0].payload.length){ if(!ssRoster.length)ssRoster=r[0].payload; }}catch(e){} try{var t=await sbFetch('sku_state?id=eq.seongsu_shift&select=payload'); if(t&&t[0]&&t[0].payload&&typeof t[0].payload==='object'){ if(!Object.keys(ssShift).length)ssShift=t[0].payload; }}catch(e){} }
 
 /* ===== 초기화 ===== */
 async function ssInit(){
   ssLoadLocal(); ssLoadSchedLocal();
-  ssFillSchedMonths(); ssRenderAll(); ssRenderSched();
+  if(!ssCalCursor)ssCalCursor=new Date();
+  ssRenderAll(); ssRenderSched();
   var di=document.getElementById('ssInDate'); if(di)di.value=_ymd(new Date());
   try{ await ssLoadCloud(); await ssLoadSchedCloud(); }catch(e){}
-  ssFillSchedMonths(); ssRenderAll(); ssRenderSched();
+  if(!ssRoster.length) ssRoster=[{id:'e1',name:'김태경',pos:'알바'},{id:'e2',name:'오지연',pos:'알바'},{id:'e3',name:'김소희',pos:'알바'},{id:'e4',name:'최예린',pos:'알바'}];
+  ssRenderAll(); ssRenderSched();
 }
 if(document.readyState!=='loading')ssInit();else document.addEventListener('DOMContentLoaded',ssInit);
 </script>
