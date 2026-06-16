@@ -612,11 +612,15 @@ body{padding-bottom:34px;}
 .vat-row{display:flex;justify-content:space-between;padding:13px 2px;border-bottom:1px solid var(--border,#f0f0f0);font-size:14px;}
 .vat-row .k{color:var(--text-2,#555);} .vat-row .v{color:var(--text,#1a1a1a);font-weight:500;}
 @media(max-width:640px){.biz-title{font-size:22px;}.biz-amt{font-size:14px;}.vat-box .vv{font-size:25px;}}
+.ts-box{background:var(--surface,#fff);border:1px solid var(--border,#ececec);border-radius:14px;padding:18px 22px;margin-bottom:20px;}
+.ts-title{font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text,#222);}
+.ts-input{width:170px;text-align:right;font-family:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--border,#ddd);border-radius:8px;background:var(--bg,#fff);color:var(--text,#222);}
+.ts-hint{font-size:12px;color:#C0392B;margin-top:10px;line-height:1.6;}
 </style>
 
 <div class="biz">
   <div class="biz-head">
-    <div><div class="biz-eyebrow">BUSINESS</div><h1 class="biz-title">부가세 센터</h1><div class="biz-sub">예상 부가세를 자동으로 계산해요</div></div>
+    <div><div class="biz-eyebrow">BUSINESS</div><h1 class="biz-title">부가세 센터</h1><div class="biz-sub">세무 기준 매출로 예상 부가세를 계산해요</div></div>
   </div>
   <div class="biz-chips" id="chips">
     <button class="biz-chip" data-q="1" onclick="setQ(1)">1분기</button>
@@ -625,19 +629,33 @@ body{padding-bottom:34px;}
     <button class="biz-chip" data-q="4" onclick="setQ(4)">4분기</button>
     <button class="biz-chip" data-q="0" onclick="setQ(0)">올해 전체</button>
   </div>
+
+  <div class="ts-box">
+    <div class="ts-title">세무 기준 매출 <span id="tsQlabel" style="color:var(--text-3);font-weight:400;"></span></div>
+    <div class="vat-row"><span class="k">통장 매출 (자동 · 참고)</span><span class="v" id="tsAuto">₩0</span></div>
+    <div class="vat-row" style="border-bottom:none;align-items:center;">
+      <span class="k">세무 기준 매출 (직접 입력)</span>
+      <span style="display:flex;gap:8px;align-items:center;">
+        <input id="tsInput" type="number" inputmode="numeric" placeholder="0" class="ts-input">
+        <button class="biz-btn" style="padding:8px 14px;" onclick="saveTax()" id="tsSaveBtn">저장</button>
+      </span>
+    </div>
+    <div id="tsHint" class="ts-hint"></div>
+  </div>
+
   <div class="vat-big">
     <div class="vat-box"><div class="vl">예상 매출세액</div><div class="vv" id="vOut">₩0</div></div>
     <div class="vat-box"><div class="vl">예상 매입세액</div><div class="vv" id="vIn">₩0</div></div>
     <div class="vat-box pay"><div class="vl">예상 납부세액</div><div class="vv" id="vPay">₩0</div></div>
   </div>
   <div style="margin-top:22px;background:var(--surface,#fff);border:1px solid var(--border,#ececec);border-radius:14px;padding:18px 22px;">
-    <div class="vat-row"><span class="k">과세 매출 (부가세 포함)</span><span class="v" id="rSales">₩0</span></div>
+    <div class="vat-row"><span class="k">과세 매출 (세무 기준)</span><span class="v" id="rSales">₩0</span></div>
     <div class="vat-row"><span class="k">└ 매출세액 (매출 ÷ 11)</span><span class="v" id="rOut">₩0</span></div>
     <div class="vat-row"><span class="k">과세 매입 (급여 제외, 부가세 포함)</span><span class="v" id="rBuy">₩0</span></div>
     <div class="vat-row"><span class="k">└ 매입세액 (매입 ÷ 11)</span><span class="v" id="rIn">₩0</span></div>
     <div class="vat-row" style="border-bottom:none;padding-top:16px;"><span class="k" style="font-weight:600;">납부세액 (매출세액 − 매입세액)</span><span class="v" id="rPay" style="font-weight:700;color:#2B6CB8;">₩0</span></div>
   </div>
-  <div class="biz-note">※ 추정치예요. 매출·매입 금액을 <b>부가세 포함 금액</b>으로 보고 ÷11로 세액을 계산해요. 급여는 매입세액에서 제외해요. 면세·간이과세·카드매출 세액공제 등은 반영되지 않으니 실제 신고는 세무사님과 확인하세요. 매출은 매출현황(자사몰·성수 포함), 매입은 비용관리 데이터를 사용해요.</div>
+  <div class="biz-note">※ 추정치예요. <b>세무 기준 매출</b>은 통장에 들어온 돈과 달라요(수수료·반품·정산시점 차이). 정확한 금액·기준은 플랫폼 계약(위수탁/직매입)과 세금계산서를 바탕으로 세무사님과 확인 후 위 칸에 입력하세요. 입력 전에는 통장 매출로 임시 계산돼요. 매입세액은 비용관리 데이터(급여 제외)를 사용하고, 부가세 포함 금액 ÷11로 계산해요.</div>
 </div>
 
 </main>
@@ -722,13 +740,12 @@ const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6
 async function sbGet(path){try{const r=await fetch(SB+'/rest/v1/'+path,{headers:{apikey:KEY,Authorization:'Bearer '+KEY}});const t=await r.text();return t&&t.trim()?JSON.parse(t):null;}catch(e){return null;}}
 async function sbSave(id,payload){try{await fetch(SB+'/rest/v1/sku_state',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({id:id,payload:payload,updated_at:new Date().toISOString()})});}catch(e){}}
 function won(n){return '₩'+Math.round(n||0).toLocaleString();}
-function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
-function ymd(){return new Date().toISOString().slice(0,10);}
-function curMonth(){return new Date().toISOString().slice(0,7);}
 
 
-let curQ=0; let salesRows=[]; let ssRows=[]; let expItems=[];
+let curQ=0; let salesRows=[]; let ssRows=[]; let expItems=[]; let taxData={years:{}};
+function YEAR(){return String(new Date().getFullYear());}
+function yobj(){if(!taxData.years[YEAR()])taxData.years[YEAR()]={};return taxData.years[YEAR()];}
+function storedTax(q){var yo=yobj();if(q===0){return [1,2,3,4].reduce(function(s,k){return s+(+yo[k]||0);},0);}return +yo[q]||0;}
 function quarterRange(q){var y=new Date().getFullYear();if(q===0)return [y+'-01-01',y+'-12-31'];var s=['01-01','04-01','07-01','10-01'][q-1];var e=['03-31','06-30','09-30','12-31'][q-1];return [y+'-'+s,y+'-'+e];}
 function inRange(d,a,b){d=(d||'').slice(0,10);return d>=a&&d<=b;}
 function setQ(q){curQ=q;document.querySelectorAll('#chips .biz-chip').forEach(function(c){c.classList.toggle('active',+c.dataset.q===q);});render();}
@@ -736,19 +753,42 @@ async function load(){
   salesRows=await sbGet('sales?select=date,net_sales,platform')||[];
   var ss=await sbGet('sku_state?id=eq.seongsu_sales&select=payload');ssRows=(ss&&ss[0]&&ss[0].payload)?ss[0].payload:[];
   var ex=await sbGet('sku_state?id=eq.biz_expenses&select=payload');expItems=(ex&&ex[0]&&ex[0].payload&&ex[0].payload.items)?ex[0].payload.items:[];
-  // 기본: 현재 분기
+  var ts=await sbGet('sku_state?id=eq.biz_taxsales&select=payload');if(ts&&ts[0]&&ts[0].payload&&ts[0].payload.years)taxData=ts[0].payload;
   var mo=new Date().getMonth();setQ(Math.floor(mo/3)+1);}
-function render(){
-  var rg=quarterRange(curQ);var a=rg[0],b=rg[1];
+function autoBank(a,b){
   var sales=salesRows.filter(function(r){return (r.platform||'')!=='성수'&&inRange(r.date,a,b);}).reduce(function(s,r){return s+(+r.net_sales||0);},0);
   var ss=ssRows.filter(function(r){return inRange(r.date,a,b);}).reduce(function(s,r){return s+(+r.amount||0);},0);
-  var totalSales=sales+ss;
+  return sales+ss;}
+async function saveTax(){
+  if(curQ===0)return;
+  var v=parseFloat(document.getElementById('tsInput').value)||0;
+  yobj()[curQ]=v;await sbSave('biz_taxsales',taxData);render();}
+function render(){
+  var rg=quarterRange(curQ);var a=rg[0],b=rg[1];
+  var auto=autoBank(a,b);
+  var stored=storedTax(curQ);
+  var taxBase=stored>0?stored:auto;
+  // 세무 매출 입력 영역
+  document.getElementById('tsAuto').textContent=won(auto);
+  var inp=document.getElementById('tsInput');var hint=document.getElementById('tsHint');var ql=document.getElementById('tsQlabel');var btn=document.getElementById('tsSaveBtn');
+  if(curQ===0){
+    ql.textContent='· 올해 전체 (분기 합계)';
+    inp.disabled=true;btn.disabled=true;btn.style.opacity='0.4';
+    inp.value=stored>0?stored:'';inp.placeholder='분기별로 입력해주세요';
+    hint.textContent=stored>0?'':'분기 탭에서 각 분기 세무 매출을 입력하면 여기 합산돼요.';
+  }else{
+    ql.textContent='· '+curQ+'분기';
+    inp.disabled=false;btn.disabled=false;btn.style.opacity='1';
+    inp.value=stored>0?stored:'';inp.placeholder=won(auto).replace('₩','')+' (통장값)';
+    hint.textContent=stored>0?'':'아직 세무 매출을 입력하지 않아 통장 매출로 임시 계산 중이에요. 세무사님 확인 후 입력해주세요.';
+  }
+  // 매입
   var buy=expItems.filter(function(x){return x.category!=='급여'&&inRange(x.date,a,b);}).reduce(function(s,x){return s+(+x.amount||0);},0);
-  var outTax=Math.round(totalSales/11);var inTax=Math.round(buy/11);var pay=outTax-inTax;
+  var outTax=Math.round(taxBase/11);var inTax=Math.round(buy/11);var pay=outTax-inTax;
   document.getElementById('vOut').textContent=won(outTax);
   document.getElementById('vIn').textContent=won(inTax);
   document.getElementById('vPay').textContent=won(pay);
-  document.getElementById('rSales').textContent=won(totalSales);
+  document.getElementById('rSales').textContent=won(taxBase);
   document.getElementById('rOut').textContent=won(outTax);
   document.getElementById('rBuy').textContent=won(buy);
   document.getElementById('rIn').textContent=won(inTax);

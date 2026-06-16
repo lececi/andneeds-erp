@@ -612,6 +612,14 @@ body{padding-bottom:34px;}
 .vat-row{display:flex;justify-content:space-between;padding:13px 2px;border-bottom:1px solid var(--border,#f0f0f0);font-size:14px;}
 .vat-row .k{color:var(--text-2,#555);} .vat-row .v{color:var(--text,#1a1a1a);font-weight:500;}
 @media(max-width:640px){.biz-title{font-size:22px;}.biz-amt{font-size:14px;}.vat-box .vv{font-size:25px;}}
+.ts-box{background:var(--surface,#fff);border:1px solid var(--border,#ececec);border-radius:14px;padding:18px 22px;margin-bottom:20px;}
+.ts-title{font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text,#222);}
+.ts-input{width:170px;text-align:right;font-family:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--border,#ddd);border-radius:8px;background:var(--bg,#fff);color:var(--text,#222);}
+.ts-hint{font-size:12px;color:#C0392B;margin-top:10px;line-height:1.6;}
+.ts-box{background:var(--surface,#fff);border:1px solid var(--border,#ececec);border-radius:14px;padding:18px 22px;margin-bottom:20px;}
+.ts-title{font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text,#222);}
+.ts-input{width:170px;text-align:right;font-family:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--border,#ddd);border-radius:8px;background:var(--bg,#fff);color:var(--text,#222);}
+.ts-hint{font-size:12px;color:#C0392B;margin-top:10px;line-height:1.6;}
 </style>
 
 <div class="biz">
@@ -630,7 +638,7 @@ body{padding-bottom:34px;}
     <div style="font-size:13px;color:var(--text-3,#999);margin-bottom:26px;">아래 버튼을 누르면 매출·비용·부가세·미수금이 정리된 리포트가 새 창으로 열려요. 그 창에서 인쇄(⌘P) → "PDF로 저장"하면 돼요.</div>
     <button class="biz-btn" style="font-size:14px;padding:14px 28px;" onclick="genReport()">세무사님 전달용 PDF 생성</button>
   </div>
-  <div class="biz-note">리포트에는 선택한 기간의 ① 매출 합계(자사몰·성수 포함) ② 비용 항목별 합계 ③ 예상 부가세 ④ 미수금 현황이 들어가요.</div>
+  <div class="biz-note">리포트의 매출은 <b>부가세센터에 입력한 세무 기준 매출</b>을 사용해요(미입력 분기는 통장 매출로 대체). 비용은 항목별 합계, 부가세는 추정치예요.</div>
 </div>
 
 </main>
@@ -715,41 +723,44 @@ const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6
 async function sbGet(path){try{const r=await fetch(SB+'/rest/v1/'+path,{headers:{apikey:KEY,Authorization:'Bearer '+KEY}});const t=await r.text();return t&&t.trim()?JSON.parse(t):null;}catch(e){return null;}}
 async function sbSave(id,payload){try{await fetch(SB+'/rest/v1/sku_state',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({id:id,payload:payload,updated_at:new Date().toISOString()})});}catch(e){}}
 function won(n){return '₩'+Math.round(n||0).toLocaleString();}
-function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
-function ymd(){return new Date().toISOString().slice(0,10);}
-function curMonth(){return new Date().toISOString().slice(0,7);}
 
 
 let curQ=0;
 function quarterRange(q){var y=new Date().getFullYear();if(q===0)return [y+'-01-01',y+'-12-31',y+'년 전체'];var s=['01-01','04-01','07-01','10-01'][q-1];var e=['03-31','06-30','09-30','12-31'][q-1];return [y+'-'+s,y+'-'+e,y+'년 '+q+'분기'];}
 function inRange(d,a,b){d=(d||'').slice(0,10);return d>=a&&d<=b;}
 function setQ(q){curQ=q;document.querySelectorAll('#chips .biz-chip').forEach(function(c){c.classList.toggle('active',+c.dataset.q===q);});document.getElementById('rangeLbl').textContent=quarterRange(q)[2];}
+function YEAR(){return String(new Date().getFullYear());}
 async function genReport(){
   var rg=quarterRange(curQ);var a=rg[0],b=rg[1],lbl=rg[2];
   var salesRows=await sbGet('sales?select=date,net_sales,platform')||[];
   var ssR=await sbGet('sku_state?id=eq.seongsu_sales&select=payload');var ssRows=(ssR&&ssR[0]&&ssR[0].payload)?ssR[0].payload:[];
   var exR=await sbGet('sku_state?id=eq.biz_expenses&select=payload');var exp=(exR&&exR[0]&&exR[0].payload&&exR[0].payload.items)?exR[0].payload.items:[];
   var rcR=await sbGet('sku_state?id=eq.biz_receivables&select=payload');var rec=(rcR&&rcR[0]&&rcR[0].payload&&rcR[0].payload.items)?rcR[0].payload.items:[];
-  var sales=salesRows.filter(function(r){return (r.platform||'')!=='성수'&&inRange(r.date,a,b);}).reduce(function(s,r){return s+(+r.net_sales||0);},0);
-  var ss=ssRows.filter(function(r){return inRange(r.date,a,b);}).reduce(function(s,r){return s+(+r.amount||0);},0);
-  var totalSales=sales+ss;
+  var tsR=await sbGet('sku_state?id=eq.biz_taxsales&select=payload');var taxData=(tsR&&tsR[0]&&tsR[0].payload&&tsR[0].payload.years)?tsR[0].payload:{years:{}};
+  var yo=taxData.years[YEAR()]||{};
+  function autoBank(aa,bb){var s1=salesRows.filter(function(r){return (r.platform||'')!=='성수'&&inRange(r.date,aa,bb);}).reduce(function(s,r){return s+(+r.net_sales||0);},0);var s2=ssRows.filter(function(r){return inRange(r.date,aa,bb);}).reduce(function(s,r){return s+(+r.amount||0);},0);return s1+s2;}
+  // 세무 매출: 입력값 우선, 미입력 분기는 통장값 대체
+  var taxSales=0; var usedInput=false;
+  function qr(q){var y=new Date().getFullYear();var s=['01-01','04-01','07-01','10-01'][q-1];var e=['03-31','06-30','09-30','12-31'][q-1];return [y+'-'+s,y+'-'+e];}
+  if(curQ===0){[1,2,3,4].forEach(function(q){var st=+yo[q]||0;var r=qr(q);taxSales+=st>0?st:autoBank(r[0],r[1]);if(st>0)usedInput=true;});}
+  else{var st=+yo[curQ]||0;if(st>0){taxSales=st;usedInput=true;}else{taxSales=autoBank(a,b);}}
   var CATS=["광고비","촬영비","급여","샘플비","택배비","사무실비"];
   var catSum={};CATS.forEach(function(c){catSum[c]=0;});
   exp.filter(function(x){return inRange(x.date,a,b);}).forEach(function(x){catSum[x.category]=(catSum[x.category]||0)+(+x.amount||0);});
   var totalExp=Object.keys(catSum).reduce(function(s,k){return s+catSum[k];},0);
   var buy=exp.filter(function(x){return x.category!=='급여'&&inRange(x.date,a,b);}).reduce(function(s,x){return s+(+x.amount||0);},0);
-  var outTax=Math.round(totalSales/11),inTax=Math.round(buy/11),pay=outTax-inTax;
+  var outTax=Math.round(taxSales/11),inTax=Math.round(buy/11),pay=outTax-inTax;
   var unpaid=rec.filter(function(x){return x.status==='unpaid';});var unpaidSum=unpaid.reduce(function(s,x){return s+(+x.amount||0);},0);
   function w(n){return '₩'+Math.round(n||0).toLocaleString();}
   var rows='';CATS.forEach(function(c){rows+='<tr><td>'+c+'</td><td class="num">'+w(catSum[c])+'</td></tr>';});
   var unpaidRows=unpaid.map(function(x){return '<tr><td>'+(x.client||'')+'</td><td class="num">'+w(x.amount)+'</td></tr>';}).join('')||'<tr><td colspan="2" style="color:#999;text-align:center;">미수금 없음</td></tr>';
+  var salesNote=usedInput?'세무 기준 매출(입력값)':'통장 매출 (세무 매출 미입력)';
   var html='<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>세무 리포트 '+lbl+'</title>'+
   '<style>body{font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:#1a1a1a;max-width:720px;margin:0 auto;padding:40px 28px;}h1{font-size:22px;margin:0 0 4px;}h2{font-size:15px;margin:28px 0 10px;padding-bottom:6px;border-bottom:2px solid #1a1a1a;}.meta{color:#888;font-size:13px;margin-bottom:8px;}table{width:100%;border-collapse:collapse;font-size:14px;}td{padding:9px 6px;border-bottom:1px solid #eee;}.num{text-align:right;font-variant-numeric:tabular-nums;}.big{display:flex;gap:14px;margin:10px 0;}.bx{flex:1;border:1px solid #e3e3e3;border-radius:10px;padding:14px;}.bx .l{font-size:12px;color:#888;}.bx .v{font-size:18px;font-weight:600;margin-top:4px;}.tot td{font-weight:700;border-top:2px solid #1a1a1a;border-bottom:none;}@media print{.noprint{display:none;}}'+
   '</style></head><body>'+
   '<h1>ANDNEEDS · 세무 리포트</h1><div class="meta">기간: '+lbl+' ('+a+' ~ '+b+') · 생성일 '+new Date().toISOString().slice(0,10)+'</div>'+
   '<div class="meta">사업자등록번호 209-16-84670 · 서울 성동구 성수이로65 협성빌딩 502호</div>'+
-  '<h2>1. 매출 요약</h2><table><tr><td>과세 매출 합계 (자사몰·성수 포함)</td><td class="num">'+w(totalSales)+'</td></tr></table>'+
+  '<h2>1. 매출 요약</h2><table><tr><td>과세 매출 합계 <span style="color:#999;font-size:12px;">('+salesNote+')</span></td><td class="num">'+w(taxSales)+'</td></tr></table>'+
   '<h2>2. 비용 (항목별)</h2><table>'+rows+'<tr class="tot"><td>합계</td><td class="num">'+w(totalExp)+'</td></tr></table>'+
   '<h2>3. 예상 부가세</h2><div class="big"><div class="bx"><div class="l">매출세액</div><div class="v">'+w(outTax)+'</div></div><div class="bx"><div class="l">매입세액</div><div class="v">'+w(inTax)+'</div></div><div class="bx"><div class="l">납부세액</div><div class="v">'+w(pay)+'</div></div></div><div style="font-size:12px;color:#999;">※ 부가세 포함 금액 ÷11 추정, 급여 매입 제외. 실제 신고는 확인 필요.</div>'+
   '<h2>4. 미수금 현황</h2><table>'+unpaidRows+'<tr class="tot"><td>미수금 합계</td><td class="num">'+w(unpaidSum)+'</td></tr></table>'+
