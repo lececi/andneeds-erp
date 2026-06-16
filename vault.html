@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>증빙보관함 · ANDNEEDS</title>
+<title>증빙 보관함 · ANDNEEDS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 @font-face {
@@ -559,24 +559,84 @@ body{padding-bottom:34px;}
   </header>
 
   <main>
-<style id="ph-style">
-  main{display:flex;align-items:center;justify-content:center;min-height:60vh;}
-  .ph-card{max-width:560px;width:100%;text-align:center;padding:56px 40px;
-    background:var(--surface,#fff);border:1px solid var(--border,#ececec);border-radius:18px;}
-  .ph-eyebrow{font-size:11px;font-weight:600;letter-spacing:0.18em;color:#2B6CB8;text-transform:uppercase;margin-bottom:18px;}
-  .ph-title{font-size:30px;font-weight:600;letter-spacing:-0.01em;color:var(--text,#1a1a1a);margin:0 0 6px;}
-  .ph-en{font-size:13px;color:var(--text-3,#9a9a9a);letter-spacing:0.04em;margin-bottom:22px;}
-  .ph-desc{font-size:14px;line-height:1.7;color:var(--text-2,#666);margin:0 auto 28px;max-width:400px;}
-  .ph-badge{display:inline-block;font-size:12px;font-weight:500;letter-spacing:0.04em;color:#2B6CB8;
-    background:rgba(43,108,184,0.08);border:1px solid rgba(43,108,184,0.22);border-radius:999px;padding:8px 18px;}
+<style id="biz-css">
+.biz{max-width:1080px;margin:0 auto;padding:8px 4px 70px;}
+.biz-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:26px;flex-wrap:wrap;}
+.biz-eyebrow{font-size:11px;font-weight:600;letter-spacing:0.18em;color:#2B6CB8;text-transform:uppercase;margin-bottom:8px;}
+.biz-title{font-size:26px;font-weight:600;letter-spacing:-0.01em;color:var(--text,#1a1a1a);margin:0;}
+.biz-sub{font-size:13px;color:var(--text-3,#9a9a9a);margin-top:6px;}
+.biz-btn{font-family:inherit;font-size:13px;font-weight:500;padding:10px 18px;border-radius:10px;border:none;background:#2B6CB8;color:#fff;cursor:pointer;white-space:nowrap;}
+.biz-btn.ghost{background:var(--surface2,#f3f3f3);color:var(--text,#222);}
+.biz-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:13px;margin-bottom:24px;}
+.biz-card{background:var(--surface,#fff);border:1px solid var(--border,#ececec);border-radius:14px;padding:17px 19px;}
+.biz-card .lbl{font-size:12px;color:var(--text-3,#9a9a9a);margin-bottom:8px;}
+.biz-card .val{font-size:21px;font-weight:600;color:var(--text,#1a1a1a);letter-spacing:-0.01em;}
+.biz-card .val.blue{color:#2B6CB8;} .biz-card .val.red{color:#C0392B;} .biz-card .val.green{color:#277850;}
+.biz-card .sub{font-size:11px;color:var(--text-3,#aaa);margin-top:5px;}
+.biz-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.biz-chip{font-size:12px;font-weight:500;padding:7px 14px;border-radius:999px;border:1px solid var(--border,#e3e3e3);background:transparent;color:var(--text-2,#555);cursor:pointer;}
+.biz-chip.active{background:#2B6CB8;border-color:#2B6CB8;color:#fff;}
+.biz-list{display:flex;flex-direction:column;gap:8px;}
+.biz-grouphead{font-size:13px;font-weight:600;color:var(--text,#222);padding:16px 4px 4px;display:flex;justify-content:space-between;align-items:baseline;}
+.biz-grouphead .sum{font-size:12px;color:#C0392B;font-weight:600;}
+.biz-row{display:flex;align-items:center;gap:13px;padding:14px 16px;border:1px solid var(--border,#eee);border-radius:12px;background:var(--surface,#fff);}
+.biz-row .mainc{flex:1;min-width:0;}
+.biz-row .r1{font-size:14px;color:var(--text,#1a1a1a);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.biz-row .r2{font-size:12px;color:var(--text-3,#9a9a9a);margin-top:3px;}
+.biz-amt{font-size:15px;font-weight:600;color:var(--text,#1a1a1a);white-space:nowrap;}
+.biz-badge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px;white-space:nowrap;cursor:pointer;border:none;font-family:inherit;}
+.badge-paid{background:rgba(39,128,80,.1);color:#277850;}
+.badge-unpaid{background:rgba(192,57,43,.1);color:#C0392B;}
+.biz-tag{font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px;background:var(--surface2,#f1f1f1);color:var(--text-2,#555);white-space:nowrap;}
+.biz-acts{display:flex;gap:6px;}
+.biz-ico{width:30px;height:30px;border:none;background:var(--surface2,#f3f3f3);border-radius:8px;cursor:pointer;color:var(--text-2,#555);font-size:13px;display:flex;align-items:center;justify-content:center;}
+.biz-empty{text-align:center;padding:56px 20px;color:var(--text-3,#aaa);font-size:14px;}
+.biz-link{font-size:12px;color:#2B6CB8;text-decoration:none;border:1px solid rgba(43,108,184,.3);padding:6px 11px;border-radius:8px;white-space:nowrap;}
+.biz-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;align-items:center;justify-content:center;padding:20px;}
+.biz-modal.open{display:flex;}
+.biz-dialog{background:var(--surface,#fff);border-radius:16px;padding:26px;width:100%;max-width:440px;max-height:90vh;overflow:auto;}
+.biz-dialog h3{margin:0 0 18px;font-size:18px;font-weight:600;color:var(--text,#1a1a1a);}
+.biz-field{margin-bottom:14px;}
+.biz-field label{display:block;font-size:12px;color:var(--text-2,#666);margin-bottom:6px;}
+.biz-field input,.biz-field select,.biz-field textarea{width:100%;box-sizing:border-box;font-family:inherit;font-size:14px;padding:10px 12px;border:1px solid var(--border,#ddd);border-radius:9px;background:var(--bg,#fff);color:var(--text,#222);}
+.biz-field textarea{resize:vertical;min-height:58px;}
+.biz-dialog-acts{display:flex;gap:10px;margin-top:22px;}
+.biz-dialog-acts .biz-btn{flex:1;}
+.biz-note{font-size:12px;color:var(--text-3,#9a9a9a);line-height:1.7;margin-top:24px;padding:15px 17px;background:var(--surface2,#f6f6f6);border-radius:11px;}
+.vat-big{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:8px;}
+.vat-box{border:1px solid var(--border,#ececec);border-radius:16px;padding:26px 24px;background:var(--surface,#fff);}
+.vat-box .vl{font-size:13px;color:var(--text-3,#999);margin-bottom:12px;}
+.vat-box .vv{font-size:30px;font-weight:600;letter-spacing:-0.02em;color:var(--text,#1a1a1a);}
+.vat-box.pay{background:#1A1714;border-color:#1A1714;}
+.vat-box.pay .vl{color:rgba(255,255,255,.6);} .vat-box.pay .vv{color:#fff;}
+.vat-row{display:flex;justify-content:space-between;padding:13px 2px;border-bottom:1px solid var(--border,#f0f0f0);font-size:14px;}
+.vat-row .k{color:var(--text-2,#555);} .vat-row .v{color:var(--text,#1a1a1a);font-weight:500;}
+@media(max-width:640px){.biz-title{font-size:22px;}.biz-amt{font-size:14px;}.vat-box .vv{font-size:25px;}}
 </style>
-  <div class="ph-card">
-    <div class="ph-eyebrow">BUSINESS</div>
-    <h1 class="ph-title">증빙보관함</h1>
-    <div class="ph-en">Document Vault</div>
-    <p class="ph-desc">세금계산서·영수증 등 증빙 서류를 안전하게 보관하는 공간이에요.</p>
-    <div class="ph-badge">준비 중 · Coming soon</div>
+
+<div class="biz">
+  <div class="biz-head">
+    <div><div class="biz-eyebrow">BUSINESS</div><h1 class="biz-title">증빙 보관함</h1><div class="biz-sub">증빙 서류를 분류해 기록하고 링크로 보관해요</div></div>
+    <button class="biz-btn" onclick="openModal()">+ 증빙 추가</button>
   </div>
+  <div class="biz-cards"><div class="biz-card"><div class="lbl">세금계산서</div><div class="val" id="vc_0">0</div><div class="sub">건</div></div><div class="biz-card"><div class="lbl">영수증</div><div class="val" id="vc_1">0</div><div class="sub">건</div></div><div class="biz-card"><div class="lbl">광고 증빙</div><div class="val" id="vc_2">0</div><div class="sub">건</div></div><div class="biz-card"><div class="lbl">외주 증빙</div><div class="val" id="vc_3">0</div><div class="sub">건</div></div></div>
+  <div class="biz-chips" id="chips"><button class="biz-chip active" data-f="all" onclick="setF('all')">전체</button><button class="biz-chip" data-f="세금계산서" onclick="setF('세금계산서')">세금계산서</button><button class="biz-chip" data-f="영수증" onclick="setF('영수증')">영수증</button><button class="biz-chip" data-f="광고 증빙" onclick="setF('광고 증빙')">광고 증빙</button><button class="biz-chip" data-f="외주 증빙" onclick="setF('외주 증빙')">외주 증빙</button></div>
+  <div class="biz-list" id="list"></div>
+</div>
+<div class="biz-modal" id="modal">
+  <div class="biz-dialog">
+    <h3 id="mTitle">증빙 추가</h3>
+    <div class="biz-field"><label>분류</label><select id="fCat"><option value="세금계산서">세금계산서</option><option value="영수증">영수증</option><option value="광고 증빙">광고 증빙</option><option value="외주 증빙">외주 증빙</option></select></div>
+    <div class="biz-field"><label>제목</label><input id="fTitle" placeholder="예: 메타 광고비 세금계산서"></div>
+    <div class="biz-field"><label>거래처 (선택)</label><input id="fVendor" placeholder="예: 메타"></div>
+    <div class="biz-field"><label>금액 (선택)</label><input id="fAmount" type="number" inputmode="numeric" placeholder="0"></div>
+    <div class="biz-field"><label>날짜</label><input id="fDate" type="date"></div>
+    <div class="biz-field"><label>파일 링크 (선택)</label><input id="fUrl" placeholder="구글드라이브 등 링크 붙여넣기"></div>
+    <div class="biz-field"><label>메모 (선택)</label><textarea id="fMemo"></textarea></div>
+    <div class="biz-dialog-acts"><button class="biz-btn ghost" onclick="closeModal()">취소</button><button class="biz-btn" onclick="saveItem()">저장</button></div>
+  </div>
+</div>
+
 </main>
 </div>
 
@@ -608,225 +668,8 @@ body{padding-bottom:34px;}
 </div>
 
 <script>
-const SB = 'https://nifytqcqfattzpwlzpmb.supabase.co';
-const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs';
-
-async function sb(path) {
-  const res = await fetch(SB+'/rest/v1/'+path, {
-    headers:{'apikey':KEY,'Authorization':'Bearer '+KEY}
-  });
-  const t = await res.text();
-  try{return JSON.parse(t);}catch{return[];}
-}
-
-function fmt(n) {
-  return '₩'+Math.round(n).toLocaleString();
-}
-
-// 날짜
-function setTopbarDate() {
-  const now = new Date();
-  const days = ['일','월','화','수','목','금','토'];
-  const dateStr = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${days[now.getDay()]}요일`;
-  document.getElementById('topbarDate').textContent = dateStr;
-  const heroDate = document.getElementById('topbarDateHero');
-  if(heroDate) heroDate.textContent = dateStr;
-  
-}
-
-// 오늘 날짜
-function todayStr() {
-  const n = new Date();
-  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
-}
-function thisMonthStr() {
-  const n = new Date();
-  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;
-}
-
-async function loadTodaySales() {
-  try {
-    const today = todayStr();
-    const month = thisMonthStr();
-    // 성수(오프라인) 데이터 로드 — 별도 저장소(seongsu_sales)
-    let ssToday = 0, ssTodayOrders = 0, ssMonth = 0;
-    try {
-      const ssRes = await sb('sku_state?id=eq.seongsu_sales&select=payload');
-      const ssArr = (ssRes && ssRes[0] && Array.isArray(ssRes[0].payload)) ? ssRes[0].payload : [];
-      const ssOids = {};
-      ssArr.forEach(x => {
-        const amt = +x.amount || 0;
-        if (x.date === today) { ssToday += amt; if (x.oid) ssOids[x.oid] = 1; }
-        if (x.date && String(x.date).indexOf(month) === 0) ssMonth += amt;
-      });
-      ssTodayOrders = Object.keys(ssOids).length;
-    } catch(e) {}
-    // 오늘 매출 (온라인 sales[성수 제외] + 성수)
-    const todayData = await sb(`sales?date=eq.${today}&select=net_sales,orders,platform`);
-    let todaySales = 0, todayOrders = 0;
-    (todayData||[]).forEach(r => { if((r.platform||'')!=='성수'){ todaySales += r.net_sales||0; todayOrders += r.orders||0; } });
-    todaySales += ssToday; todayOrders += ssTodayOrders;
-    document.getElementById('todaySales').textContent = fmt(todaySales);
-    document.getElementById('todayOrders').textContent = todayOrders ? todayOrders+'건' : '—';
-
-    // 이번 달 매출 (목표 2억) — 온라인[성수 제외] + 성수
-    const monthData = await sb(`sales?date=like.${month}%&select=net_sales,platform`);
-    let monthTotal = 0;
-    (monthData||[]).forEach(r => { if((r.platform||'')!=='성수') monthTotal += r.net_sales||0; });
-    monthTotal += ssMonth;
-    const goal = 200000000;
-    const pct = Math.min(100, Math.round(monthTotal/goal*100));
-    document.getElementById('goalPct').textContent = pct;
-    document.getElementById('goalSub').textContent = `${fmt(monthTotal)} / ${fmt(goal)}`;
-    setTimeout(() => {
-      const fill = document.getElementById('goalFill');
-      fill.style.width = pct+'%';
-      fill.setAttribute('data-pct', pct+'%');
-    }, 300);
-  } catch(e) {
-    console.log('sales error', e);
-  }
-}
-
-async function loadInvoiceSummary() {
-  try {
-    const inv = await sb('invoices?select=total_amount,status');
-    let pending = 0, count = 0;
-    (inv||[]).forEach(r => {
-      if(r.status !== '입금완료') { pending += r.total_amount||0; count++; }
-    });
-    document.getElementById('todayPay').textContent = pending ? fmt(pending) : '—';
-  } catch(e) {}
-}
-
-async function loadInventorySummary() {
-  try {
-    const products = await sb('products?select=id');
-    document.getElementById('invTotal').textContent = (products||[]).length+'종';
-
-    // 재고 집계
-    const stocks = await sb('warehouse_stock?select=stock');
-    let low = 0, out = 0;
-    (stocks||[]).forEach(r => {
-      if(r.stock === 0) out++;
-      else if(r.stock < 5) low++;
-    });
-    document.getElementById('invLow').textContent = low+'종';
-    document.getElementById('invOut').textContent = out+'종';
-
-    // 위험 SKU
-    const variants = await sb('product_variants?select=id,product_id,color,size,warehouse_stock(stock),products(name,category)');
-    if(variants && variants.length) {
-      // 베스트 (재고 높은 것)
-      const sorted = [...variants].sort((a,b) => {
-        const aStock = (a.warehouse_stock||[]).reduce((s,w)=>s+(w.stock||0),0);
-        const bStock = (b.warehouse_stock||[]).reduce((s,w)=>s+(w.stock||0),0);
-        return bStock - aStock;
-      }).slice(0,5);
-
-      document.getElementById('bestSkuList').innerHTML = sorted.map((v,i) => {
-        const stock = (v.warehouse_stock||[]).reduce((s,w)=>s+(w.stock||0),0);
-        const name = v.products?.name || '—';
-        const cat = v.products?.category || '';
-        return `<div class="sku-row">
-          <span class="sku-rank">${i+1}</span>
-          <div class="sku-info">
-            <div class="sku-name">${name}</div>
-            <div class="sku-cat">${v.color||''} ${v.size||''} · ${cat}</div>
-          </div>
-          <span class="sku-val">${stock}개</span>
-        </div>`;
-      }).join('');
-
-      // 위험 SKU (재고 1~4개)
-      const danger = variants.filter(v => {
-        const s = (v.warehouse_stock||[]).reduce((t,w)=>t+(w.stock||0),0);
-        return s > 0 && s < 5;
-      }).slice(0,5);
-
-      if(danger.length) {
-        document.getElementById('dangerSkuList').innerHTML = danger.map(v => {
-          const stock = (v.warehouse_stock||[]).reduce((s,w)=>s+(w.stock||0),0);
-          const name = v.products?.name || '—';
-          return `<div class="sku-row">
-            <div class="sku-info">
-              <div class="sku-name">${name}</div>
-              <div class="sku-cat">${v.color||''} ${v.size||''}</div>
-            </div>
-            <span class="sku-stock ${stock<=2?'danger':'warn'}">${stock}개</span>
-          </div>`;
-        }).join('');
-      }
-    }
-  } catch(e) { console.log('inv error', e); }
-}
-
-function buildAlerts() {
-  const alerts = [
-    { type:'red', text:'재고 부족 상품 <strong>69종</strong> 즉시 확인 필요', time:'방금' },
-    { type:'gold', text:'26FW 플랫폼 등록 진행 중 · 무신사 미완료', time:'오늘' },
-    { type:'blue', text:'이번 달 목표 달성률 업데이트됨', time:'오늘' },
-    { type:'gold', text:'품절 상품 <strong>120종</strong> 재입고 필요', time:'어제' },
-    { type:'blue', text:'케빈 인보이스 INV-202606-001 발행됨', time:'어제' },
-  ];
-  document.getElementById('alertCount').textContent = alerts.length+'건';
-  document.getElementById('alertList').innerHTML = alerts.map(a => `
-    <div class="alert-row">
-      <span class="alert-dot ${a.type}"></span>
-      <div>
-        <div class="alert-text">${a.text}</div>
-        <div class="alert-time">${a.time}</div>
-      </div>
-    </div>`).join('');
-}
-
-const TODO_SB='home_todo', TODO_LS='anniz_home_todo_v1';
-const TODO_URL='https://nifytqcqfattzpwlzpmb.supabase.co';
-const TODO_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs';
-let todos=[];
-const TODO_TAGS={ops:'운영',design:'디자인',cs:'CS'};
-function todoEsc(x){return String(x==null?'':x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-async function todoSB(path,opts={}){const r=await fetch(TODO_URL+'/rest/v1/'+path,{...opts,headers:{'apikey':TODO_KEY,'Authorization':'Bearer '+TODO_KEY,'Content-Type':'application/json','Prefer':opts.prefer||'return=minimal',...(opts.headers||{})}});if(!r.ok)throw new Error(await r.text());const t=await r.text();return t&&t.trim()?JSON.parse(t):null;}
-async function loadTodos(){try{const r=await todoSB('sku_state?id=eq.'+TODO_SB+'&select=payload');if(r&&r[0]&&r[0].payload&&r[0].payload.todos){todos=r[0].payload.todos;return;}}catch(e){}try{const s=localStorage.getItem(TODO_LS);if(s){todos=JSON.parse(s);return;}}catch(e){}todos=[{text:'무신사 26FW 상품 등록 완료',tag:'ops',done:false},{text:'케빈 인보이스 입금 확인',tag:'cs',done:false},{text:'룩북 상세 이미지 편집본 수령',tag:'design',done:false},{text:'29CM 5월 정산 확인',tag:'ops',done:true},{text:'성수매장 재고 정리',tag:'ops',done:false}];}
-async function saveTodos(){try{localStorage.setItem(TODO_LS,JSON.stringify(todos));}catch(e){}try{await todoSB('sku_state',{method:'POST',prefer:'resolution=merge-duplicates',body:JSON.stringify({id:TODO_SB,payload:{todos:todos},updated_at:new Date().toISOString()})});}catch(e){}}
-function renderTodos(){
-  const remaining=todos.filter(t=>!t.done).length;
-  const cnt=document.getElementById('todoCount'); if(cnt)cnt.textContent=remaining+'개 남음';
-  document.getElementById('todoList').innerHTML = todos.map((t,i)=>`
-    <div class="todo-row">
-      <div class="todo-check ${t.done?'done':''}" onclick="toggleTodo(${i})"></div>
-      <span class="todo-text ${t.done?'done':''}" onclick="toggleTodo(${i})">${todoEsc(t.text)}</span>
-      ${t.tag?`<span class="todo-tag ${t.tag}">${TODO_TAGS[t.tag]||t.tag}</span>`:''}
-      <button class="todo-btn" title="수정" onclick="editTodo(${i})">&#9998;</button>
-      <button class="todo-btn" title="삭제" onclick="deleteTodo(${i})">&times;</button>
-    </div>`).join('') +
-    `<div class="todo-add"><input id="todoInput" type="text" placeholder="할 일 추가 후 Enter" onkeydown="if(event.key==='Enter')addTodo()"><button class="todo-add-btn" onclick="addTodo()">추가</button></div>`;
-}
-function toggleTodo(i){todos[i].done=!todos[i].done;saveTodos();renderTodos();}
-function editTodo(i){const v=prompt('할 일 수정:',todos[i].text);if(v!=null&&v.trim()){todos[i].text=v.trim();saveTodos();renderTodos();}}
-function deleteTodo(i){if(!confirm('이 할 일을 삭제할까요?'))return;todos.splice(i,1);saveTodos();renderTodos();}
-function addTodo(){const inp=document.getElementById('todoInput');const v=inp.value.trim();if(!v)return;todos.push({text:v,tag:'ops',done:false});saveTodos();renderTodos();const ni=document.getElementById('todoInput');if(ni)ni.focus();}
-async function buildTodo(){await loadTodos();renderTodos();}
-
-// 출고 예정 - 임시 데이터
-document.getElementById('todayShip').textContent = '12건';
-
-function openMobileMenu() {
-  document.getElementById('mobileMenuPanel').classList.add('open');
-  document.getElementById('mobileMenuOverlay').classList.add('open');
-}
-function closeMobileMenu() {
-  document.getElementById('mobileMenuPanel').classList.remove('open');
-  document.getElementById('mobileMenuOverlay').classList.remove('open');
-}
-
-// Init
-setTopbarDate();
-loadTodaySales();
-loadInvoiceSummary();
-loadInventorySummary();
-buildAlerts();
-buildTodo();
+function openMobileMenu(){document.getElementById("mobileMenuPanel").classList.add("open");document.getElementById("mobileMenuOverlay").classList.add("open");}
+function closeMobileMenu(){document.getElementById("mobileMenuPanel").classList.remove("open");document.getElementById("mobileMenuOverlay").classList.remove("open");}
 </script>
 <script id="nav-groups-js">
 (function(){function init(){
@@ -868,6 +711,53 @@ if(document.readyState!=='loading')init();else document.addEventListener('DOMCon
   });
   if(document.readyState!=='loading')render();else document.addEventListener('DOMContentLoaded',render);
 })();
+</script>
+<script>
+
+const SB='https://nifytqcqfattzpwlzpmb.supabase.co';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs';
+async function sbGet(path){try{const r=await fetch(SB+'/rest/v1/'+path,{headers:{apikey:KEY,Authorization:'Bearer '+KEY}});const t=await r.text();return t&&t.trim()?JSON.parse(t):null;}catch(e){return null;}}
+async function sbSave(id,payload){try{await fetch(SB+'/rest/v1/sku_state',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({id:id,payload:payload,updated_at:new Date().toISOString()})});}catch(e){}}
+function won(n){return '₩'+Math.round(n||0).toLocaleString();}
+function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+function ymd(){return new Date().toISOString().slice(0,10);}
+function curMonth(){return new Date().toISOString().slice(0,7);}
+
+
+const ID='biz_vault'; const CATS=["세금계산서", "영수증", "광고 증빙", "외주 증빙"]; let items=[]; let filt='all'; let editId=null;
+function load(){try{var c=localStorage.getItem('anniz_'+ID);if(c){items=JSON.parse(c);render();}}catch(e){}
+  sbGet('sku_state?id=eq.'+ID+'&select=payload').then(function(r){if(r&&r[0]&&r[0].payload&&r[0].payload.items){items=r[0].payload.items;render();}});}
+function persist(){try{localStorage.setItem('anniz_'+ID,JSON.stringify(items));}catch(e){}sbSave(ID,{items:items});}
+function setF(f){filt=f;document.querySelectorAll('#chips .biz-chip').forEach(function(c){c.classList.toggle('active',c.dataset.f===f);});render();}
+function openModal(id){editId=id||null;var it=id?items.find(function(x){return x.id===id;}):null;
+  document.getElementById('mTitle').textContent=id?'증빙 수정':'증빙 추가';
+  document.getElementById('fCat').value=it?it.category:CATS[0];
+  document.getElementById('fTitle').value=it?it.title:'';
+  document.getElementById('fVendor').value=it?(it.vendor||''):'';
+  document.getElementById('fAmount').value=it?(it.amount||''):'';
+  document.getElementById('fDate').value=it?it.date:ymd();
+  document.getElementById('fUrl').value=it?(it.url||''):'';
+  document.getElementById('fMemo').value=it?(it.memo||''):'';
+  document.getElementById('modal').classList.add('open');}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+function saveItem(){var title=document.getElementById('fTitle').value.trim();
+  if(!title){alert('제목을 입력해주세요');return;}
+  var obj={id:editId||uid(),category:document.getElementById('fCat').value,title:title,vendor:document.getElementById('fVendor').value.trim(),amount:parseFloat(document.getElementById('fAmount').value)||0,date:document.getElementById('fDate').value||ymd(),url:document.getElementById('fUrl').value.trim(),memo:document.getElementById('fMemo').value.trim()};
+  if(editId){var i=items.findIndex(function(x){return x.id===editId;});items[i]=obj;}else{items.push(obj);}
+  persist();closeModal();render();}
+function delItem(id){if(!confirm('이 증빙을 삭제할까요?'))return;items=items.filter(function(x){return x.id!==id;});persist();render();}
+function render(){
+  CATS.forEach(function(c,i){document.getElementById('vc_'+i).textContent=items.filter(function(x){return x.category===c;}).length;});
+  var shown=items.filter(function(x){return filt==='all'||x.category===filt;}).sort(function(a,b){return (b.date||'').localeCompare(a.date||'');});
+  var el=document.getElementById('list');
+  if(!shown.length){el.innerHTML='<div class="biz-empty">등록된 증빙이 없어요.<br>오른쪽 위 "+ 증빙 추가"로 등록해보세요.</div>';return;}
+  el.innerHTML=shown.map(function(x){
+    var link=x.url?'<a class="biz-link" href="'+esc(x.url)+'" target="_blank" rel="noopener">열기</a>':'';
+    var amt=x.amount?'<div class="biz-amt">'+won(x.amount)+'</div>':'';
+    return '<div class="biz-row"><span class="biz-tag">'+esc(x.category)+'</span><div class="mainc"><div class="r1">'+esc(x.title)+'</div><div class="r2">'+esc(x.date||'')+(x.vendor?' · '+esc(x.vendor):'')+(x.memo?' · '+esc(x.memo):'')+'</div></div>'+amt+link+'<div class="biz-acts"><button class="biz-ico" onclick="openModal(\''+x.id+'\')">✎</button><button class="biz-ico" onclick="delItem(\''+x.id+'\')">✕</button></div></div>';}).join('');}
+load();
+
 </script>
 </body>
 </html>
