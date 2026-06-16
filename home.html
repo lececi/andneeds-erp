@@ -794,17 +794,32 @@ async function loadTodaySales() {
   try {
     const today = todayStr();
     const month = thisMonthStr();
-    // 오늘 매출
-    const todayData = await sb(`sales?date=eq.${today}&select=net_sales,orders`);
+    // 성수(오프라인) 데이터 로드 — 별도 저장소(seongsu_sales)
+    let ssToday = 0, ssTodayOrders = 0, ssMonth = 0;
+    try {
+      const ssRes = await sb('sku_state?id=eq.seongsu_sales&select=payload');
+      const ssArr = (ssRes && ssRes[0] && Array.isArray(ssRes[0].payload)) ? ssRes[0].payload : [];
+      const ssOids = {};
+      ssArr.forEach(x => {
+        const amt = +x.amount || 0;
+        if (x.date === today) { ssToday += amt; if (x.oid) ssOids[x.oid] = 1; }
+        if (x.date && String(x.date).indexOf(month) === 0) ssMonth += amt;
+      });
+      ssTodayOrders = Object.keys(ssOids).length;
+    } catch(e) {}
+    // 오늘 매출 (온라인 sales[성수 제외] + 성수)
+    const todayData = await sb(`sales?date=eq.${today}&select=net_sales,orders,platform`);
     let todaySales = 0, todayOrders = 0;
-    (todayData||[]).forEach(r => { todaySales += r.net_sales||0; todayOrders += r.orders||0; });
+    (todayData||[]).forEach(r => { if((r.platform||'')!=='성수'){ todaySales += r.net_sales||0; todayOrders += r.orders||0; } });
+    todaySales += ssToday; todayOrders += ssTodayOrders;
     document.getElementById('todaySales').textContent = fmt(todaySales);
     document.getElementById('todayOrders').textContent = todayOrders ? todayOrders+'건' : '—';
 
-    // 이번 달 매출 (목표 2억)
-    const monthData = await sb(`sales?date=like.${month}%&select=net_sales`);
+    // 이번 달 매출 (목표 2억) — 온라인[성수 제외] + 성수
+    const monthData = await sb(`sales?date=like.${month}%&select=net_sales,platform`);
     let monthTotal = 0;
-    (monthData||[]).forEach(r => { monthTotal += r.net_sales||0; });
+    (monthData||[]).forEach(r => { if((r.platform||'')!=='성수') monthTotal += r.net_sales||0; });
+    monthTotal += ssMonth;
     const goal = 200000000;
     const pct = Math.min(100, Math.round(monthTotal/goal*100));
     document.getElementById('goalPct').textContent = pct;
