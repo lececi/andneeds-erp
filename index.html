@@ -624,6 +624,7 @@ body{padding-bottom:34px;}
             <button class="plat-select-btn active" onclick="selectPlat('29CM',this)">29CM</button>
             <button class="plat-select-btn" onclick="selectPlat('무신사',this)">무신사</button>
             <button class="plat-select-btn" onclick="selectPlat('자사몰',this)">자사몰</button>
+            <button class="plat-select-btn" onclick="selectPlat('성수',this)">성수</button>
             <button class="plat-select-btn" onclick="selectPlat('기타',this)">기타</button>
           </div>
         </div>
@@ -633,7 +634,7 @@ body{padding-bottom:34px;}
           <div style="font-size:12px;color:var(--text-3);margin-bottom:16px;">29CM 주문 데이터 · 취소/반품 자동 제외</div>
           <button class="upload-btn" onclick="document.getElementById('fileInput').click()">파일 선택</button>
           <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" onchange="handleFile(this.files[0])">
-          <div style="margin-top:10px;font-size:11px;color:#2B6CB8;display:flex;align-items:center;gap:5px;">✓ 업로드 엔진 v8 · 29CM·무신사·카페24(자사몰) 인식 지원</div>
+          <div style="margin-top:10px;font-size:11px;color:#2B6CB8;display:flex;align-items:center;gap:5px;">✓ 업로드 엔진 v9 · 29CM·무신사·카페24(자사몰)·성수스토어 인식 지원</div>
         </div>
         <div id="uploadResult" style="margin-top:14px;"></div>
       </div>
@@ -685,7 +686,7 @@ function setPlatFilter(name, btn){
   render();
 }
 function syncUploadPlat(name){
-  if(['29CM','무신사','자사몰'].indexOf(name)<0) return;
+  if(['29CM','무신사','자사몰','성수'].indexOf(name)<0) return;
   selectedPlatform=name;
   document.querySelectorAll('.plat-select-btn').forEach(function(b){ b.classList.toggle('active', b.textContent.trim()===name); });
   if(previewRows && previewRows.length>0) previewRows.forEach(function(r){r.platform=name;});
@@ -1283,16 +1284,54 @@ function handleFile(file){
       try{
         const wb=XLSX.read(e.target.result,{type:'array',cellDates:true});
         const ws=wb.Sheets[wb.SheetNames[0]];
-        const rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false});
-        parseRows(rows);
+        if(selectedPlatform==='성수'){
+          const aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:true});
+          parseSeongsu(aoa);
+        }else{
+          const rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false});
+          parseRows(rows);
+        }
       }catch(err){resultEl.textContent='엑셀 파일을 읽을 수 없습니다.';console.error(err);}
     };
     reader.readAsArrayBuffer(file);
   }else{
-    Papa.parse(file,{header:true,skipEmptyLines:true,complete:(res)=>{parseRows(res.data);}});
+    if(selectedPlatform==='성수'){ Papa.parse(file,{header:false,skipEmptyLines:false,complete:(res)=>{parseSeongsu(res.data);}}); }
+    else { Papa.parse(file,{header:true,skipEmptyLines:true,complete:(res)=>{parseRows(res.data);}}); }
   }
 }
 
+function ssDate(v){
+  if(v instanceof Date){return v.getFullYear()+'-'+('0'+(v.getMonth()+1)).slice(-2)+'-'+('0'+v.getDate()).slice(-2);}
+  var s=String(v==null?'':v).trim();
+  var m=s.match(/(\d{4})[-.\/](\d{1,2})[-.\/](\d{1,2})/);
+  return m?(m[1]+'-'+('0'+m[2]).slice(-2)+'-'+('0'+m[3]).slice(-2)):'';
+}
+function parseSeongsu(aoa){
+  previewRows=[]; previewDetail=[];
+  var orders=[], cur=null, seq=0;
+  for(var i=0;i<aoa.length;i++){
+    var row=aoa[i]||[];
+    var payRaw=String(row[8]==null?'':row[8]).replace(/[,\u20a9\s]/g,'');
+    var prod=String(row[4]==null?'':row[4]).replace(/^\+\s*/,'').trim();
+    var payNum=parseFloat(payRaw);
+    if(payRaw!=='' && !isNaN(payNum)){
+      var d=ssDate(row[1]);
+      if(!d){cur=null;continue;}
+      seq++;
+      cur={oid:'ss|'+d+'|'+seq, date:d, pay:Math.round(payNum), prods:[]};
+      orders.push(cur);
+      if(prod) cur.prods.push(prod);
+    } else if(cur && prod){ cur.prods.push(prod); }
+  }
+  orders.forEach(function(o){
+    previewRows.push({date:o.date, platform:'성수', original_sales:o.pay, coupon:0, net_sales:o.pay, orders:1});
+    var nn=o.prods.length;
+    if(nn>0){ var share=Math.round(o.pay/nn);
+      o.prods.forEach(function(p,k){ previewDetail.push({key:o.oid+'|'+k+'|'+p, order:o.oid, date:o.date, product:p, buyer:'', cust:o.oid, platform:'성수', net:share, orig:share, onet:o.pay}); });
+    }
+  });
+  finishParse(0);
+}
 function parseRows(rows){
   let skipped=0; previewRows=[]; previewDetail=[]; var c24seen={};
   var c24linesum={};
@@ -1362,6 +1401,9 @@ function parseRows(rows){
     if(product && (netSales>0||original_sales>0)) previewDetail.push({key:orderNo+'|'+String(row['상품번호']||'')+'|'+String(row['옵션코드']||''), order:orderNo, date, product:product, buyer:buyer, platform:selectedPlatform, net:Math.round(netSales), orig:Math.round(original_sales)});
     if(net_sales>0)previewRows.push({date,platform:selectedPlatform,original_sales:Math.round(original_sales),coupon:Math.round(coupon),net_sales:Math.round(net_sales),orders:1});
   });
+  finishParse(skipped);
+}
+function finishParse(skipped){
   // 상품 상세 즉시 반영 (클라우드 저장과 무관)
   var detailCount=previewDetail.length;
   if(detailCount){
