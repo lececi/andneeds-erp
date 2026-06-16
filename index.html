@@ -633,7 +633,7 @@ body{padding-bottom:34px;}
           <div style="font-size:12px;color:var(--text-3);margin-bottom:16px;">29CM 주문 데이터 · 취소/반품 자동 제외</div>
           <button class="upload-btn" onclick="document.getElementById('fileInput').click()">파일 선택</button>
           <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" onchange="handleFile(this.files[0])">
-          <div style="margin-top:10px;font-size:11px;color:#2B6CB8;display:flex;align-items:center;gap:5px;">✓ 업로드 엔진 v7 · 상품·신규/재구매 인식 지원</div>
+          <div style="margin-top:10px;font-size:11px;color:#2B6CB8;display:flex;align-items:center;gap:5px;">✓ 업로드 엔진 v8 · 29CM·무신사·카페24(자사몰) 인식 지원</div>
         </div>
         <div id="uploadResult" style="margin-top:14px;"></div>
       </div>
@@ -1287,8 +1287,29 @@ function handleFile(file){
 }
 
 function parseRows(rows){
-  let skipped=0; previewRows=[]; previewDetail=[];
+  let skipped=0; previewRows=[]; previewDetail=[]; var c24seen={};
   rows.forEach(row=>{
+    // 카페24(자사몰) 형식 (발주일 + 총 결제금액 컬럼)
+    if(row['발주일']!==undefined && row['총 결제금액']!==undefined){
+      var c24order=String(row['주문번호']||'').trim();
+      var c24d=String(row['발주일']||'').slice(0,10);
+      if((!c24d||c24d.length<10) && /^[0-9]{8}/.test(c24order)) c24d=c24order.slice(0,4)+'-'+c24order.slice(4,6)+'-'+c24order.slice(6,8);
+      if(!c24d||c24d.length<10)return;
+      var c24line=String(row['품목별 주문번호']||c24order).trim();
+      var c24prod=String(row['주문상품명']||row['주문상품명(옵션포함)']||'').trim();
+      var c24qty=parseFloat(String(row['수량']||'1').replace(/[,\s]/g,''))||1;
+      var c24price=parseFloat(String(row['판매가']||'0').replace(/[,₩\s]/g,''))||0;
+      var c24buyer=String(row['수령인']||'').trim();
+      var c24lineAmt=Math.round(c24price*c24qty);
+      if(c24prod && c24lineAmt>0) previewDetail.push({key:'c24|'+c24line, order:c24order, date:c24d, product:c24prod, buyer:c24buyer, platform:selectedPlatform, net:c24lineAmt, orig:c24lineAmt});
+      if(!c24seen[c24order]){
+        c24seen[c24order]=1;
+        var c24orig=parseFloat(String(row['총 주문금액']||'0').replace(/[,₩\s]/g,''))||0;
+        var c24net=parseFloat(String(row['총 결제금액']||'0').replace(/[,₩\s]/g,''))||0;
+        if(c24net>0)previewRows.push({date:c24d,platform:selectedPlatform,original_sales:Math.round(c24orig),coupon:Math.round(Math.max(0,c24orig-c24net)),net_sales:Math.round(c24net),orders:1});
+      }
+      return;
+    }
     // 무신사 형식 (입금일자 컬럼)
     if(row['입금일자']!==undefined) {
       const rawDate=String(row['입금일자']||'');
