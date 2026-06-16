@@ -1027,14 +1027,14 @@ function renderNewReturning(){
   var pool=salesDetail.filter(function(r){var p=(r.platform||'29CM'); if(p==='성수')return false; if(platFilter==='전체'||platFilter==='온라인')return true; return p===platFilter;});
   if(!pool.length){ el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span></div><div class="chart-card"><div style="text-align:center;color:#A09A94;font-size:13px;padding:18px 0;line-height:1.7;">'+platFilter+' 고객 데이터가 없어요.<br><span style="color:#C4BDB4;">(신규/재구매 분석은 29CM 상세 엑셀만 지원)</span></div></div>'; return; }
   var orders={};
-  pool.forEach(function(r){ if(!r.order)return; if(!orders[r.order])orders[r.order]={buyer:r.buyer,date:r.date,net:0}; orders[r.order].net+=r.net; if(r.date<orders[r.order].date)orders[r.order].date=r.date; });
-  var ol=Object.keys(orders).map(function(k){return {id:k,buyer:orders[k].buyer,date:orders[k].date,net:orders[k].net};});
+  pool.forEach(function(r){ if(!r.order)return; if(!orders[r.order])orders[r.order]={buyer:r.buyer,cust:(r.cust||r.buyer),date:r.date,net:0}; orders[r.order].net+=r.net; if(r.date<orders[r.order].date)orders[r.order].date=r.date; });
+  var ol=Object.keys(orders).map(function(k){return {id:k,buyer:orders[k].buyer,cust:orders[k].cust,date:orders[k].date,net:orders[k].net};});
   if(!ol.length){el.innerHTML='';return;}
   var first={};
-  ol.forEach(function(o){var key=o.buyer||o.id; var f=first[key]; if(!f||o.date<f.date||(o.date===f.date&&o.id<f.id))first[key]=o;});
+  ol.forEach(function(o){var key=o.cust||o.buyer||o.id; var f=first[key]; if(!f||o.date<f.date||(o.date===f.date&&o.id<f.id))first[key]=o;});
   var inWin=function(d){ if(!w.start)return true; return d>=_ymd(w.start)&&d<=_ymd(w.end); };
   var nNew=0,nRe=0,sNew=0,sRe=0;
-  ol.forEach(function(o){ if(!inWin(o.date))return; var key=o.buyer||o.id; if(first[key].id===o.id){nNew++;sNew+=o.net;}else{nRe++;sRe+=o.net;} });
+  ol.forEach(function(o){ if(!inWin(o.date))return; var key=o.cust||o.buyer||o.id; if(first[key].id===o.id){nNew++;sNew+=o.net;}else{nRe++;sRe+=o.net;} });
   var realTot=nNew+nRe; var pNew=realTot?Math.round(nNew/realTot*100):0; var pRe=realTot?100-pNew:0;
   if(!realTot){ el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span></div><div class="chart-card"><div style="text-align:center;color:#A09A94;font-size:13px;padding:18px 0;line-height:1.7;">이 기간엔 주문 데이터가 없어요.<br><span style="color:#C4BDB4;">(해당 기간 29CM 엑셀을 올리면 표시돼요)</span></div></div>'; return; }
   el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span><span class="iv-nrnote">재구매율 '+pRe+'%</span></div>'+
@@ -1304,7 +1304,9 @@ function parseRows(rows){
       var c24orig=parseFloat(String(row['총 주문금액']||'0').replace(/[,₩\s]/g,''))||0;
       var c24net=parseFloat(String(row['총 결제금액']||'0').replace(/[,₩\s]/g,''))||0;
       var c24lineNet=(c24orig>0)?Math.round(c24lineAmt/c24orig*c24net):c24lineAmt;
-      if(c24prod && c24lineAmt>0) previewDetail.push({key:'c24|'+c24line, order:c24order, date:c24d, product:c24prod, buyer:c24buyer, platform:selectedPlatform, net:c24lineNet, orig:c24lineAmt});
+      var c24phone=String(row['수령인 휴대전화']||'').replace(/[^0-9]/g,'');
+      var c24cust=c24phone?(c24buyer+'|'+c24phone):c24buyer;
+      if(c24prod && c24lineAmt>0) previewDetail.push({key:'c24|'+c24line, order:c24order, date:c24d, product:c24prod, buyer:c24buyer, cust:c24cust, platform:selectedPlatform, net:c24lineNet, orig:c24lineAmt});
       if(!c24seen[c24order]){
         c24seen[c24order]=1;
         if(c24net>0)previewRows.push({date:c24d,platform:selectedPlatform,original_sales:Math.round(c24net),coupon:0,net_sales:Math.round(c24net),orders:1});
