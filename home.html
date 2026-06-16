@@ -763,9 +763,6 @@ async function sb(path) {
 }
 
 function fmt(n) {
-  if(n >= 100000000) return '₩'+(n/100000000).toFixed(1)+'억';
-  if(n >= 10000000) return '₩'+(n/10000000).toFixed(0)+'천만';
-  if(n >= 1000000) return '₩'+(n/1000000).toFixed(0)+'M';
   return '₩'+Math.round(n).toLocaleString();
 }
 
