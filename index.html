@@ -971,7 +971,7 @@ function perBounds(){
   return {min:min,max:max};
 }
 function ensurePer(){ var b=perBounds(); if(!b)return false;
-  if(!perCursor||perCursor<b.min||perCursor>b.max){ perCursor=b.max; }
+  if(!perCursor){ perCursor=_ymd(new Date()); }
   return true; }
 function perWindow(cur,unit){
   cur=cur||perCursor; unit=unit||perUnit;
