@@ -701,6 +701,20 @@ async function loadSeongsu(){
   try{var r=localStorage.getItem('anniz_seongsu_sales'); if(r){var a=JSON.parse(r); if(Array.isArray(a))seongsuSales=a;}}catch(e){}
   try{var c=await sbFetch('sku_state?id=eq.seongsu_sales&select=payload'); if(c&&c[0]&&Array.isArray(c[0].payload)){var seen={};seongsuSales.forEach(function(x){seen[x.id]=1;});c[0].payload.forEach(function(x){if(x&&!seen[x.id]){seongsuSales.push(x);seen[x.id]=1;}});}}catch(e){}
 }
+async function migrateSeongsuDates(){
+  // 1회성: 과거 업로드분이 SheetJS 타임존 버그로 -1일 밀린 것을 +1일 보정
+  try{
+    var done = localStorage.getItem('anniz_seongsu_datefix')==='v1';
+    if(!done){ var cf = await sbFetch('sku_state?id=eq.seongsu_datefix&select=payload'); if(cf && cf[0]) done=true; }
+    if(done){ localStorage.setItem('anniz_seongsu_datefix','v1'); return; }
+    if(seongsuSales && seongsuSales.length){
+      seongsuSales.forEach(function(x){ if(x.date){ var d=new Date(x.date+'T00:00:00'); d.setDate(d.getDate()+1); x.date=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); } });
+      await saveSeongsuCloud();
+    }
+    localStorage.setItem('anniz_seongsu_datefix','v1');
+    await sbFetch('sku_state', { method:'POST', prefer:'resolution=merge-duplicates,return=minimal', body: JSON.stringify([{id:'seongsu_datefix', payload:{done:true, at:new Date().toISOString()}}]) });
+  }catch(e){}
+}
 function applySeongsu(){
   records=records.filter(function(r){return (r.platform||'')!=='성수';});
   var byDate={};
@@ -734,6 +748,7 @@ async function loadData() {
     records = all;
     await loadDetailCloud();
     await loadSeongsu();
+    await migrateSeongsuDates();
     applySeongsu();
     render();
   } catch(e) { showToast('데이터 불러오기 실패: ' + e.message); }
@@ -1305,7 +1320,7 @@ function handleFile(file){
 }
 
 function ssDate(v){
-  if(v instanceof Date){return v.getFullYear()+'-'+('0'+(v.getMonth()+1)).slice(-2)+'-'+('0'+v.getDate()).slice(-2);}
+  if(v instanceof Date){ var _d=new Date(v.getTime()+12*3600*1000); return _d.getFullYear()+'-'+('0'+(_d.getMonth()+1)).slice(-2)+'-'+('0'+_d.getDate()).slice(-2); }
   var s=String(v==null?'':v).trim();
   var m=s.match(/(\d{4})[-.\/](\d{1,2})[-.\/](\d{1,2})/);
   return m?(m[1]+'-'+('0'+m[2]).slice(-2)+'-'+('0'+m[3]).slice(-2)):'';
@@ -1446,8 +1461,10 @@ async function saveSeongsuCloud(){
 async function confirmSeongsu(){
   const btn=document.getElementById('confirmBtn'); if(btn){btn.disabled=true;btn.textContent='저장 중...';}
   try{
-    var dts={}; seongsuPending.forEach(function(x){dts[x.date]=1;});
-    seongsuSales=seongsuSales.filter(function(x){return !dts[x.date];}).concat(seongsuPending);
+    var _dmin=null,_dmax=null; seongsuPending.forEach(function(x){if(!_dmin||x.date<_dmin)_dmin=x.date;if(!_dmax||x.date>_dmax)_dmax=x.date;});
+    function _shiftD(ds,n){var d=new Date(ds+'T00:00:00');d.setDate(d.getDate()+n);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+    var _lo=_shiftD(_dmin,-1), _hi=_shiftD(_dmax,1);
+    seongsuSales=seongsuSales.filter(function(x){return !(x.date>=_lo&&x.date<=_hi);}).concat(seongsuPending);
     await saveSeongsuCloud();
     const cnt=previewRows.length;
     document.getElementById('uploadResult').innerHTML='<span style=\"color:var(--success)\">✓ 성수 '+cnt+'건이 모두 저장되었습니다</span>';
