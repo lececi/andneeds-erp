@@ -1301,12 +1301,13 @@ function parseRows(rows){
       var c24price=parseFloat(String(row['판매가']||'0').replace(/[,₩\s]/g,''))||0;
       var c24buyer=String(row['수령인']||'').trim();
       var c24lineAmt=Math.round(c24price*c24qty);
-      if(c24prod && c24lineAmt>0) previewDetail.push({key:'c24|'+c24line, order:c24order, date:c24d, product:c24prod, buyer:c24buyer, platform:selectedPlatform, net:c24lineAmt, orig:c24lineAmt});
+      var c24orig=parseFloat(String(row['총 주문금액']||'0').replace(/[,₩\s]/g,''))||0;
+      var c24net=parseFloat(String(row['총 결제금액']||'0').replace(/[,₩\s]/g,''))||0;
+      var c24lineNet=(c24orig>0)?Math.round(c24lineAmt/c24orig*c24net):c24lineAmt;
+      if(c24prod && c24lineAmt>0) previewDetail.push({key:'c24|'+c24line, order:c24order, date:c24d, product:c24prod, buyer:c24buyer, platform:selectedPlatform, net:c24lineNet, orig:c24lineAmt});
       if(!c24seen[c24order]){
         c24seen[c24order]=1;
-        var c24orig=parseFloat(String(row['총 주문금액']||'0').replace(/[,₩\s]/g,''))||0;
-        var c24net=parseFloat(String(row['총 결제금액']||'0').replace(/[,₩\s]/g,''))||0;
-        if(c24net>0)previewRows.push({date:c24d,platform:selectedPlatform,original_sales:Math.round(c24orig),coupon:Math.round(Math.max(0,c24orig-c24net)),net_sales:Math.round(c24net),orders:1});
+        if(c24net>0)previewRows.push({date:c24d,platform:selectedPlatform,original_sales:Math.round(c24net),coupon:0,net_sales:Math.round(c24net),orders:1});
       }
       return;
     }
