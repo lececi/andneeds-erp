@@ -683,6 +683,7 @@ function setPlatFilter(name, btn){
   document.querySelectorAll('.plat-filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   syncUploadPlat(name);
+  perCursor=null; ensurePer();
   render();
 }
 function syncUploadPlat(name){
@@ -693,6 +694,7 @@ function syncUploadPlat(name){
 }
 
 var seongsuSales=[];
+var seongsuPending=[];
 async function loadSeongsu(){
   try{var r=localStorage.getItem('anniz_seongsu_sales'); if(r){var a=JSON.parse(r); if(Array.isArray(a))seongsuSales=a;}}catch(e){}
   try{var c=await sbFetch('sku_state?id=eq.seongsu_sales&select=payload'); if(c&&c[0]&&Array.isArray(c[0].payload)){var seen={};seongsuSales.forEach(function(x){seen[x.id]=1;});c[0].payload.forEach(function(x){if(x&&!seen[x.id]){seongsuSales.push(x);seen[x.id]=1;}});}}catch(e){}
@@ -700,8 +702,8 @@ async function loadSeongsu(){
 function applySeongsu(){
   records=records.filter(function(r){return (r.platform||'')!=='성수';});
   var byDate={};
-  seongsuSales.forEach(function(x){var d=x.date; if(!d)return; if(!byDate[d])byDate[d]={amt:0,cnt:0}; byDate[d].amt+=num(x.amount); byDate[d].cnt+=1;});
-  Object.keys(byDate).forEach(function(d){records.push({date:d,platform:'성수',original_sales:byDate[d].amt,net_sales:byDate[d].amt,coupon:0,orders:byDate[d].cnt});});
+  seongsuSales.forEach(function(x){var d=x.date; if(!d)return; if(!byDate[d])byDate[d]={amt:0,ords:{},n:0}; byDate[d].amt+=num(x.amount); if(x.oid)byDate[d].ords[x.oid]=1; else byDate[d].n+=1;});
+  Object.keys(byDate).forEach(function(d){var oc=Object.keys(byDate[d].ords).length+byDate[d].n; records.push({date:d,platform:'성수',original_sales:byDate[d].amt,net_sales:byDate[d].amt,coupon:0,orders:oc});});
   records.sort(function(a,b){return String(a.date)<String(b.date)?-1:1;});
 }
 function seongsuDetail(){
@@ -944,17 +946,15 @@ function moveMonth(dir){
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function perBounds(){
   var ds=[];
-  if(typeof records!=='undefined' && records) records.forEach(function(r){ds.push(String(r.date));});
-  salesDetail.forEach(function(r){ds.push(r.date);});
+  (typeof getFiltered==='function'?getFiltered():(records||[])).forEach(function(r){ds.push(String(r.date));});
+  var det=salesDetail.concat(typeof seongsuDetail==='function'?seongsuDetail():[]);
+  det.forEach(function(r){var p=(r.platform||'29CM'); var ok=(platFilter==='전체')||(platFilter==='온라인'?p!=='성수':p===platFilter); if(ok)ds.push(r.date);});
   if(!ds.length) return null;
   var min=ds[0],max=ds[0]; ds.forEach(function(d){if(d<min)min=d;if(d>max)max=d;});
   return {min:min,max:max};
 }
 function ensurePer(){ var b=perBounds(); if(!b)return false;
-  if(!perCursor||perCursor<b.min||perCursor>b.max){
-    if(salesDetail&&salesDetail.length){ var pmax=salesDetail[0].date; salesDetail.forEach(function(r){if(r.date>pmax)pmax=r.date;}); perCursor=pmax; }
-    else { perCursor=b.max; }
-  }
+  if(!perCursor||perCursor<b.min||perCursor>b.max){ perCursor=b.max; }
   return true; }
 function perWindow(cur,unit){
   cur=cur||perCursor; unit=unit||perUnit;
@@ -1323,14 +1323,21 @@ function parseSeongsu(aoa){
       if(prod) cur.prods.push(prod);
     } else if(cur && prod){ cur.prods.push(prod); }
   }
+  seongsuPending=[];
   orders.forEach(function(o){
     previewRows.push({date:o.date, platform:'성수', original_sales:o.pay, coupon:0, net_sales:o.pay, orders:1});
     var nn=o.prods.length;
-    if(nn>0){ var share=Math.round(o.pay/nn);
-      o.prods.forEach(function(p,k){ previewDetail.push({key:o.oid+'|'+k+'|'+p, order:o.oid, date:o.date, product:p, buyer:'', cust:o.oid, platform:'성수', net:share, orig:share, onet:o.pay}); });
+    if(nn>0){ var _base=Math.floor(o.pay/nn);
+      o.prods.forEach(function(p,k){
+        var share=(k===nn-1)?(o.pay-_base*(nn-1)):_base;
+        previewDetail.push({key:o.oid+'|'+k+'|'+p, order:o.oid, date:o.date, product:p, buyer:'', cust:o.oid, platform:'성수', net:share, orig:share, onet:o.pay});
+        seongsuPending.push({id:o.oid+'|'+k, oid:o.oid, date:o.date, product:p, amount:share});
+      });
+    } else {
+      seongsuPending.push({id:o.oid+'|0', oid:o.oid, date:o.date, product:'(미입력)', amount:o.pay});
     }
   });
-  finishParse(0);
+  finishParse(0, true);
 }
 function parseRows(rows){
   let skipped=0; previewRows=[]; previewDetail=[]; var c24seen={};
@@ -1403,10 +1410,10 @@ function parseRows(rows){
   });
   finishParse(skipped);
 }
-function finishParse(skipped){
+function finishParse(skipped, skipDetailSave){
   // 상품 상세 즉시 반영 (클라우드 저장과 무관)
   var detailCount=previewDetail.length;
-  if(detailCount){
+  if(detailCount && !skipDetailSave){
     var _m={}; salesDetail.forEach(function(r){_m[r.key]=r;}); previewDetail.forEach(function(r){_m[r.key]=r;});
     salesDetail=Object.values(_m);
     try{localStorage.setItem('anniz_sales_detail',JSON.stringify(salesDetail));}catch(_e){}
@@ -1428,8 +1435,26 @@ function finishParse(skipped){
     <button class="btn-primary" id="confirmBtn" onclick="confirmUpload()" style="width:100%;">✓ 이 데이터로 저장하기</button>`;
 }
 
+async function saveSeongsuCloud(){
+  try{ localStorage.setItem('anniz_seongsu_sales', JSON.stringify(seongsuSales)); }catch(_e){}
+  try{ await sbFetch('sku_state', { method:'POST', prefer:'resolution=merge-duplicates,return=minimal', body: JSON.stringify([{id:'seongsu_sales', payload: seongsuSales}]) }); }catch(e){}
+}
+async function confirmSeongsu(){
+  const btn=document.getElementById('confirmBtn'); if(btn){btn.disabled=true;btn.textContent='저장 중...';}
+  try{
+    var dts={}; seongsuPending.forEach(function(x){dts[x.date]=1;});
+    seongsuSales=seongsuSales.filter(function(x){return !dts[x.date];}).concat(seongsuPending);
+    await saveSeongsuCloud();
+    const cnt=previewRows.length;
+    document.getElementById('uploadResult').innerHTML='<span style=\"color:var(--success)\">✓ 성수 '+cnt+'건이 모두 저장되었습니다</span>';
+    seongsuPending=[]; previewRows=[]; previewDetail=[];
+    await loadData();
+    showToast(cnt+'건 저장 완료 ✓');
+  }catch(e){ const b=document.getElementById('confirmBtn'); if(b){b.textContent='✓ 이 데이터로 저장하기';b.disabled=false;} showToast('저장 실패: '+((e&&e.message)||e)); }
+}
 async function confirmUpload(){
   if(previewRows.length===0)return;
+  if(seongsuPending && seongsuPending.length){ await confirmSeongsu(); return; }
   const btn=document.getElementById('confirmBtn');
   const total=previewRows.length;
   btn.disabled=true;
