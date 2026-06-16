@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ANDNEEDS · THE DAILY EDIT.</title>
+<title>증빙보관함 · ANDNEEDS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 @font-face {
@@ -559,178 +559,25 @@ body{padding-bottom:34px;}
   </header>
 
   <main>
-    <!-- HERO -->
-    <div class="hero-strip">
-      <div style="display:flex;align-items:baseline;gap:32px;">
-        <div class="hero-greeting">THE DAILY EDIT.</div>
-        
-      </div>
-
-    </div>
-
-    <!-- TODAY CARDS -->
-    <div class="today-row">
-      <div class="today-card dark">
-        <div class="today-label">오늘 매출</div>
-        <div class="today-val" id="todaySales">—</div>
-        <div class="today-sub">실 판매액 기준</div>
-        <div class="today-badge up" id="todaySalesBadge" style="display:none;">↑ —</div>
-      </div>
-      <div class="today-card">
-        <div class="today-label">오늘 주문</div>
-        <div class="today-val" id="todayOrders">—</div>
-        <div class="today-sub">전체 플랫폼 합산</div>
-      </div>
-      <div class="today-card">
-        <div class="today-label">출고 예정</div>
-        <div class="today-val" id="todayShip">—</div>
-        <div class="today-sub">미처리 주문</div>
-      </div>
-      <div class="today-card">
-        <div class="today-label">입금 예정</div>
-        <div class="today-val" id="todayPay">—</div>
-        <div class="today-sub">미수금 인보이스</div>
-      </div>
-    </div>
-
-    <!-- GOAL BAR -->
-    <div class="goal-section">
-      <div class="goal-header">
-        <div>
-          <span class="goal-title">이번 달 매출 목표</span>
-          <div id="goalSub" style="font-size:12px;color:var(--ink-3);margin-top:3px;"></div>
-        </div>
-        <span class="goal-nums"><strong id="goalPct">—</strong><span style="font-size:13px;color:var(--ink-2);margin-left:1px;">%</span></span>
-      </div>
-      <div class="goal-track">
-        <div class="goal-fill" id="goalFill" style="width:0%" data-pct="0%"></div>
-      </div>
-      <div class="goal-milestones">
-        <span class="goal-milestone">₩0</span>
-        <span class="goal-milestone">₩50M</span>
-        <span class="goal-milestone">₩100M</span>
-        <span class="goal-milestone">₩150M</span>
-        <span class="goal-milestone">목표 ₩200M</span>
-      </div>
-    </div>
-
-    <!-- INVENTORY STRIP -->
-    <div class="inv-strip" style="margin-bottom:40px;">
-      <div class="inv-strip-item">
-        <div class="inv-strip-label">총 상품</div>
-        <div class="inv-strip-val" id="invTotal">—</div>
-        <div class="inv-strip-sub">등록 SKU</div>
-      </div>
-      <div class="inv-strip-item">
-        <div class="inv-strip-label">재고 부족</div>
-        <div class="inv-strip-val" id="invLow" style="color:var(--red);">—</div>
-        <div class="inv-strip-sub">5개 미만</div>
-      </div>
-      <div class="inv-strip-item">
-        <div class="inv-strip-label">품절</div>
-        <div class="inv-strip-val" id="invOut" style="color:var(--ink-3);">—</div>
-        <div class="inv-strip-sub">재입고 필요</div>
-      </div>
-    </div>
-
-    <!-- MID GRID -->
-    <div class="mid-grid">
-      <!-- BEST SKU -->
-      <div class="section-card">
-        <div class="section-head">
-          <span class="section-title">베스트 SKU</span>
-          <a href="inventory.html" class="section-link">재고 →</a>
-        </div>
-        <div id="bestSkuList">
-          <div class="sku-row"><span class="sku-rank">—</span><div class="sku-info"><div class="sku-name">불러오는 중</div></div></div>
-        </div>
-      </div>
-
-      <!-- DANGER SKU -->
-      <div class="section-card">
-        <div class="section-head">
-          <span class="section-title">위험 SKU</span>
-          <a href="inventory.html" class="section-link">확인 →</a>
-        </div>
-        <div id="dangerSkuList">
-          <div class="sku-row"><span class="sku-rank">—</span><div class="sku-info"><div class="sku-name">불러오는 중</div></div></div>
-        </div>
-      </div>
-
-      <!-- ALERTS -->
-      <div class="section-card">
-        <div class="section-head">
-          <span class="section-title">알림 센터</span>
-          <span class="section-link" id="alertCount">—</span>
-        </div>
-        <div id="alertList">
-          <div class="alert-row"><span class="alert-dot gold"></span><div><div class="alert-text">불러오는 중...</div></div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- BOTTOM GRID -->
-    <div class="bottom-grid">
-      <!-- TODO -->
-      <div class="section-card">
-        <div class="section-head">
-          <span class="section-title">오늘 해야 할 일</span>
-          <span class="section-link" id="todoCount"></span>
-        </div>
-        <div id="todoList"></div>
-      </div>
-
-      <!-- SEASON PROGRESS -->
-      <div class="section-card">
-        <div class="section-head">
-          <span class="section-title">26FW 시즌 진행률</span>
-          <span class="section-link">Refined Wild</span>
-        </div>
-        <div>
-          <div class="season-row">
-            <div class="season-row-head">
-              <span class="season-name">기획 / 소싱</span>
-              <span class="season-pct">100%</span>
-            </div>
-            <div class="season-bar"><div class="season-bar-fill" style="width:100%"></div></div>
-            <div class="season-sub">완료 · 2026.02</div>
-          </div>
-          <div class="season-row">
-            <div class="season-row-head">
-              <span class="season-name">샘플 제작</span>
-              <span class="season-pct">100%</span>
-            </div>
-            <div class="season-bar"><div class="season-bar-fill" style="width:100%"></div></div>
-            <div class="season-sub">완료 · 2026.04</div>
-          </div>
-          <div class="season-row">
-            <div class="season-row-head">
-              <span class="season-name">촬영 / 콘텐츠</span>
-              <span class="season-pct">75%</span>
-            </div>
-            <div class="season-bar"><div class="season-bar-fill blue" style="width:75%"></div></div>
-            <div class="season-sub">진행 중 · 룩북 촬영 완료, 상세 진행 중</div>
-          </div>
-          <div class="season-row">
-            <div class="season-row-head">
-              <span class="season-name">플랫폼 등록</span>
-              <span class="season-pct">40%</span>
-            </div>
-            <div class="season-bar"><div class="season-bar-fill blue" style="width:40%"></div></div>
-            <div class="season-sub">29CM 완료 · 무신사 진행 중</div>
-          </div>
-          <div class="season-row">
-            <div class="season-row-head">
-              <span class="season-name">출시 / 판매</span>
-              <span class="season-pct">0%</span>
-            </div>
-            <div class="season-bar"><div class="season-bar-fill" style="width:0%"></div></div>
-            <div class="season-sub">예정 · 2026.07.01</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
+<style id="ph-style">
+  main{display:flex;align-items:center;justify-content:center;min-height:60vh;}
+  .ph-card{max-width:560px;width:100%;text-align:center;padding:56px 40px;
+    background:var(--surface,#fff);border:1px solid var(--border,#ececec);border-radius:18px;}
+  .ph-eyebrow{font-size:11px;font-weight:600;letter-spacing:0.18em;color:#2B6CB8;text-transform:uppercase;margin-bottom:18px;}
+  .ph-title{font-size:30px;font-weight:600;letter-spacing:-0.01em;color:var(--text,#1a1a1a);margin:0 0 6px;}
+  .ph-en{font-size:13px;color:var(--text-3,#9a9a9a);letter-spacing:0.04em;margin-bottom:22px;}
+  .ph-desc{font-size:14px;line-height:1.7;color:var(--text-2,#666);margin:0 auto 28px;max-width:400px;}
+  .ph-badge{display:inline-block;font-size:12px;font-weight:500;letter-spacing:0.04em;color:#2B6CB8;
+    background:rgba(43,108,184,0.08);border:1px solid rgba(43,108,184,0.22);border-radius:999px;padding:8px 18px;}
+</style>
+  <div class="ph-card">
+    <div class="ph-eyebrow">BUSINESS</div>
+    <h1 class="ph-title">증빙보관함</h1>
+    <div class="ph-en">Document Vault</div>
+    <p class="ph-desc">세금계산서·영수증 등 증빙 서류를 안전하게 보관하는 공간이에요.</p>
+    <div class="ph-badge">준비 중 · Coming soon</div>
+  </div>
+</main>
 </div>
 
 <!-- MOBILE MENU -->
