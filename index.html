@@ -404,6 +404,8 @@ body{padding-bottom:34px;}
 .iv-shead{margin-bottom:14px;}
 .iv-ctitle{font-size:15px;font-weight:600;color:#1A1714;}
 .iv-seg{display:inline-flex;background:#F0EFEC;border-radius:9px;padding:3px;gap:2px;}
+.iv-tpqty.qty-strong{color:#1A1714;font-weight:700;}
+.iv-tpname .amt.amt-strong{color:#1A1714;}
 .iv-segbtn{border:none;background:transparent;color:#6B6560;font-size:12px;font-weight:500;padding:6px 12px;border-radius:7px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;}
 .iv-segbtn.active{background:#1A1714;color:#fff;}
 @media(max-width:600px){.iv-chead,.iv-shead{flex-direction:column;align-items:flex-start;}.iv-seg{width:100%;}.iv-segbtn{flex:1;text-align:center;}}
@@ -798,7 +800,7 @@ function renderMetrics() {
 }
 
 var trendGran='monthly', topRange='all';
-var monthCur=null; var nrMonthCur=null; var nrMonths=[]; var tpUnit='month'; var tpCursor=null; var perUnit='month'; var perCursor=null; var previewDetail=[]; var salesDetail=[]; try{salesDetail=JSON.parse(localStorage.getItem('anniz_sales_detail')||'[]');}catch(_e){salesDetail=[];}
+var monthCur=null; var nrMonthCur=null; var nrMonths=[]; var tpUnit='month'; var tpCursor=null; var perUnit='month'; var perCursor=null; var topSortMode='amount'; var previewDetail=[]; var salesDetail=[]; try{salesDetail=JSON.parse(localStorage.getItem('anniz_sales_detail')||'[]');}catch(_e){salesDetail=[];}
 function setTrendGran(g,btn){trendGran=g; var seg=document.getElementById('trendSeg'); if(seg)seg.querySelectorAll('.iv-segbtn').forEach(function(b){b.classList.remove('active');}); if(btn)btn.classList.add('active'); renderChart();}
 function setTopRange(r,btn){topRange=r; var seg=document.getElementById('topSeg'); if(seg)seg.querySelectorAll('.iv-segbtn').forEach(function(b){b.classList.remove('active');}); if(btn)btn.classList.add('active'); renderTopProducts();}
 function periodLabel(key, gran){
@@ -1011,6 +1013,7 @@ function renderMonthly(){
    '<div class="mstat"><span>일평균</span><b>'+fmt(avg)+'</b></div></div></div>';
 }
 function _ymd(dt){return dt.getFullYear()+'-'+('0'+(dt.getMonth()+1)).slice(-2)+'-'+('0'+dt.getDate()).slice(-2);}
+function setTopSort(m){topSortMode=m;renderTopProducts();}
 function renderTopProducts(){
   var el=document.getElementById('ivTop'); if(!el) return;
   if(!salesDetail.length && !seongsuSales.length){ el.innerHTML='<div class="iv-shead"><span class="sec-title">상품별 매출 TOP</span></div><div class="chart-card"><div style="color:#A09A94;font-size:13px;padding:10px 0;line-height:1.7;">29CM 주문상품 엑셀을 업로드하면<br>상품별 매출 TOP이 여기 표시돼요.</div></div>'; return; }
@@ -1020,11 +1023,12 @@ function renderTopProducts(){
   if(w.start){var s=_ymd(w.start),e=_ymd(w.end);src=src.filter(function(r){return r.date>=s&&r.date<=e;});}
   var pmap={};
   src.forEach(function(r){if(!pmap[r.product])pmap[r.product]={net:0,qty:0};pmap[r.product].net+=r.net;pmap[r.product].qty+=1;});
-  var rows=Object.entries(pmap).sort(function(a,b){return b[1].net-a[1].net;}).slice(0,10);
+  var rows=Object.entries(pmap).sort(function(a,b){return topSortMode==='count'?(b[1].qty-a[1].qty)||(b[1].net-a[1].net):(b[1].net-a[1].net)||(b[1].qty-a[1].qty);}).slice(0,10);
   var inner;
   if(!rows.length){ inner=''+(platFilter!=='전체'?'<div style="color:#A09A94;font-size:13px;padding:18px 0;text-align:center;line-height:1.7;">'+platFilter+' 상품 데이터가 없어요.<br><span style="color:#C4BDB4;">(상품·고객 분석은 29CM 상세 엑셀만 지원)</span></div>':'<div style="color:#A09A94;font-size:13px;padding:18px 0;text-align:center;line-height:1.7;">이 기간엔 상품 데이터가 없어요.<br><span style="color:#C4BDB4;">(해당 기간 29CM 엑셀을 올리면 표시돼요)</span></div>')+''; }
-  else { var mx=rows[0][1].net||1; inner='<div class="platforms">'+rows.map(function(e,i){var name=e[0],v=e[1];return '<div class="iv-toprow"><div class="iv-rank">'+(i+1)+'</div><div class="iv-tp"><div class="iv-tpname"><span>'+esc(name)+'</span><span class="amt">'+fmt(v.net)+'</span></div><div class="iv-tpbarwrap"><div class="iv-tpbar"><span style="width:'+Math.round(v.net/mx*100)+'%"></span></div><span class="iv-tpqty">'+v.qty+'건</span></div></div></div>';}).join('')+'</div>'; }
-  el.innerHTML='<div class="iv-shead"><span class="sec-title">상품별 매출 TOP</span></div><div class="chart-card">'+inner+'</div>';
+  else { var _metric=function(v){return topSortMode==='count'?v.qty:v.net;}; var mx=_metric(rows[0][1])||1; inner='<div class="platforms">'+rows.map(function(e,i){var name=e[0],v=e[1];var amtCls=topSortMode==='count'?'':' amt-strong';var qtyCls=topSortMode==='count'?' qty-strong':'';return '<div class="iv-toprow"><div class="iv-rank">'+(i+1)+'</div><div class="iv-tp"><div class="iv-tpname"><span>'+esc(name)+'</span><span class="amt'+amtCls+'">'+fmt(v.net)+'</span></div><div class="iv-tpbarwrap"><div class="iv-tpbar"><span style="width:'+Math.round(_metric(v)/mx*100)+'%"></span></div><span class="iv-tpqty'+qtyCls+'">'+v.qty+'건</span></div></div></div>';}).join('')+'</div>'; }
+  var _seg='<div class="iv-seg"><button class="iv-segbtn'+(topSortMode==='amount'?' active':'')+'" onclick="setTopSort(&#39;amount&#39;)">금액별</button><button class="iv-segbtn'+(topSortMode==='count'?' active':'')+'" onclick="setTopSort(&#39;count&#39;)">건수별</button></div>';
+  el.innerHTML='<div class="iv-shead"><span class="sec-title">상품별 매출 TOP</span>'+_seg+'</div><div class="chart-card">'+inner+'</div>';
 }
 function renderNewReturning(){
   var el=document.getElementById('ivNR'); if(!el) return;
