@@ -583,6 +583,12 @@ body{padding-bottom:34px;}
 }
 </style>
 
+<style id="cal-x">
+.cal-modal-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;}
+.cal-modal-head .cal-modal-t{margin-bottom:0;}
+.cal-modal-x{background:none;border:none;font-size:26px;line-height:1;color:#A09A94;cursor:pointer;padding:0 2px;margin:-4px -4px 0 0;}
+.cal-modal-x:hover{color:#1A1714;}
+</style>
 </head>
 <body>
 <div class="layout">
@@ -661,7 +667,7 @@ body{padding-bottom:34px;}
 
 <div class="cal-modal-ov" id="calDayOv" onclick="calCloseDay()"></div>
 <div class="cal-modal" id="calDayModal">
-  <div class="cal-modal-t" id="calDayTitle">일정</div>
+  <div class="cal-modal-head"><div class="cal-modal-t" id="calDayTitle">일정</div><button class="cal-modal-x" onclick="calCloseDay()" aria-label="닫기">×</button></div>
   <div id="calDayList"></div>
   <div class="cal-form">
     <div class="cal-form-t" id="calFormTitle">새 일정</div>
