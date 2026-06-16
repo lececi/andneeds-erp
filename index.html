@@ -681,7 +681,14 @@ function setPlatFilter(name, btn){
   platFilter = name;
   document.querySelectorAll('.plat-filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  syncUploadPlat(name);
   render();
+}
+function syncUploadPlat(name){
+  if(['29CM','무신사','자사몰'].indexOf(name)<0) return;
+  selectedPlatform=name;
+  document.querySelectorAll('.plat-select-btn').forEach(function(b){ b.classList.toggle('active', b.textContent.trim()===name); });
+  if(previewRows && previewRows.length>0) previewRows.forEach(function(r){r.platform=name;});
 }
 
 var seongsuSales=[];
