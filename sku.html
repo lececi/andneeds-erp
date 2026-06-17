@@ -360,7 +360,7 @@ body{padding-bottom:34px;}
 
 .ceo-name{cursor:pointer;}
 .ceo-name.ceo-loggedin::after{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:#2B6CB8;margin-left:8px;vertical-align:middle;}
-.ceo-name::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:#2B6CB8;margin-right:8px;vertical-align:middle;}
+.ceo-name::before{content:none;}
 </style>
 </head>
 <body>
@@ -947,7 +947,21 @@ if(document.readyState!=='loading')init();else document.addEventListener('DOMCon
 </div>
 <script id="ceo-bar-js">
 (function(){
-function setup(){var el=document.getElementById('ceoAuth');if(!el)return;el.classList.add('ceo-loggedin');el.style.cursor='pointer';el.title='\uB85C\uADF8\uC544\uC6C3';el.addEventListener('click',function(e){e.preventDefault();if(confirm('\uB85C\uADF8\uC544\uC6C3 \uD558\uC2DC\uACA0\uC5B4\uC694?')){if(window.annizLogout)window.annizLogout();}});}
+function showDialog(){
+  var ex=document.getElementById('anniz-logout-dialog');
+  if(ex){ex.style.display='flex';return;}
+  var ov=document.createElement('div');
+  ov.id='anniz-logout-dialog';
+  ov.style.cssText='position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(26,23,20,0.42);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);';
+  ov.innerHTML="<div style='background:#F6F4F1;border-radius:18px;padding:34px 30px 24px;max-width:320px;width:100%;text-align:center;font-family:inherit;box-shadow:0 16px 48px rgba(0,0,0,0.22);'><div style='font-size:16px;font-weight:600;color:#1A1714;margin-bottom:7px;'>\uB85C\uADF8\uC544\uC6C3 \uD558\uC2DC\uACA0\uC5B4\uC694?</div><div style='font-size:12px;color:#9A938C;margin-bottom:26px;'>\uB2E4\uC2DC \uBCF4\uB824\uBA74 \uB85C\uADF8\uC778\uC774 \uD544\uC694\uD574\uC694</div><div style='display:flex;gap:10px;'><button id='anniz-lo-cancel' style='flex:1;padding:13px;border:1px solid rgba(0,0,0,0.16);background:transparent;border-radius:11px;font-family:inherit;font-size:13px;color:#1A1714;cursor:pointer;'>\uCDE8\uC18C</button><button id='anniz-lo-ok' style='flex:1;padding:13px;border:none;background:#1A1714;color:#fff;border-radius:11px;font-family:inherit;font-size:13px;cursor:pointer;'>\uB85C\uADF8\uC544\uC6C3</button></div></div>";
+  document.body.appendChild(ov);
+  function close(){ov.style.display='none';}
+  ov.addEventListener('click',function(e){if(e.target===ov)close();});
+  ov.querySelector('#anniz-lo-cancel').onclick=close;
+  ov.querySelector('#anniz-lo-ok').onclick=function(){if(window.annizLogout)window.annizLogout();};
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){var d=document.getElementById('anniz-logout-dialog');if(d)d.style.display='none';}});
+}
+function setup(){var el=document.getElementById('ceoAuth');if(!el)return;el.classList.add('ceo-loggedin');el.style.cursor='pointer';el.title='\uB85C\uADF8\uC544\uC6C3';el.addEventListener('click',function(e){e.preventDefault();showDialog();});}
 if(document.readyState!=='loading')setup();else document.addEventListener('DOMContentLoaded',setup);
 })();
 </script>
