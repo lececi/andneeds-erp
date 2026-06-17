@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<script>/*anniz-auth-guard*/(function(){var SBA="https://nifytqcqfattzpwlzpmb.supabase.co";var ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs";var K="anniz_auth";var s=null;try{s=JSON.parse(localStorage.getItem(K)||"null");}catch(e){}if(!s||!s.access_token){location.replace("login.html");return;}var now=Math.floor(Date.now()/1000);if(s.expires_at&&now>s.expires_at-60&&s.refresh_token){fetch(SBA+"/auth/v1/token?grant_type=refresh_token",{method:"POST",headers:{apikey:ANON,"Content-Type":"application/json"},body:JSON.stringify({refresh_token:s.refresh_token})}).then(function(r){return r.json();}).then(function(d){if(d&&d.access_token){localStorage.setItem(K,JSON.stringify({access_token:d.access_token,refresh_token:d.refresh_token,expires_at:d.expires_at,email:(d.user&&d.user.email)||s.email}));}else{localStorage.removeItem(K);location.replace("login.html");}}).catch(function(){});}window.annizLogout=function(){try{localStorage.removeItem(K);}catch(e){}location.replace("login.html");};document.addEventListener("DOMContentLoaded",function(){var email=(s&&s.email)||"";if(!document.querySelector(".anniz-logout")){var mk=document.querySelector(".sidebar a[href=\"marketing.html\"]");if(mk){var d=document.createElement("div");d.className="anniz-logout";d.style.cssText="padding:18px 22px 0;";d.innerHTML="<div style=\"font-size:11px;color:#9A938C;margin-bottom:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px;\"></div><a href=\"javascript:void(0)\" style=\"display:inline-block;font-size:12px;letter-spacing:0.04em;color:#1A1714;border:1px solid rgba(0,0,0,0.22);border-radius:999px;padding:8px 18px;text-decoration:none;\">\uB85C\uADF8\uC544\uC6C3</a>";d.querySelector("div").textContent=email;d.querySelector("a").onclick=window.annizLogout;mk.parentNode.insertBefore(d, mk.nextSibling);}}var mp=document.querySelector(".mobile-menu-panel");if(mp&&!mp.querySelector(".anniz-logout")){var a=document.createElement("a");a.className="mobile-menu-item anniz-logout";a.href="javascript:void(0)";a.textContent="\uB85C\uADF8\uC544\uC6C3";a.style.cssText="margin-top:18px;color:#C0392B;";a.onclick=window.annizLogout;mp.appendChild(a);}});})();</script>
+<script>/*anniz-auth-guard*/(function(){var SBA="https://nifytqcqfattzpwlzpmb.supabase.co";var ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs";var K="anniz_auth";var s=null;try{s=JSON.parse(localStorage.getItem(K)||"null");}catch(e){}if(!s||!s.access_token){location.replace("login.html");return;}var now=Math.floor(Date.now()/1000);if(s.expires_at&&now>s.expires_at-60&&s.refresh_token){fetch(SBA+"/auth/v1/token?grant_type=refresh_token",{method:"POST",headers:{apikey:ANON,"Content-Type":"application/json"},body:JSON.stringify({refresh_token:s.refresh_token})}).then(function(r){return r.json();}).then(function(d){if(d&&d.access_token){localStorage.setItem(K,JSON.stringify({access_token:d.access_token,refresh_token:d.refresh_token,expires_at:d.expires_at,email:(d.user&&d.user.email)||s.email}));}else{localStorage.removeItem(K);location.replace("login.html");}}).catch(function(){});}window.annizLogout=function(){try{localStorage.removeItem(K);}catch(e){}location.replace("login.html");};})();</script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>앤니즈 · 재고관리</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1022,15 +1022,8 @@ if(document.readyState!=='loading')init();else document.addEventListener('DOMCon
 </div>
 <script id="ceo-bar-js">
 (function(){
-  var KEY='anniz_ceo_auth', PW='andneeds';
-  function render(){var el=document.getElementById('ceoAuth');if(!el)return;if(localStorage.getItem(KEY)==='1')el.classList.add('ceo-loggedin');else el.classList.remove('ceo-loggedin');}
-  document.addEventListener('click',function(e){
-    var el=e.target.closest&&e.target.closest('#ceoAuth');if(!el)return;e.preventDefault();
-    if(localStorage.getItem(KEY)==='1'){localStorage.removeItem(KEY);render();return;}
-    var p=prompt('비밀번호를 입력하세요');if(p===null)return;
-    if(p===PW){localStorage.setItem(KEY,'1');render();}else{alert('비밀번호가 올바르지 않습니다.');}
-  });
-  if(document.readyState!=='loading')render();else document.addEventListener('DOMContentLoaded',render);
+function setup(){var el=document.getElementById('ceoAuth');if(!el)return;el.classList.add('ceo-loggedin');el.style.cursor='pointer';el.title='\uB85C\uADF8\uC544\uC6C3';el.addEventListener('click',function(e){e.preventDefault();if(confirm('\uB85C\uADF8\uC544\uC6C3 \uD558\uC2DC\uACA0\uC5B4\uC694?')){if(window.annizLogout)window.annizLogout();}});}
+if(document.readyState!=='loading')setup();else document.addEventListener('DOMContentLoaded',setup);
 })();
 </script>
 </body>
