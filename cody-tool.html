@@ -106,7 +106,8 @@ input[type=range]{width:100%;accent-color:var(--accent);}
     <div class="tactions">
       <button class="tbtn" id="mobLib" style="display:none;">옷장</button>
       <button class="tbtn" onclick="clearBoard()">전체 지우기</button>
-      <button class="tbtn primary" onclick="exportPNG()">이미지로 저장</button>
+      <button class="tbtn" onclick="exportPNG()">이미지로 저장</button>
+      <button class="tbtn primary" id="saveBtn" onclick="saveBoard()">코디 저장</button>
     </div>
   </div>
   <div class="main">
@@ -414,7 +415,42 @@ function exportPNG(){
 /* 모바일 옷장 토글 */
 (function(){ if(window.innerWidth<=680){ var b=document.getElementById('mobLib'); b.style.display=''; b.onclick=function(){document.getElementById('lib').classList.toggle('open');}; } })();
 
+/* ---------- 저장 / 불러오기 (Supabase + localStorage) ---------- */
+var SB='https://nifytqcqfattzpwlzpmb.supabase.co';
+var SBKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs';
+var BOARD_ID='cody_board';
+async function saveBoard(){
+  var btn=document.getElementById('saveBtn');
+  if(btn){btn.disabled=true;btn.textContent='저장 중...';}
+  try{ localStorage.setItem('anniz_'+BOARD_ID, JSON.stringify(items)); }catch(e){}
+  var okCloud=false;
+  try{
+    var r=await fetch(SB+'/rest/v1/sku_state',{method:'POST',headers:{apikey:SBKEY,Authorization:'Bearer '+SBKEY,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({id:BOARD_ID,payload:items,updated_at:new Date().toISOString()})});
+    okCloud=r.ok;
+  }catch(e){}
+  if(btn){btn.textContent= okCloud ? '저장됨 ✓' : '저장됨(로컬) ✓';}
+  setTimeout(function(){ if(btn){btn.disabled=false;btn.textContent='코디 저장';} },1500);
+}
+function restoreBoard(arr){
+  if(!arr||!arr.length)return;
+  document.querySelectorAll('.item').forEach(function(e){e.remove();});
+  items=arr; uid=0; zTop=1;
+  items.forEach(function(it){ if(it.id>uid)uid=it.id; if(it.z>zTop)zTop=it.z; });
+  items.forEach(function(it){ renderItem(it); });
+  select(null);
+  document.getElementById('empty').style.display=items.length?'none':'';
+}
+async function loadBoard(){
+  try{ var c=localStorage.getItem('anniz_'+BOARD_ID); if(c){ var l=JSON.parse(c); if(l&&l.length) restoreBoard(l); } }catch(e){}
+  try{
+    var r=await fetch(SB+'/rest/v1/sku_state?id=eq.'+BOARD_ID+'&select=payload',{headers:{apikey:SBKEY,Authorization:'Bearer '+SBKEY}});
+    var t=await r.text(); var j=t&&t.trim()?JSON.parse(t):null;
+    if(j&&j.length&&j[0].payload&&j[0].payload.length){ restoreBoard(j[0].payload); }
+  }catch(e){}
+}
+
 buildLib();
+loadBoard();
 </script>
 </body>
 </html>
