@@ -357,6 +357,7 @@ body{padding-bottom:34px;}
       <div class="nav-group-body">
         <a href="inventory.html" class="nav-item"><span class="nav-label">재고관리</span></a>
         <a href="reorder.html" class="nav-item"><span class="nav-label">생산 MD</span></a>
+        <a href="purchase.html" class="nav-item"><span class="nav-label">발주관리</span></a>
         <a href="orders.html" class="nav-item nav-disabled"><span class="nav-label">주문확인</span></a>
       </div>
     </div>
@@ -436,7 +437,39 @@ body{padding-bottom:34px;}
   .rp-btn.done{background:transparent;color:#2E7D52;border-color:#BCE0C8;}
   .rp-loading,.rp-empty{color:#A6ABB2;font-size:13px;padding:30px 0;text-align:center;}
   @media(max-width:768px){.rp-cards{grid-template-columns:1fr 1fr;}.rp-r3{align-items:flex-start;}}
+  .rp-inb{display:flex;flex-direction:column;gap:3px;margin:-2px 0 10px;}
+  .rp-inb .line{font-size:12px;color:#2B6CB8;}
+  .rp-inb .line b{font-weight:600;}
+  .rp-otoggle{font-family:inherit;font-size:12px;font-weight:500;color:#8E939B;background:none;border:none;cursor:pointer;padding:6px 0 0;}
+  .rp-opanel{margin-top:11px;border-top:1px solid #F2F2F0;padding-top:11px;}
+  .rp-obatch{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;color:#7A7A78;padding:7px 0;border-bottom:1px dashed #EEEDEA;}
+  .rp-obatch .cha{font-weight:500;color:#1A1714;}
+  .rp-obatch b{color:#1A1714;font-weight:500;}
+  .rp-obatch input[type=date]{padding:4px 7px;border:1px solid #E2E2DE;border-radius:7px;font-family:inherit;font-size:12px;}
+  .rp-obatch .rcv{display:inline-flex;align-items:center;gap:4px;cursor:pointer;}
+  .rp-obatch .rcv.done{color:#2E7D52;}
+  .rp-odel{background:none;border:none;color:#C0392B;cursor:pointer;font-size:12px;margin-left:auto;}
+  .rp-oadd{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;margin-top:11px;}
+  .rp-oadd .fld{display:flex;flex-direction:column;gap:3px;}
+  .rp-oadd label{font-size:11px;color:#8E939B;}
+  .rp-oadd input{padding:6px 8px;border:1px solid #E2E2DE;border-radius:7px;font-family:inherit;font-size:12px;}
+  .rp-oadd input[type=number]{width:66px;text-align:center;}
+  .rp-oaddbtn{font-family:inherit;font-size:12px;font-weight:500;padding:7px 14px;border-radius:8px;border:1px solid #2B6CB8;background:#2B6CB8;color:#fff;cursor:pointer;}
+  .rp-ofoot{font-size:11.5px;color:#A6ABB2;margin-top:10px;}
   </style>
+<style id="rp-extra">
+.rp-seasons{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 16px;}
+.rp-schip{font-size:12px;padding:6px 13px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;font-family:inherit;line-height:1;}
+.rp-schip:hover{border-color:#2B6CB8;color:#2B6CB8;}
+.rp-schip.active{background:#2B6CB8;color:#fff;border-color:#2B6CB8;}
+.sell{font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap;}
+.sell.hot{background:#E7F4EC;color:#2E7D52;}
+.sell.steady{background:#EAF1FB;color:#2B6CB8;}
+.sell.slow{background:#FBF1E2;color:#9A6700;}
+.sell.dead{background:#FBE7E4;color:#C0392B;}
+.sell.unknown{background:#F1F1F0;color:#8A8A88;}
+.rp-badges{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+</style>
   <main>
     <div class="rp-head">
       <div class="rp-eyebrow">COLLECTION · 생산 MD</div>
@@ -448,13 +481,14 @@ body{padding-bottom:34px;}
       <div class="rp-tabs">
         <button class="rp-tab active" data-f="todo" onclick="rpFilter('todo',this)">발주 필요</button>
         <button class="rp-tab" data-f="all" onclick="rpFilter('all',this)">전체</button>
-        <button class="rp-tab" data-f="none" onclick="rpFilter('none',this)">판매없음·매칭안됨</button>
+        <button class="rp-tab" data-f="dead" onclick="rpFilter('dead',this)">안 나가는 재고</button>
       </div>
       <div class="rp-settings">
         <label>커버리지(주)</label><input type="number" id="rpCoverage" value="4" min="1" max="52" onchange="rpRecalc()">
-        <label>기본 리드타임(일)</label><input type="number" id="rpDefaultLead" value="21" min="1" max="180" onchange="rpRecalc()">
+        <label>기본 리드타임(일)</label><input type="number" id="rpDefaultLead" value="14" min="1" max="180" onchange="rpRecalc()">
       </div>
     </div>
+    <div class="rp-seasons" id="rpSeasons"></div>
     <div id="rpList"><div class="rp-loading">불러오는 중…</div></div>
   </main>
 
@@ -539,7 +573,7 @@ async function sb(path, opts={}) {
 }
 
 function num(v){ v=parseFloat(String(v==null?'':v).replace(/[^0-9.\-]/g,'')); return isNaN(v)?0:v; }
-function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
 function todayStr(){ var d=new Date(); var off=d.getTimezoneOffset(); d=new Date(d.getTime()-off*60000); return d.toISOString().slice(0,10); }
 function addDays(ds,n){ var d=new Date(ds+'T00:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
 function fmtDate(ds){ return ds? ds.slice(5).replace('-','/') : ''; }
@@ -554,8 +588,9 @@ function normName(s){
     .replace(/\s+/g,' ').trim();
 }
 
-let products=[], variants=[], wStocks=[], salesDetail=[], production=[], settings={};
-let rows=[], rpView='todo';
+let products=[], variants=[], wStocks=[], salesDetail=[], settings={};
+let rows=[], rpView='todo', rpSeason='all';
+let rpExpanded = {};
 
 async function loadAll(){
   try{
@@ -564,14 +599,13 @@ async function loadAll(){
       sb('product_variants?select=*'),
       sb('warehouse_stock?select=*'),
       sb('sku_state?id=eq.sales_detail&select=payload'),
-      sb('sku_state?id=eq.production_board&select=payload'),
       sb('sku_state?id=eq.reorder_settings&select=payload')
     ]);
     products=res[0]||[]; variants=res[1]||[]; wStocks=res[2]||[];
     salesDetail=(res[3]&&res[3][0]&&Array.isArray(res[3][0].payload))?res[3][0].payload:[];
-    production=(res[4]&&res[4][0]&&res[4][0].payload&&Array.isArray(res[4][0].payload.items))?res[4][0].payload.items:[];
-    settings=(res[5]&&res[5][0]&&res[5][0].payload&&typeof res[5][0].payload==='object')?res[5][0].payload:{};
+    settings=(res[4]&&res[4][0]&&res[4][0].payload&&typeof res[4][0].payload==='object')?res[4][0].payload:{};
     if(!salesDetail.length){ try{var ls=JSON.parse(localStorage.getItem('anniz_sales_detail')||'[]'); if(Array.isArray(ls))salesDetail=ls;}catch(e){} }
+    buildSeasonChips();
     rpRecalc();
   }catch(e){ var el=document.getElementById('rpList'); if(el)el.innerHTML='<div class="rp-empty">불러오기 실패: '+esc(e.message)+'</div>'; console.error(e); }
 }
@@ -592,14 +626,28 @@ function buildSalesIndex(){
   return idx;
 }
 
-function inProduction(p){
-  var n=normName(p.name);
-  return production.some(function(c){ return c && normName(c.name)===n && (c.stage==null || c.stage<5); });
+function ordersWithSeq(pid){
+  var os=(settings[pid] && Array.isArray(settings[pid].orders))?settings[pid].orders.slice():[];
+  os.sort(function(a,b){return String(a.odate||'').localeCompare(String(b.odate||''));});
+  return os.map(function(o,i){ var c=Object.assign({},o); c.seq=i+1; return c; });
+}
+
+function effDaysLeft(stock, perDay, orders, today){
+  if(perDay<=0) return null;
+  var pend = orders.filter(function(o){return !o.received && o.eta;}).map(function(o){return {eta:o.eta, qty:num(o.qty)};});
+  var s=stock;
+  for(var d=0; d<=400; d++){
+    var ds=addDays(today,d);
+    for(var i=0;i<pend.length;i++){ if(pend[i].eta===ds) s+=pend[i].qty; }
+    s-=perDay;
+    if(s<=0) return d;
+  }
+  return 400;
 }
 
 function rpRecalc(){
   var coverageWk = num((document.getElementById('rpCoverage')||{}).value)||4;
-  var defLead = num((document.getElementById('rpDefaultLead')||{}).value)||21;
+  var defLead = num((document.getElementById('rpDefaultLead')||{}).value)||14;
   var today = todayStr();
   var win = addDays(today, -28);
   var sidx = buildSalesIndex();
@@ -613,11 +661,12 @@ function rpRecalc(){
     var cfg = settings[p.id] || {};
     var lead = (cfg.lead!=null && cfg.lead!=='') ? num(cfg.lead) : defLead;
     var moq = (cfg.moq!=null && cfg.moq!=='') ? num(cfg.moq) : 0;
-    var ordered = !!cfg.ordered;
-    var daysLeft = perDay>0 ? Math.floor(stock/perDay) : null;
-    var stockoutDate = daysLeft!=null ? addDays(today, daysLeft) : null;
-    var reorderByDays = daysLeft!=null ? (daysLeft - lead) : null;
-    var need = Math.max(0, Math.ceil(perWeek*coverageWk) - stock);
+    var os = ordersWithSeq(p.id);
+    var incoming = os.filter(function(o){return !o.received;}).reduce(function(a,o){return a+num(o.qty);},0);
+    var eff = effDaysLeft(stock, perDay, os, today);
+    var stockoutDate = (eff!=null)? addDays(today, eff): null;
+    var reorderByDays = (eff!=null)? (eff - lead) : null;
+    var need = Math.max(0, Math.ceil(perWeek*coverageWk) - stock - incoming);
     if(moq>0 && need>0) need = Math.ceil(need/moq)*moq;
     var status;
     if(perDay<=0) status='none';
@@ -625,42 +674,58 @@ function rpRecalc(){
     else if(reorderByDays<=3) status='today';
     else if(reorderByDays<=7) status='soon';
     else status='ok';
-    return {p:p, stock:stock, perWeek:perWeek, daysLeft:daysLeft, stockoutDate:stockoutDate,
+    return {p:p, stock:stock, perWeek:perWeek, daysLeft:eff, stockoutDate:stockoutDate,
             lead:lead, moq:moq, reorderByDays:reorderByDays, need:need, status:status,
-            inProd:inProduction(p), ordered:ordered, matched:dates.length>0, defLead:(cfg.lead==null||cfg.lead==='')};
+            incoming:incoming, orders:os, matched:dates.length>0, coverageWk:coverageWk};
+  });
+  var sold = rows.filter(function(r){return r.matched && r.perWeek>0;}).map(function(r){return r.perWeek;}).sort(function(a,b){return a-b;});
+  var q1=null,q2=null;
+  if(sold.length){ q1=sold[Math.floor(sold.length/3)]; q2=sold[Math.floor(sold.length*2/3)]; }
+  rows.forEach(function(r){
+    if(r.perWeek>0){
+      if(sold.length<3){ r.sell='steady'; }
+      else if(r.perWeek>=q2){ r.sell='hot'; }
+      else if(r.perWeek>=q1){ r.sell='steady'; }
+      else { r.sell='slow'; }
+    } else if(r.stock>0){ r.sell = r.matched ? 'dead' : 'check'; }
+    else { r.sell='none'; }
   });
   rpRenderCards();
   rpRenderList();
 }
 
 function rpRenderCards(){
-  var late=rows.filter(function(r){return (r.status==='late'||r.status==='today')&&!r.ordered;}).length;
-  var soon=rows.filter(function(r){return r.status==='soon'&&!r.ordered;}).length;
-  var ok=rows.filter(function(r){return r.status==='ok'||(r.ordered&&r.status!=='none');}).length;
-  var none=rows.filter(function(r){return r.status==='none';}).length;
-  function card(l,v,cls){ return '<div class="rp-card '+cls+'"><div class="l">'+l+'</div><div class="v">'+v+'건</div></div>'; }
+  var now=rows.filter(function(r){return r.status==='late'||r.status==='today';}).length;
+  var hot=rows.filter(function(r){return r.sell==='hot';}).length;
+  var dead=rows.filter(function(r){return r.sell==='dead'||r.sell==='check';}).length;
+  function card(l,v,cls){ return '<div class="rp-card '+cls+'"><div class="l">'+l+'</div><div class="v">'+v+'</div></div>'; }
   var el=document.getElementById('rpCards');
-  if(el) el.innerHTML = card('지금 발주 (늦음·임박)',late,'danger')+card('이번 주 발주',soon,'warn')+card('여유·발주완료',ok,'ok')+card('판매없음·매칭안됨',none,'gray');
+  if(el) el.innerHTML = card('지금 발주',now+'건','danger')+card('잘 나감',hot+'개','ok')+card('안 나가는 재고',dead+'개','warn')+card('전체 상품',rows.length+'개','gray');
 }
 
 function rpRenderList(){
   var weight={late:0,today:1,soon:2,ok:3,none:4};
   var list = rows.filter(function(r){
-    if(rpView==='todo') return (r.status==='late'||r.status==='today'||r.status==='soon')&&!r.ordered;
-    if(rpView==='none') return r.status==='none';
-    return r.status!=='none';
+    if(rpSeason!=='all' && (r.p.season||'')!==rpSeason) return false;
+    if(rpView==='todo') return (r.status==='late'||r.status==='today'||r.status==='soon');
+    if(rpView==='dead') return (r.sell==='dead'||r.sell==='check');
+    return true;
   });
-  list.sort(function(a,b){
-    var wa=a.ordered?5:weight[a.status], wb=b.ordered?5:weight[b.status];
-    if(wa!==wb) return wa-wb;
-    var ra=a.reorderByDays==null?9999:a.reorderByDays, rb=b.reorderByDays==null?9999:b.reorderByDays;
-    return ra-rb;
-  });
+  if(rpView==='dead'){
+    list.sort(function(a,b){ var da=(a.sell==='dead'?0:1),db=(b.sell==='dead'?0:1); if(da!==db)return da-db; return b.stock-a.stock; });
+  } else {
+    list.sort(function(a,b){
+      var wa=weight[a.status], wb=weight[b.status];
+      if(wa!==wb) return wa-wb;
+      var ra=a.reorderByDays==null?9999:a.reorderByDays, rb=b.reorderByDays==null?9999:b.reorderByDays;
+      return ra-rb;
+    });
+  }
   var el=document.getElementById('rpList');
   if(!el) return;
   if(!list.length){
     var msg = rpView==='todo' ? '지금 당장 발주할 상품이 없어요. 여유 있게 잘 돌고 있어요 👍'
-            : rpView==='none' ? '판매 데이터에 매칭된 상품이 모두 정상이에요.'
+            : rpView==='dead' ? '재고가 묶여 안 나가는 상품이 없어요. 재고가 잘 돌고 있어요 👍'
             : '표시할 상품이 없어요.';
     el.innerHTML='<div class="rp-empty">'+msg+'</div>'; return;
   }
@@ -670,35 +735,78 @@ function rpRenderList(){
 function rowHTML(r){
   var p=r.p, pid=esc(String(p.id));
   var badge;
-  if(r.ordered){ badge='<span class="rp-badge b-ok">발주 완료</span>'; }
-  else if(r.status==='late'){ badge='<span class="rp-badge b-danger">리오더 기한 지남</span>'; }
+  if(r.status==='late'){ badge='<span class="rp-badge b-danger">리오더 기한 지남</span>'; }
   else if(r.status==='today'){ badge='<span class="rp-badge b-danger">'+(r.reorderByDays<=0?'오늘':('D-'+r.reorderByDays))+' 발주</span>'; }
   else if(r.status==='soon'){ badge='<span class="rp-badge b-warn">이번 주 (D-'+r.reorderByDays+')</span>'; }
-  else if(r.status==='ok'){ badge='<span class="rp-badge b-ok">여유 (품절 D-'+r.daysLeft+')</span>'; }
+  else if(r.status==='ok'){
+    if(r.incoming>0 && r.need<=0) badge='<span class="rp-badge b-prod">발주됨 · 충분</span>';
+    else { var dl=(r.daysLeft!=null&&r.daysLeft>=400)?'400+':('D-'+r.daysLeft); badge='<span class="rp-badge b-ok">여유 (품절 '+dl+')</span>'; }
+  }
   else { badge='<span class="rp-badge b-gray">'+(r.matched?'최근 판매 없음':'판매 매칭 안됨')+'</span>'; }
-  var prod = r.inProd ? '<span class="rp-badge b-prod">생산중</span>' : '';
-  var leadTxt = r.defLead ? (r.lead+'일') : (r.lead+'일');
-  var soldOut = r.daysLeft!=null ? ('품절예상 <b'+( (r.status==='late'||r.status==='today')?' class="hot"':'')+'>'+(r.daysLeft<=0?'품절':('D-'+r.daysLeft))+(r.stockoutDate?(' ('+fmtDate(r.stockoutDate)+')'):'')+'</b>') : '품절예상 <b>—</b>';
+  var sellMap={hot:['잘나감','hot'],steady:['보통','steady'],slow:['느림','slow'],dead:['안 나감','dead'],check:['판매 확인','unknown'],none:['판매 없음','unknown'],unknown:['판매 확인 필요','unknown']};
+  var sm=sellMap[r.sell]||sellMap.unknown;
+  var sellLabel='<span class="sell '+sm[1]+'">'+sm[0]+'</span>';
+
+  var thumb='<div class="rp-thumb">'+(p.image_url?'<img src="'+esc(p.image_url)+'" onerror="this.style.display=\'none\'">':'')+'</div>';
+  var dlTxt = r.daysLeft!=null ? ((r.daysLeft>=400?'D-400+':('D-'+r.daysLeft))+(r.stockoutDate&&r.daysLeft<400?(' ('+fmtDate(r.stockoutDate)+')'):'')) : '—';
+  var soldOut = '품절예상 <b'+((r.status==='late'||r.status==='today')?' class="hot"':'')+'>'+dlTxt+'</b>';
   var stats = '<span>현재고 <b>'+r.stock+'</b></span>'
             + '<span>주 판매 <b>'+(Math.round(r.perWeek*10)/10)+'</b></span>'
             + '<span>'+soldOut+'</span>';
+
+  var inc = r.orders.filter(function(o){return !o.received;});
+  inc.sort(function(a,b){return String(a.eta||'').localeCompare(String(b.eta||''));});
+  var inbHTML = inc.length ? ('<div class="rp-inb">'+inc.map(function(o){
+      return '<div class="line">'+o.seq+'차 입고예정 <b>'+(o.eta?fmtDate(o.eta):'미정')+'</b> · <b>'+num(o.qty)+'개</b></div>';
+    }).join('')+'</div>') : '';
+
   var moqTxt = r.moq>0 ? (' · MOQ '+r.moq) : '';
+  var incTxt = r.incoming>0 ? (' · 입고예정 '+r.incoming+'개 반영') : '';
   var needBlock = (r.status==='none') ? '<div class="rp-need">판매 데이터가 없어 발주량을 계산할 수 없어요</div>'
-                : '<div class="rp-need">권장 발주 <b>'+r.need+'장</b> <span style="color:#B7BBC1;">('+ (num(document.getElementById('rpCoverage').value)||4) +'주치'+moqTxt+')</span></div>';
-  var btn = r.ordered
-    ? '<button class="rp-btn done" onclick="rpToggleOrdered(\''+pid+'\')">✓ 완료 취소</button>'
-    : '<button class="rp-btn" onclick="rpToggleOrdered(\''+pid+'\')">발주 완료</button>';
+                : '<div class="rp-need">권장 발주 <b>'+r.need+'장</b> <span style="color:#B7BBC1;">('+r.coverageWk+'주치'+moqTxt+incTxt+')</span></div>';
+
   var cfg = '<div class="rp-cfg">'
           + '<span>리드타임 <input type="number" min="1" max="365" value="'+r.lead+'" onchange="rpSetLead(\''+pid+'\',this.value)">일</span>'
           + '<span>MOQ <input type="number" min="0" max="100000" value="'+(r.moq||'')+'" placeholder="0" onchange="rpSetMoq(\''+pid+'\',this.value)"></span>'
           + '</div>';
-  var thumb='<div class="rp-thumb">'+(p.image_url?'<img src="'+esc(p.image_url)+'" onerror="this.style.display=\'none\'">':'')+'</div>';
+
+  var ocount=r.orders.length;
+  var expanded = !!rpExpanded[pid];
+  var toggle = '<button class="rp-otoggle" onclick="rpToggleOrders(\''+pid+'\')">'+(expanded?'발주 내역 접기 ▴':('발주 기록'+(ocount?(' '+ocount+'건'):'')+' ▾'))+'</button>';
+  var panel = expanded ? rpOrdersPanel(pid, r.orders) : '';
+
   return '<div class="rp-row">'
     + '<div class="rp-r1"><div class="rp-nl">'+thumb+'<div class="rp-name">'+esc(p.name)+(p.season?'<span class="se">'+esc(p.season)+'</span>':'')+'</div></div>'
-    + '<div class="rp-badges">'+prod+badge+'</div></div>'
+    + '<div class="rp-badges">'+sellLabel+badge+'</div></div>'
     + '<div class="rp-stats">'+stats+'</div>'
-    + '<div class="rp-r3">'+cfg+'<div class="rp-actions">'+needBlock+btn+'</div></div>'
+    + inbHTML
+    + '<div class="rp-r3">'+cfg+'<div class="rp-actions">'+needBlock+toggle+'</div></div>'
+    + panel
     + '</div>';
+}
+
+function rpOrdersPanel(pid, os){
+  var today=todayStr();
+  var list = os.map(function(o){
+    var rcvCls = o.received ? 'rcv done' : 'rcv';
+    return '<div class="rp-obatch">'
+      + '<span class="cha">'+o.seq+'차</span>'
+      + '<span>'+esc(o.odate||'')+'</span>'
+      + '<b>'+num(o.qty)+'개</b>'
+      + '<span>입고예정 <input type="date" value="'+esc(o.eta||'')+'" onchange="rpSetOrderEta(\''+pid+'\',\''+esc(o.id)+'\',this.value)"></span>'
+      + '<label class="'+rcvCls+'"><input type="checkbox" '+(o.received?'checked':'')+' onchange="rpToggleReceived(\''+pid+'\',\''+esc(o.id)+'\')"> 입고완료</label>'
+      + '<button class="rp-odel" onclick="rpDelOrder(\''+pid+'\',\''+esc(o.id)+'\')">삭제</button>'
+      + '</div>';
+  }).join('');
+  var totalQty = os.reduce(function(a,o){return a+num(o.qty);},0);
+  var addForm = '<div class="rp-oadd">'
+    + '<div class="fld"><label>발주일</label><input type="date" id="oad-'+pid+'" value="'+today+'"></div>'
+    + '<div class="fld"><label>수량</label><input type="number" id="oaq-'+pid+'" min="1" placeholder="0"></div>'
+    + '<div class="fld"><label>입고예정일</label><input type="date" id="oae-'+pid+'"></div>'
+    + '<button class="rp-oaddbtn" onclick="rpAddOrder(\''+pid+'\')">+ 발주 추가</button>'
+    + '</div>';
+  var foot = os.length ? ('<div class="rp-ofoot">총 발주 '+totalQty+'개 · 발주 '+os.length+'회</div>') : '<div class="rp-ofoot">아직 발주 기록이 없어요. 발주하면 아래에 차수별로 기록하세요.</div>';
+  return '<div class="rp-opanel">'+list+addForm+foot+'</div>';
 }
 
 function rpFilter(v,btn){
@@ -707,6 +815,21 @@ function rpFilter(v,btn){
   if(btn)btn.classList.add('active');
   rpRenderList();
 }
+function buildSeasonChips(){
+  var ss=[]; products.forEach(function(p){ if(p.season && ss.indexOf(p.season)<0) ss.push(p.season); });
+  ss.sort(function(a,b){ return String(b).localeCompare(String(a)); });
+  var el=document.getElementById('rpSeasons'); if(!el) return;
+  var chips='<button class="rp-schip'+(rpSeason==='all'?' active':'')+'" onclick="rpSeasonFilter(\'all\',this)">전체 시즌</button>';
+  chips += ss.map(function(sv){ return '<button class="rp-schip'+(rpSeason===sv?' active':'')+'" onclick="rpSeasonFilter(\''+esc(sv)+'\',this)">'+esc(sv)+'</button>'; }).join('');
+  el.innerHTML=chips;
+}
+function rpSeasonFilter(sv,btn){
+  rpSeason=sv;
+  document.querySelectorAll('.rp-schip').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  rpRenderList();
+}
+function rpToggleOrders(pid){ if(rpExpanded[pid]) delete rpExpanded[pid]; else rpExpanded[pid]=true; rpRenderList(); }
 
 async function rpSaveSettings(){
   try{ await sb('sku_state',{method:'POST',prefer:'resolution=merge-duplicates,return=minimal',body:JSON.stringify([{id:'reorder_settings',payload:settings,updated_at:new Date().toISOString()}])}); }
@@ -714,7 +837,21 @@ async function rpSaveSettings(){
 }
 function rpSetLead(pid,val){ settings[pid]=settings[pid]||{}; settings[pid].lead=(val===''?null:num(val)); rpSaveSettings(); rpRecalc(); }
 function rpSetMoq(pid,val){ settings[pid]=settings[pid]||{}; settings[pid].moq=(val===''?null:num(val)); rpSaveSettings(); rpRecalc(); }
-function rpToggleOrdered(pid){ settings[pid]=settings[pid]||{}; settings[pid].ordered=!settings[pid].ordered; rpSaveSettings(); rpRecalc(); }
+
+function rpAddOrder(pid){
+  var od=((document.getElementById('oad-'+pid)||{}).value)||todayStr();
+  var q=num((document.getElementById('oaq-'+pid)||{}).value);
+  var et=((document.getElementById('oae-'+pid)||{}).value)||'';
+  if(q<=0){ var f=document.getElementById('oaq-'+pid); if(f)f.focus(); return; }
+  settings[pid]=settings[pid]||{};
+  settings[pid].orders=Array.isArray(settings[pid].orders)?settings[pid].orders:[];
+  settings[pid].orders.push({id:'o'+Date.now()+Math.floor(Math.random()*1000), odate:od, qty:q, eta:et, received:false});
+  rpExpanded[pid]=true;
+  rpSaveSettings(); rpRecalc();
+}
+function rpSetOrderEta(pid,oid,val){ var os=(settings[pid]||{}).orders||[]; var o=os.find(function(x){return x.id===oid;}); if(o){o.eta=val; rpSaveSettings(); rpRecalc();} }
+function rpToggleReceived(pid,oid){ var os=(settings[pid]||{}).orders||[]; var o=os.find(function(x){return x.id===oid;}); if(o){o.received=!o.received; rpSaveSettings(); rpRecalc();} }
+function rpDelOrder(pid,oid){ var c=settings[pid]; if(!c||!c.orders)return; c.orders=c.orders.filter(function(x){return x.id!==oid;}); rpSaveSettings(); rpRecalc(); }
 
 if(document.readyState!=='loading') loadAll(); else document.addEventListener('DOMContentLoaded', loadAll);
 
@@ -737,6 +874,7 @@ if(document.readyState!=='loading') loadAll(); else document.addEventListener('D
   <div class="mobile-menu-section">STOCK</div>
   <a href="inventory.html" class="mobile-menu-item">재고관리</a>
   <a href="reorder.html" class="mobile-menu-item">생산 MD</a>
+  <a href="purchase.html" class="mobile-menu-item">발주관리</a>
   <a href="orders.html" class="mobile-menu-item mobile-menu-item-disabled">주문확인</a>
   <div class="mobile-menu-section">BUSINESS</div>
   <a href="invoice.html" class="mobile-menu-item">인보이스</a>
