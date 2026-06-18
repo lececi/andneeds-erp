@@ -414,6 +414,9 @@ body{padding-bottom:34px;}
   .rp-row{background:#fff;border:1px solid #ECECEC;border-radius:14px;padding:13px 16px;margin-bottom:9px;}
   .rp-r1{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px;}
   .rp-name{font-size:15px;font-weight:500;color:#1A1714;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .rp-nl{display:flex;align-items:center;gap:11px;min-width:0;}
+  .rp-thumb{width:44px;height:44px;border-radius:10px;border:1px solid #ECECEC;background:#F2F1EF;flex-shrink:0;overflow:hidden;}
+  .rp-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
   .rp-name .se{font-size:11.5px;color:#A6ABB2;font-weight:400;margin-left:7px;}
   .rp-badges{display:flex;align-items:center;gap:6px;flex-shrink:0;}
   .rp-badge{font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:8px;white-space:nowrap;}
@@ -689,8 +692,9 @@ function rowHTML(r){
           + '<span>리드타임 <input type="number" min="1" max="365" value="'+r.lead+'" onchange="rpSetLead(\''+pid+'\',this.value)">일</span>'
           + '<span>MOQ <input type="number" min="0" max="100000" value="'+(r.moq||'')+'" placeholder="0" onchange="rpSetMoq(\''+pid+'\',this.value)"></span>'
           + '</div>';
+  var thumb='<div class="rp-thumb">'+(p.image_url?'<img src="'+esc(p.image_url)+'" onerror="this.style.display=\'none\'">':'')+'</div>';
   return '<div class="rp-row">'
-    + '<div class="rp-r1"><div class="rp-name">'+esc(p.name)+(p.season?'<span class="se">'+esc(p.season)+'</span>':'')+'</div>'
+    + '<div class="rp-r1"><div class="rp-nl">'+thumb+'<div class="rp-name">'+esc(p.name)+(p.season?'<span class="se">'+esc(p.season)+'</span>':'')+'</div></div>'
     + '<div class="rp-badges">'+prod+badge+'</div></div>'
     + '<div class="rp-stats">'+stats+'</div>'
     + '<div class="rp-r3">'+cfg+'<div class="rp-actions">'+needBlock+btn+'</div></div>'
