@@ -462,6 +462,13 @@ body{padding-bottom:34px;}
 .rp-schip{font-size:12px;padding:6px 13px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;font-family:inherit;line-height:1;}
 .rp-schip:hover{border-color:#2B6CB8;color:#2B6CB8;}
 .rp-schip.active{background:#2B6CB8;color:#fff;border-color:#2B6CB8;}
+.rp-saddbtn{font-size:12px;padding:6px 13px;border-radius:999px;border:1px dashed #B9C0C8;background:transparent;color:#2B6CB8;cursor:pointer;font-family:inherit;line-height:1;}
+.rp-saddbtn:hover{border-color:#2B6CB8;background:#EAF1FB;}
+.rp-sdel{margin-left:7px;opacity:.55;font-weight:700;}
+.rp-sdel:hover{opacity:1;}
+.rp-card{cursor:pointer;transition:transform .12s ease, box-shadow .12s ease, outline-color .12s ease;outline:2px solid transparent;outline-offset:-2px;}
+.rp-card:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(0,0,0,0.08);}
+.rp-card.on{outline-color:currentColor;}
 .sell{font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap;}
 .sell.hot{background:#E7F4EC;color:#2E7D52;}
 .sell.steady{background:#EAF1FB;color:#2B6CB8;}
@@ -479,9 +486,10 @@ body{padding-bottom:34px;}
     <div class="rp-cards" id="rpCards"></div>
     <div class="rp-toolbar">
       <div class="rp-tabs">
-        <button class="rp-tab active" data-f="todo" onclick="rpFilter('todo',this)">발주 필요</button>
-        <button class="rp-tab" data-f="all" onclick="rpFilter('all',this)">전체</button>
-        <button class="rp-tab" data-f="dead" onclick="rpFilter('dead',this)">안 나가는 재고</button>
+        <button class="rp-tab active" data-f="todo" onclick="rpFilter('todo')">지금 발주</button>
+        <button class="rp-tab" data-f="hot" onclick="rpFilter('hot')">잘 나감</button>
+        <button class="rp-tab" data-f="dead" onclick="rpFilter('dead')">안 나가는 재고</button>
+        <button class="rp-tab" data-f="all" onclick="rpFilter('all')">전체</button>
       </div>
       <div class="rp-settings">
         <label>커버리지(주)</label><input type="number" id="rpCoverage" value="4" min="1" max="52" onchange="rpRecalc()">
@@ -589,7 +597,7 @@ function normName(s){
 }
 
 let products=[], variants=[], wStocks=[], salesDetail=[], settings={};
-let rows=[], rpView='todo', rpSeason='all';
+let rows=[], rpView='todo', rpSeason='all', customSeasons=[];
 let rpExpanded = {};
 
 async function loadAll(){
@@ -599,11 +607,13 @@ async function loadAll(){
       sb('product_variants?select=*'),
       sb('warehouse_stock?select=*'),
       sb('sku_state?id=eq.sales_detail&select=payload'),
-      sb('sku_state?id=eq.reorder_settings&select=payload')
+      sb('sku_state?id=eq.reorder_settings&select=payload'),
+      sb('sku_state?id=eq.reorder_seasons&select=payload')
     ]);
     products=res[0]||[]; variants=res[1]||[]; wStocks=res[2]||[];
     salesDetail=(res[3]&&res[3][0]&&Array.isArray(res[3][0].payload))?res[3][0].payload:[];
     settings=(res[4]&&res[4][0]&&res[4][0].payload&&typeof res[4][0].payload==='object')?res[4][0].payload:{};
+    customSeasons=(res[5]&&res[5][0]&&Array.isArray(res[5][0].payload))?res[5][0].payload:[];
     if(!salesDetail.length){ try{var ls=JSON.parse(localStorage.getItem('anniz_sales_detail')||'[]'); if(Array.isArray(ls))salesDetail=ls;}catch(e){} }
     buildSeasonChips();
     rpRecalc();
@@ -698,9 +708,9 @@ function rpRenderCards(){
   var now=rows.filter(function(r){return r.status==='late'||r.status==='today';}).length;
   var hot=rows.filter(function(r){return r.sell==='hot';}).length;
   var dead=rows.filter(function(r){return r.sell==='dead'||r.sell==='check';}).length;
-  function card(l,v,cls){ return '<div class="rp-card '+cls+'"><div class="l">'+l+'</div><div class="v">'+v+'</div></div>'; }
+  function card(l,v,cls,view){ return '<div class="rp-card '+cls+(rpView===view?' on':'')+'" data-view="'+view+'" onclick="rpFilter(\''+view+'\')"><div class="l">'+l+'</div><div class="v">'+v+'</div></div>'; }
   var el=document.getElementById('rpCards');
-  if(el) el.innerHTML = card('지금 발주',now+'건','danger')+card('잘 나감',hot+'개','ok')+card('안 나가는 재고',dead+'개','warn')+card('전체 상품',rows.length+'개','gray');
+  if(el) el.innerHTML = card('지금 발주',now+'건','danger','todo')+card('잘 나감',hot+'개','ok','hot')+card('안 나가는 재고',dead+'개','warn','dead')+card('전체 상품',rows.length+'개','gray','all');
 }
 
 function rpRenderList(){
@@ -708,11 +718,14 @@ function rpRenderList(){
   var list = rows.filter(function(r){
     if(rpSeason!=='all' && (r.p.season||'')!==rpSeason) return false;
     if(rpView==='todo') return (r.status==='late'||r.status==='today'||r.status==='soon');
+    if(rpView==='hot') return r.sell==='hot';
     if(rpView==='dead') return (r.sell==='dead'||r.sell==='check');
     return true;
   });
   if(rpView==='dead'){
     list.sort(function(a,b){ var da=(a.sell==='dead'?0:1),db=(b.sell==='dead'?0:1); if(da!==db)return da-db; return b.stock-a.stock; });
+  } else if(rpView==='hot'){
+    list.sort(function(a,b){ return b.perWeek-a.perWeek; });
   } else {
     list.sort(function(a,b){
       var wa=weight[a.status], wb=weight[b.status];
@@ -725,6 +738,7 @@ function rpRenderList(){
   if(!el) return;
   if(!list.length){
     var msg = rpView==='todo' ? '지금 당장 발주할 상품이 없어요. 여유 있게 잘 돌고 있어요 👍'
+            : rpView==='hot' ? '아직 \'잘 나감\'으로 분류된 상품이 없어요.'
             : rpView==='dead' ? '재고가 묶여 안 나가는 상품이 없어요. 재고가 잘 돌고 있어요 👍'
             : '표시할 상품이 없어요.';
     el.innerHTML='<div class="rp-empty">'+msg+'</div>'; return;
@@ -809,19 +823,41 @@ function rpOrdersPanel(pid, os){
   return '<div class="rp-opanel">'+list+addForm+foot+'</div>';
 }
 
-function rpFilter(v,btn){
+function rpFilter(v){
   rpView=v;
-  document.querySelectorAll('.rp-tab').forEach(function(b){b.classList.remove('active');});
-  if(btn)btn.classList.add('active');
+  document.querySelectorAll('.rp-tab').forEach(function(b){ b.classList.toggle('active',(b.getAttribute('data-f')||'')===v); });
+  document.querySelectorAll('.rp-card').forEach(function(c){ c.classList.toggle('on',(c.getAttribute('data-view')||'')===v); });
   rpRenderList();
 }
 function buildSeasonChips(){
-  var ss=[]; products.forEach(function(p){ if(p.season && ss.indexOf(p.season)<0) ss.push(p.season); });
-  ss.sort(function(a,b){ return String(b).localeCompare(String(a)); });
+  var auto=[]; products.forEach(function(p){ if(p.season && auto.indexOf(p.season)<0) auto.push(p.season); });
+  var all=auto.slice();
+  customSeasons.forEach(function(sv){ if(sv && all.indexOf(sv)<0) all.push(sv); });
+  all.sort(function(a,b){ return String(b).localeCompare(String(a)); });
   var el=document.getElementById('rpSeasons'); if(!el) return;
   var chips='<button class="rp-schip'+(rpSeason==='all'?' active':'')+'" onclick="rpSeasonFilter(\'all\',this)">전체 시즌</button>';
-  chips += ss.map(function(sv){ return '<button class="rp-schip'+(rpSeason===sv?' active':'')+'" onclick="rpSeasonFilter(\''+esc(sv)+'\',this)">'+esc(sv)+'</button>'; }).join('');
+  chips += all.map(function(sv){
+    var isCustom = auto.indexOf(sv)<0;
+    var del = isCustom ? '<span class="rp-sdel" onclick="event.stopPropagation();rpDelSeason(\''+esc(sv)+'\')">×</span>' : '';
+    return '<button class="rp-schip'+(rpSeason===sv?' active':'')+'" onclick="rpSeasonFilter(\''+esc(sv)+'\',this)">'+esc(sv)+del+'</button>';
+  }).join('');
+  chips += '<button class="rp-saddbtn" onclick="rpAddSeason()">+ 시즌</button>';
   el.innerHTML=chips;
+}
+function rpAddSeason(){
+  var v=prompt('추가할 시즌을 입력하세요 (예: 27SS)');
+  if(v==null) return; v=String(v).trim(); if(!v) return;
+  if(customSeasons.indexOf(v)<0){ customSeasons.push(v); saveSeasons(); }
+  buildSeasonChips();
+}
+function rpDelSeason(sv){
+  customSeasons=customSeasons.filter(function(x){return x!==sv;});
+  if(rpSeason===sv) rpSeason='all';
+  saveSeasons(); buildSeasonChips(); rpRenderList();
+}
+async function saveSeasons(){
+  try{ await sb('sku_state',{method:'POST',prefer:'resolution=merge-duplicates,return=minimal',body:JSON.stringify([{id:'reorder_seasons',payload:customSeasons,updated_at:new Date().toISOString()}])}); }
+  catch(e){ console.error('시즌 저장 실패',e); }
 }
 function rpSeasonFilter(sv,btn){
   rpSeason=sv;
