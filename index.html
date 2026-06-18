@@ -1341,6 +1341,9 @@ function parseSeongsu(aoa){
     var prod=String(row[4]==null?'':row[4]).replace(/^\+\s*/,'').trim();
     var payNum=parseFloat(payRaw);
     if(payRaw!=='' && !isNaN(payNum)){
+      var _stt=row[15]; var _isCancel=false;
+      if(_stt!=null){ if(_stt instanceof Date){ _isCancel=true; } else { var _sx=String(_stt).trim(); if(_sx && (_sx.indexOf('취소')>=0 || _sx.indexOf('당일')>=0 || /^\d{4}[-.\/]\d{1,2}[-.\/]\d{1,2}/.test(_sx))){ _isCancel=true; } } }
+      if(_isCancel){ cur=null; continue; }
       var d=ssDate(row[1]);
       if(!d){cur=null;continue;}
       seq++;
