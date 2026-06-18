@@ -1284,6 +1284,15 @@ async function deleteMonth(yearMonth){
     const toDate=new Date(yearMonth.slice(0,4),parseInt(yearMonth.slice(5,7)),0);
     const to=yearMonth+'-'+String(toDate.getDate()).padStart(2,'0');
     await sbFetch(`sales?date=gte.${from}&date=lte.${to}`,{method:'DELETE'});
+    // 성수(오프라인) 데이터도 해당 월 함께 삭제
+    if(seongsuSales && seongsuSales.length){
+      var _before=seongsuSales.length;
+      seongsuSales=seongsuSales.filter(function(x){ return !(x.date>=from && x.date<=to); });
+      if(seongsuSales.length!==_before){
+        try{ localStorage.setItem('anniz_seongsu_sales', JSON.stringify(seongsuSales)); }catch(_e){}
+        await sbFetch('sku_state', { method:'POST', prefer:'resolution=merge-duplicates,return=minimal', body: JSON.stringify([{id:'seongsu_sales', payload: seongsuSales}]) });
+      }
+    }
     await loadData();
     showToast(`${yearMonth} 데이터가 삭제되었습니다`);
   }catch(e){showToast('삭제 실패: '+e.message);}
