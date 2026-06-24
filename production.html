@@ -611,6 +611,11 @@ body{padding-bottom:34px;}
 .st-flats .fl{flex:1;min-width:90px;aspect-ratio:3/4;background:#F6F5F0;border-radius:0;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 .st-flats .fl img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;}
 .st-flats .fl svg{width:26px;height:26px;stroke:#CBC5BE;fill:none;stroke-width:1.3;}
+.st-flats .fl.clickable{cursor:pointer;flex-direction:column;gap:7px;transition:background .12s;}
+.st-flats .fl.clickable:hover{background:#ECE9E3;}
+.st-flats .fl .fl-add{font-size:10.5px;color:#AEA89F;letter-spacing:.02em;}
+.st-fabric .fswatch.clickable{cursor:pointer;transition:filter .12s;}
+.st-fabric .fswatch.clickable:hover{filter:brightness(0.95);}
 .st-file{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--an-line);border-radius:11px;background:#FBFAF8;}
 .st-file .fic{width:30px;height:36px;flex:none;border-radius:5px;background:var(--an-blue);display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;letter-spacing:.02em;}
 .st-file .fnm{flex:1;min-width:0;font-size:12.5px;color:#3A3733;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -932,8 +937,9 @@ var STYLE=(function(){
   }
   function flats(d){
     var imgs=(d.patternImages||[]).filter(Boolean);
-    if(imgs.length) return '<div class="st-flats">'+imgs.map(function(src){return '<div class="fl"><img src="'+esc(src)+'"></div>';}).join('')+'</div>';
-    var f='<div class="fl"><svg viewBox="0 0 24 24"><path d="M16 4l-4 2-4-2-4 3 2 3 2-1v9h8V9l2 1 2-3z"/></svg></div>';
+    var oc=' onclick="STYLE.pickPatternImages(\''+d.id+'\')" title="클릭해서 평면도 이미지 올리기"';
+    if(imgs.length) return '<div class="st-flats">'+imgs.map(function(src){return '<div class="fl clickable"'+oc+'><img src="'+esc(src)+'"></div>';}).join('')+'</div>';
+    var f='<div class="fl clickable"'+oc+'><svg viewBox="0 0 24 24"><path d="M16 4l-4 2-4-2-4 3 2 3 2-1v9h8V9l2 1 2-3z"/></svg><span class="fl-add">사진 올리기</span></div>';
     return '<div class="st-flats">'+f+f+f+f+'</div>';
   }
   function fileChip(p){
@@ -945,10 +951,12 @@ var STYLE=(function(){
     if(!cs||!cs.length) return '<div style="color:#B5AFA8;font-size:12.5px;">등록된 컬러가 없어요.</div>';
     return '<div class="st-colors">'+cs.map(function(c){return '<div class="cc"><div class="chip" style="background:'+esc(c.hex||'#ddd')+'"></div><div class="ccode">'+esc(c.code||'')+'</div><div class="cname">'+esc(c.name||'')+'</div></div>';}).join('')+'</div>';
   }
-  function fabricBlock(f){
-    var swatch='<div class="fswatch" style="display:flex;align-items:center;justify-content:center;color:#B6AFA6;font-size:11px;">스와치</div>';
-    if(f&&f.swatch) swatch='<div class="fswatch"><img src="'+esc(f.swatch)+'"></div>';
-    f=f||{};
+  function fabricBlock(d){
+    var f=(d&&d.fabric)||{};
+    var base='class="fswatch clickable" onclick="STYLE.pickSwatch(\''+d.id+'\')" title="클릭해서 원단 스와치 올리기"';
+    var swatch=f.swatch
+      ? '<div '+base+'><img src="'+esc(f.swatch)+'"></div>'
+      : '<div '+base+' style="display:flex;align-items:center;justify-content:center;color:#B6AFA6;font-size:11px;">스와치</div>';
     return '<div class="st-fabric">'+swatch+'<div class="st-kv">'+
       kvRow('품번',f.code)+kvRow('품명',f.name)+kvRow('혼용률',f.comp)+kvRow('중량',f.weight)+kvRow('가공',f.finish)+kvRow('특이사항',f.note)+
       '</div></div>';
@@ -956,6 +964,7 @@ var STYLE=(function(){
 
   function openDetail(id){
     var d=byId(id); if(!d)return;
+    state.detailId=id;
     var html='<div class="st-dhead">'+
       '<button class="st-back" onclick="STYLE.backToList()"><svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>목록</button>'+
       '<div class="st-dtitle"><h2>스타일 핵심 정보</h2><div class="st-sub">패턴, 원단, 컬러, 사이즈 스펙을 한눈에 확인할 수 있습니다.</div>'+
@@ -963,7 +972,7 @@ var STYLE=(function(){
       '<div class="st-dactions"><button class="st-btn-ghost" onclick="STYLE.openEdit(\''+d.id+'\')">편집</button></div></div>'+
       '<div class="st-panels">'+
         '<div class="st-panel"><h3>패턴 (평면도 파일)</h3>'+flats(d)+fileChip(d.pattern)+'</div>'+
-        '<div class="st-panel"><h3>원단 / 소재 정보</h3>'+fabricBlock(d.fabric)+'</div>'+
+        '<div class="st-panel"><h3>원단 / 소재 정보</h3>'+fabricBlock(d)+'</div>'+
         '<div class="st-panel"><h3>컬러 정보</h3>'+colorsBlock(d.colors)+'</div>'+
         '<div class="st-panel"><h3>사이즈 스펙표</h3>'+specTable(d.spec)+'</div>'+
       '</div>';
@@ -972,6 +981,17 @@ var STYLE=(function(){
     window.scrollTo(0,0);
   }
   function backToList(){ document.getElementById('stDetail').classList.remove('on'); document.getElementById('stListView').classList.remove('off'); window.scrollTo(0,0); }
+  function pickPatternImages(id){
+    var inp=document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.multiple=true;
+    inp.onchange=function(){ var files=[].slice.call(inp.files); if(!files.length)return; var out=[],done=0;
+      files.forEach(function(f,i){ readImage(f,function(u){ out[i]=u; done++; if(done===files.length){ var d=byId(id); if(!d)return; d.patternImages=out.filter(Boolean); var ok=persist(); openDetail(id); toast(ok?'평면도 이미지 '+d.patternImages.length+'장 올렸어요':'올렸지만 용량이 커서 새로고침 후 사라질 수 있어요'); } },1300); }); };
+    inp.click();
+  }
+  function pickSwatch(id){
+    var inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
+    inp.onchange=function(){ var f=inp.files[0]; if(!f)return; readImage(f,function(u){ var d=byId(id); if(!d)return; d.fabric=d.fabric||{}; d.fabric.swatch=u; var ok=persist(); openDetail(id); toast(ok?'원단 스와치 올렸어요':'올렸지만 용량이 커서 새로고침 후 사라질 수 있어요'); },1000); };
+    inp.click();
+  }
 
   /* ===== 모달 ===== */
   function colorRowHTML(c){ c=c||{}; return '<div class="crow"><input type="color" value="'+(c.hex||'#cccccc')+'"><input type="text" placeholder="코드 (NVY-01)" value="'+esc(c.code||'')+'" style="width:130px"><input type="text" placeholder="컬러명" value="'+esc(c.name||'')+'"><button type="button" class="st-xrm" onclick="this.parentNode.remove()">×</button></div>'; }
@@ -1039,10 +1059,13 @@ var STYLE=(function(){
       fabric:{code:g('mFabCode'),name:g('mFabName'),comp:g('mFabComp'),weight:g('mFabWeight'),finish:g('mFabFinish'),note:g('mFabNote'),swatch:(state._swatch!==undefined)?state._swatch:oldSwatch},
       colors:collectColors(), spec:collectSpec()
     };
-    if(d){ rec.id=d.id; Object.assign(d,rec); }
-    else{ rec.id=uid(); data.unshift(rec); }
+    var savedId;
+    if(d){ rec.id=d.id; Object.assign(d,rec); savedId=d.id; }
+    else{ rec.id=uid(); data.unshift(rec); savedId=rec.id; }
+    var wasDetail=document.getElementById('stDetail').classList.contains('on');
     var ok=persist();
     closeEdit(); render();
+    if(wasDetail) openDetail(savedId);
     toast(ok?(state.editId?'수정했어요':'추가했어요'):'저장됐지만 이미지 용량이 커서 새로고침 후 사라질 수 있어요');
   }
   function delCurrent(){
@@ -1066,7 +1089,7 @@ var STYLE=(function(){
   function inlineEdit(id,field,el){ var d=byId(id); if(!d)return; var val=(el.textContent||'').replace(/\s+/g,' ').trim(); el.textContent=val; if(val===d[field])return; d[field]=val; persist(); toast('\uC218\uC815\uD588\uC5B4\uC694'); }
   function ieKey(e){ if(e.key==='Enter'){ e.preventDefault(); e.target.blur(); } }
   function init(){ load(); render(); }
-  return {init:init,render:render,inlineEdit:inlineEdit,ieKey:ieKey,setView:setView,setCols:setCols,openDetail:openDetail,backToList:backToList,openEdit:openEdit,closeEdit:closeEdit,addColorRow:addColorRow,addSpecRow:addSpecRow,save:save,delCurrent:delCurrent,exportCSV:exportCSV};
+  return {init:init,render:render,inlineEdit:inlineEdit,ieKey:ieKey,pickPatternImages:pickPatternImages,pickSwatch:pickSwatch,setView:setView,setCols:setCols,openDetail:openDetail,backToList:backToList,openEdit:openEdit,closeEdit:closeEdit,addColorRow:addColorRow,addSpecRow:addSpecRow,save:save,delCurrent:delCurrent,exportCSV:exportCSV};
 })();
 document.addEventListener('DOMContentLoaded',STYLE.init);
 if(document.readyState!=='loading')STYLE.init();
