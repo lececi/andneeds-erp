@@ -539,6 +539,20 @@ body{padding-bottom:34px;}
 .topbar{border-bottom:none !important;}
 @media(max-width:768px){.anv-bar{display:none;}.page-content{padding-top:0 !important;}}
 </style>
+
+<style id="anv-filter-style">
+.topbar-title{display:none !important;}
+.anv-filterhead{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin:2px 0 32px;}
+.anv-ptitle{font-family:"Noto Sans KR",sans-serif;font-weight:700;font-size:27px;letter-spacing:-.01em;color:#1A1A1A;line-height:1.1;}
+.anv-psub{font-family:"AnvOldStd",Georgia,serif;font-style:italic;font-size:13px;letter-spacing:.02em;color:#9A938A;margin-top:8px;}
+.anv-chanwrap{text-align:right;flex-shrink:0;}
+.anv-chanlabel{font-family:"AnvOldStd",Georgia,serif;font-style:italic;font-size:12px;letter-spacing:.04em;color:#9A938A;margin-bottom:9px;}
+#platFilters{display:flex !important;flex-direction:column;align-items:flex-end;gap:0;margin-left:0 !important;}
+#platFilters .plat-filter-btn{font-family:"AnvOldStd","Noto Sans KR",serif !important;font-size:14px !important;letter-spacing:.03em;padding:0 !important;border:0 !important;border-radius:0 !important;background:none !important;color:#1A1A1A !important;opacity:.5;line-height:2.05 !important;width:auto !important;white-space:nowrap;transition:opacity .14s;}
+#platFilters .plat-filter-btn:hover{opacity:.82 !important;background:none !important;}
+#platFilters .plat-filter-btn.active{opacity:1 !important;background:none !important;color:#1A1A1A !important;border:0 !important;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;}
+@media(max-width:768px){.anv-filterhead{flex-direction:column;gap:14px;}.anv-chanwrap{text-align:left;}#platFilters{align-items:flex-start;}.anv-ptitle{font-size:22px;}}
+</style>
 </head>
 <body>
 <div class="layout">
@@ -620,7 +634,20 @@ body{padding-bottom:34px;}
         </button>
       </div>
       <span class="topbar-title">매출현황</span>
-      <div style="display:flex;gap:4px;margin-left:8px;" id="platFilters">
+      <!-- platFilters moved to main header (B layout) -->
+    </div>
+    <div style="display:flex;gap:6px;" id="viewTabs">
+      <button class="tab-btn" id="calToggle" onclick="toggleCalendar(this)">캘린더 보기</button>
+    </div>
+  </div><main>
+  <div class="anv-filterhead">
+    <div class="anv-fh-left">
+      <div class="anv-ptitle">매출현황</div>
+      <div class="anv-psub">채널별 매출 현황</div>
+    </div>
+    <div class="anv-chanwrap">
+      <div class="anv-chanlabel">Channel</div>
+      <div id="platFilters">
         <button class="plat-filter-btn active" onclick="setPlatFilter('전체',this)">전체</button>
         <button class="plat-filter-btn" onclick="setPlatFilter('온라인',this)">온라인</button>
         <button class="plat-filter-btn" onclick="setPlatFilter('29CM',this)">29CM</button>
@@ -629,10 +656,8 @@ body{padding-bottom:34px;}
         <button class="plat-filter-btn" onclick="setPlatFilter('성수',this)">성수</button>
       </div>
     </div>
-    <div style="display:flex;gap:6px;" id="viewTabs">
-      <button class="tab-btn" id="calToggle" onclick="toggleCalendar(this)">캘린더 보기</button>
-    </div>
-  </div><main>
+  </div>
+
     <div id="ivToday"></div>
     <div class="metrics" id="metrics"><div class="loading">불러오는 중...</div></div>
     <div class="iv-info" id="ivInfo"></div>
