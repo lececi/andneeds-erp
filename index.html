@@ -506,7 +506,7 @@ body{padding-bottom:34px;}
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap');
 @font-face{font-family:"AnvOldStd";src:url("OldStandardTT-Regular.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap;}
 :root{--anv-paper:#FFFFFF;--anv-beige:#F6F5EF;--anv-ink:#000;--anv-hair:#E7E2D7;--anv-pad:42px;}
-.anv-bar{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--anv-paper);transition:background .18s ease,transform .33s ease;}
+.anv-bar{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--anv-paper);border-bottom:1px solid #E8E8E8;transition:background .18s ease,transform .33s ease;}
 .anv-bar.anv-tinted{background:var(--anv-beige);}
 .anv-bar.anv-hidden{transform:translateY(-105%);}
 .anv-nav{position:relative;display:flex;align-items:center;gap:40px;padding:17px var(--anv-pad);box-sizing:border-box;}
@@ -535,7 +535,7 @@ body{padding-bottom:34px;}
 .anv-sresults a:hover{opacity:.55;}
 .anv-sresults a .anv-grp{font-family:"AnvOldStd",serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#A39C90;min-width:104px;}
 .anv-sempty{font-family:"Noto Sans KR",sans-serif;font-size:13px;color:#A39C90;padding:10px 2px;}
-.page-content{margin-left:0 !important;padding-top:60px !important;}
+.page-content{margin-left:0 !important;padding-top:61px !important;}
 .topbar{border-bottom:none !important;}
 @media(max-width:768px){.anv-bar{display:none;}.page-content{padding-top:0 !important;}}
 </style>
@@ -544,7 +544,7 @@ body{padding-bottom:34px;}
 <style id="anv-filter-strip">
 .topbar-title{display:none !important;}
 .anv-filterstrip{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;
-  padding:14px 20px 20px;border-top:1px solid #E8E8E8;border-bottom:1px solid #E8E8E8;background:#fff;}
+  padding:14px 20px 20px;border-bottom:1px solid #E8E8E8;background:#fff;}
 .anv-filterstrip::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:#E8E8E8;}
 .anv-fs-left{padding-right:48px;}
 .anv-fs-h{font-family:"Noto Sans KR",sans-serif;font-size:12px;letter-spacing:.09em;color:#1A1A1A;margin-bottom:14px;text-transform:none;}
