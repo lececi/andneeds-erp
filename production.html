@@ -756,7 +756,7 @@ body{padding-bottom:34px;}
         </select>
       </div>
     </div>
-    <div class="mrow"><label>도식화 이미지 (선택)</label><input type="file" id="mSketch" accept="image/*"></div>
+    <div class="mrow"><label>대표 이미지 · 카드 썸네일 (선택)</label><input type="file" id="mSketch" accept="image/*"></div>
 
     <div class="st-msub">패턴 (평면도 파일)</div>
     <div class="mrow two">
@@ -764,6 +764,7 @@ body{padding-bottom:34px;}
       <div><label>용량 표기</label><input type="text" id="mPatSize" placeholder="예: 2.4MB"></div>
     </div>
     <div class="mrow"><label>PDF 링크 (선택)</label><input type="text" id="mPatUrl" placeholder="https:// 또는 비워두기"></div>
+    <div class="mrow"><label>평면도 이미지 · 여러 장 가능 (선택)</label><input type="file" id="mPatImgs" accept="image/*" multiple><div id="mPatImgsNote" style="font-size:11px;color:#A29C96;margin-top:5px;"></div></div>
 
     <div class="st-msub">원단 / 소재 정보</div>
     <div class="mrow two">
@@ -778,6 +779,7 @@ body{padding-bottom:34px;}
       <div><label>가공</label><input type="text" id="mFabFinish" placeholder="텐타 / 바이오워싱"></div>
       <div><label>특이사항</label><input type="text" id="mFabNote" placeholder="워싱 수축률 주의"></div>
     </div>
+    <div class="mrow"><label>원단 스와치 이미지 (선택)</label><input type="file" id="mFabSwatch" accept="image/*"><div id="mFabSwatchNote" style="font-size:11px;color:#A29C96;margin-top:5px;"></div></div>
 
     <div class="st-msub">컬러 정보</div>
     <div class="st-color-rows" id="mColorRows"></div>
@@ -847,7 +849,7 @@ var STYLE=(function(){
     if(!Array.isArray(data)||!data.length){data=seed();}
     persist();
   }
-  function persist(){ try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){} }
+  function persist(){ try{localStorage.setItem(LS,JSON.stringify(data));return true;}catch(e){return false;} }
   function uid(){ return 'S'+Date.now().toString(36); }
   function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
   function byId(id){ return data.find(function(x){return x.id===id;}); }
@@ -929,7 +931,8 @@ var STYLE=(function(){
     return '<div class="st-spec"><div class="stbl"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="st-diagram">'+diagramSVG()+'</div></div>';
   }
   function flats(d){
-    if(d.sketch) return '<div class="st-flats"><div class="fl"><img src="'+esc(d.sketch)+'"></div></div>';
+    var imgs=(d.patternImages||[]).filter(Boolean);
+    if(imgs.length) return '<div class="st-flats">'+imgs.map(function(src){return '<div class="fl"><img src="'+esc(src)+'"></div>';}).join('')+'</div>';
     var f='<div class="fl"><svg viewBox="0 0 24 24"><path d="M16 4l-4 2-4-2-4 3 2 3 2-1v9h8V9l2 1 2-3z"/></svg></div>';
     return '<div class="st-flats">'+f+f+f+f+'</div>';
   }
@@ -976,6 +979,23 @@ var STYLE=(function(){
   function addColorRow(c){ document.getElementById('mColorRows').insertAdjacentHTML('beforeend',colorRowHTML(c)); }
   function addSpecRow(r){ document.getElementById('mSpecRows').insertAdjacentHTML('beforeend',specRowHTML(r)); }
 
+  function readImage(file,cb,maxDim){
+    maxDim=maxDim||1200;
+    var rd=new FileReader();
+    rd.onload=function(){
+      var img=new Image();
+      img.onload=function(){
+        var w=img.width,h=img.height,sc=Math.min(1,maxDim/Math.max(w,h));
+        var cw=Math.max(1,Math.round(w*sc)),ch=Math.max(1,Math.round(h*sc));
+        var c=document.createElement('canvas');c.width=cw;c.height=ch;
+        var x=c.getContext('2d');x.fillStyle='#ffffff';x.fillRect(0,0,cw,ch);x.drawImage(img,0,0,cw,ch);
+        try{cb(c.toDataURL('image/jpeg',0.82));}catch(e){cb(rd.result);}
+      };
+      img.onerror=function(){cb(rd.result);};
+      img.src=rd.result;
+    };
+    rd.readAsDataURL(file);
+  }
   function openEdit(id){
     state.editId=id;
     var d=id?byId(id):null;
@@ -990,12 +1010,16 @@ var STYLE=(function(){
     var sr=g('mSpecRows'); sr.innerHTML='';
     var rows=(d&&d.spec&&d.spec.rows&&d.spec.rows.length)?d.spec.rows:SPEC_LABELS.map(function(l){return {label:l,v:['','','','']};});
     rows.forEach(function(r){addSpecRow(r);});
-    g('_sketchData')&&(g('_sketchData').value='');
+    g('mPatImgs').value=''; g('mFabSwatch').value='';
+    g('mPatImgsNote').textContent=(d&&d.patternImages&&d.patternImages.length)?('현재 '+d.patternImages.length+'장 등록됨 · 새로 올리면 교체'):'';
+    g('mFabSwatchNote').textContent=(d&&d.fabric&&d.fabric.swatch)?'현재 1장 등록됨 · 새로 올리면 교체':'';
+    state._sketch=undefined; state._patternImages=undefined; state._swatch=undefined;
     document.getElementById('stModalBg').classList.add('on');
-    // 도식화 파일 → dataURL 보관
-    g('mSketch').onchange=function(){ var file=this.files[0]; if(!file){state._sketch=undefined;return;} var rd=new FileReader(); rd.onload=function(){state._sketch=rd.result;}; rd.readAsDataURL(file); };
+    g('mSketch').onchange=function(){ var file=this.files[0]; if(!file){state._sketch=undefined;return;} readImage(file,function(u){state._sketch=u;},900); };
+    g('mPatImgs').onchange=function(){ var files=[].slice.call(this.files); if(!files.length){state._patternImages=undefined;return;} var out=[],done=0; files.forEach(function(f,i){ readImage(f,function(u){out[i]=u;done++;if(done===files.length){state._patternImages=out.filter(Boolean);g('mPatImgsNote').textContent='새 평면도 이미지 '+state._patternImages.length+'장 선택됨';}},1300); }); };
+    g('mFabSwatch').onchange=function(){ var file=this.files[0]; if(!file){state._swatch=undefined;return;} readImage(file,function(u){state._swatch=u;g('mFabSwatchNote').textContent='새 스와치 선택됨';},1000); };
   }
-  function closeEdit(){ document.getElementById('stModalBg').classList.remove('on'); state._sketch=undefined; }
+  function closeEdit(){ document.getElementById('stModalBg').classList.remove('on'); state._sketch=undefined; state._patternImages=undefined; state._swatch=undefined; }
 
   function collectColors(){ return [].map.call(document.querySelectorAll('#mColorRows .crow'),function(row){var i=row.querySelectorAll('input'); return {hex:i[0].value,code:i[1].value.trim(),name:i[2].value.trim()};}).filter(function(c){return c.code||c.name;}); }
   function collectSpec(){ var rows=[].map.call(document.querySelectorAll('#mSpecRows .srow'),function(row){var i=row.querySelectorAll('input'); return {label:i[0].value.trim(),v:[i[1].value.trim(),i[2].value.trim(),i[3].value.trim(),i[4].value.trim()]};}).filter(function(r){return r.label;}); return {sizes:['S','M','L','XL'],rows:rows}; }
@@ -1003,19 +1027,23 @@ var STYLE=(function(){
   function save(){
     var g=function(x){return document.getElementById(x).value.trim();};
     if(!g('mCode')&&!g('mName')){ toast('품번 또는 품명을 입력해주세요'); return; }
+    var d=state.editId?byId(state.editId):null;
+    var oldSketch=d?(d.sketch||''):'';
+    var oldPat=(d&&d.patternImages)?d.patternImages:[];
+    var oldSwatch=(d&&d.fabric&&d.fabric.swatch)?d.fabric.swatch:'';
     var rec={
       code:g('mCode'),name:g('mName'),season:g('mSeason'),category:g('mCat'),status:document.getElementById('mStatus').value,
+      sketch:(state._sketch!==undefined)?state._sketch:oldSketch,
+      patternImages:(state._patternImages!==undefined)?state._patternImages:oldPat,
       pattern:{name:g('mPatName'),size:g('mPatSize'),url:g('mPatUrl')},
-      fabric:{code:g('mFabCode'),name:g('mFabName'),comp:g('mFabComp'),weight:g('mFabWeight'),finish:g('mFabFinish'),note:g('mFabNote')},
+      fabric:{code:g('mFabCode'),name:g('mFabName'),comp:g('mFabComp'),weight:g('mFabWeight'),finish:g('mFabFinish'),note:g('mFabNote'),swatch:(state._swatch!==undefined)?state._swatch:oldSwatch},
       colors:collectColors(), spec:collectSpec()
     };
-    if(state.editId){
-      var d=byId(state.editId); var old=d.sketch;
-      Object.assign(d,rec); d.sketch=(state._sketch!==undefined)?state._sketch:old;
-    }else{
-      rec.id=uid(); rec.sketch=state._sketch||''; data.unshift(rec);
-    }
-    persist(); closeEdit(); render(); toast(state.editId?'수정했어요':'추가했어요');
+    if(d){ rec.id=d.id; Object.assign(d,rec); }
+    else{ rec.id=uid(); data.unshift(rec); }
+    var ok=persist();
+    closeEdit(); render();
+    toast(ok?(state.editId?'수정했어요':'추가했어요'):'저장됐지만 이미지 용량이 커서 새로고침 후 사라질 수 있어요');
   }
   function delCurrent(){
     if(!state.editId)return;
