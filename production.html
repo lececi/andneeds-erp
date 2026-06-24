@@ -26,7 +26,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
   .topbar{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--border);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;overflow:hidden;}
   .topbar-title{font-size:13px;font-weight:500;color:var(--text);}
   @media(max-width:768px){.sidebar{width:48px;}.nav-item span.nav-label{display:none;}.nav-section-label{display:none;}.sidebar-footer{display:none;}.sidebar-logo{padding:0 10px;}.page-content{margin-left:48px;}.topbar{padding:0 16px;}}
-main{max-width:1200px;margin:0 auto;padding:24px 28px 64px;}
+main{max-width:none;margin:0 auto;padding:24px 28px 64px;}
 .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:28px;}
 .metric-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
 .metric-card.highlight{background:var(--text);}
@@ -229,7 +229,7 @@ input:focus,select:focus{border-color:var(--text);}
 <style id="airy-v1">
 :root{--border:rgba(0,0,0,0.055);--border-mid:rgba(0,0,0,0.10);}
 body{line-height:1.62;}
-main{max-width:1340px;padding:42px 44px 100px;}
+main{max-width:none;padding:42px 44px 100px;}
 .topbar{padding:0 44px;}
 .sidebar-nav{padding:24px 14px;}
 .nav-item{padding:11px 12px;margin-bottom:4px;}
@@ -524,8 +524,9 @@ body{padding-bottom:34px;}
   <main>
 <style id="style-prod-css">
 /* ===== 스타일(도식화) 페이지 — 스코프: .st- ===== */
+main{max-width:none!important;padding-left:0!important;padding-right:0!important;}
 .st-wrap,.st-modal-bg,.st-toast2{--an-blue:#2B6CB8;--an-line:rgba(0,0,0,0.075);--an-line2:rgba(0,0,0,0.12);--an-paper:#FBFAF8;--an-ink:#1A1A1A;--an-ink2:#6E6864;--an-ink3:#A29C96;}
-.st-wrap{max-width:1280px;margin:0 auto;padding:6px 4px 60px;}
+.st-wrap{max-width:none;margin:0;padding:6px 28px 60px;}
 
 /* 헤더 */
 .st-head{padding:6px 4px 18px;border-bottom:1px solid var(--an-line);margin-bottom:22px;}
@@ -662,6 +663,7 @@ body{padding-bottom:34px;}
 }
 @media(max-width:768px){
   .st-grid[data-cols]{grid-template-columns:repeat(2,1fr)!important;}
+  .st-wrap{padding-left:16px;padding-right:16px;}
   .st-fabric{flex-direction:column;}
   .st-fabric .fswatch{width:100%;height:140px;}
   .st-toolbar-r{margin-left:0;width:100%;}

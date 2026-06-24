@@ -33,7 +33,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
   .topbar{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--border);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;overflow:hidden;}
   .topbar-title{font-size:13px;font-weight:500;color:var(--text);}
   @media(max-width:768px){.sidebar{width:48px;}.nav-item span.nav-label{display:none;}.nav-section-label{display:none;}.sidebar-footer{display:none;}.sidebar-logo{padding:0 10px;}.page-content{margin-left:48px;}.topbar{padding:0 16px;}}
-main{max-width:1200px;margin:0 auto;padding:24px 28px 64px;}
+main{max-width:none;margin:0 auto;padding:24px 28px 64px;}
 .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:28px;}
 .metric-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
 .metric-card.highlight{background:var(--text);}
@@ -242,7 +242,7 @@ input:focus,select:focus{border-color:var(--text);}
 <style id="airy-v1">
 :root{--border:rgba(0,0,0,0.055);--border-mid:rgba(0,0,0,0.10);}
 body{line-height:1.62;}
-main{max-width:1340px;padding:42px 44px 100px;}
+main{max-width:none;padding:42px 44px 100px;}
 .topbar{padding:0 44px;}
 .sidebar-nav{padding:24px 14px;}
 .nav-item{padding:11px 12px;margin-bottom:4px;}
@@ -391,7 +391,7 @@ body{padding-bottom:34px;}
 @font-face{font-family:"AnvOldStd";src:url("OldStandardTT-Regular.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap;}
 :root{--anv-paper:#FFFFFF;--anv-beige:#F6F5EF;--anv-ink:#000;--anv-hair:#E7E2D7;--anv-pad:42px;}
 .anv-bar{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--anv-paper);transition:background .18s ease,transform .33s ease;}
-.anv-bar.anv-tinted{background:var(--anv-beige);}.anv-bar.anv-sub{border-bottom:1px solid #E8E8E8;}
+.anv-bar.anv-tinted{background:var(--anv-beige);border-bottom:1px solid #E8E8E8;}
 .anv-bar.anv-hidden{transform:translateY(-105%);}
 .anv-nav{position:relative;display:flex;align-items:center;gap:40px;padding:17px var(--anv-pad);box-sizing:border-box;}
 .anv-logo{display:flex;align-items:center;padding-right:4px;}
