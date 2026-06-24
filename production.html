@@ -524,7 +524,8 @@ body{padding-bottom:34px;}
   <main>
 <style id="style-prod-css">
 /* ===== 스타일(도식화) 페이지 — 스코프: .st- ===== */
-.st-wrap{--an-blue:#2B6CB8;--an-line:rgba(0,0,0,0.075);--an-line2:rgba(0,0,0,0.12);--an-paper:#FBFAF8;--an-ink:#1A1A1A;--an-ink2:#6E6864;--an-ink3:#A29C96;max-width:1280px;margin:0 auto;padding:6px 4px 60px;}
+.st-wrap,.st-modal-bg,.st-toast2{--an-blue:#2B6CB8;--an-line:rgba(0,0,0,0.075);--an-line2:rgba(0,0,0,0.12);--an-paper:#FBFAF8;--an-ink:#1A1A1A;--an-ink2:#6E6864;--an-ink3:#A29C96;}
+.st-wrap{max-width:1280px;margin:0 auto;padding:6px 4px 60px;}
 
 /* 헤더 */
 .st-head{padding:6px 4px 18px;border-bottom:1px solid var(--an-line);margin-bottom:22px;}
@@ -661,7 +662,7 @@ body{padding-bottom:34px;}
 /* ===== 모달 ===== */
 .st-modal-bg{display:none;position:fixed;inset:0;background:rgba(20,18,16,0.42);z-index:300;justify-content:center;align-items:flex-start;overflow-y:auto;padding:28px 16px;}
 .st-modal-bg.on{display:flex;}
-.st-modal{background:#fff;border-radius:18px;width:100%;max-width:560px;box-shadow:0 24px 70px rgba(0,0,0,0.28);margin:auto;}
+.st-modal{background:#fff;border-radius:18px;width:100%;max-width:560px;box-shadow:0 24px 70px rgba(0,0,0,0.28);}
 .st-modal h3{font-size:17px;font-weight:700;color:var(--an-ink);margin:0;padding:22px 28px 16px;border-bottom:1px solid var(--an-line);}
 .st-modal-body{padding:20px 28px 6px;}
 .st-modal .mrow{margin-bottom:14px;}
@@ -675,7 +676,7 @@ body{padding-bottom:34px;}
 .st-color-rows .crow input[type=color]{width:38px;height:36px;padding:2px;border-radius:8px;flex:none;}
 .st-mini{font-family:inherit;font-size:12px;padding:7px 12px;border-radius:8px;border:1px dashed var(--an-line2);background:#fff;color:var(--an-ink2);cursor:pointer;}
 .st-xrm{width:30px;height:34px;flex:none;border:1px solid var(--an-line2);background:#fff;border-radius:8px;color:var(--an-ink3);cursor:pointer;font-size:14px;}
-.st-modal-actions{display:flex;align-items:center;gap:10px;padding:14px 28px;border-top:1px solid var(--an-line);background:#fff;position:sticky;bottom:0;border-radius:0 0 18px 18px;}
+.st-modal-actions{display:flex;align-items:center;gap:10px;padding:14px 28px;border-top:1px solid var(--an-line);background:#fff;position:sticky;bottom:0;z-index:3;border-radius:0 0 18px 18px;box-shadow:0 -6px 14px rgba(0,0,0,0.05);}
 .st-modal-actions .sp{flex:1;}
 .st-del{font-family:inherit;font-size:13px;padding:10px 14px;border-radius:9px;border:1px solid var(--an-line2);background:#fff;color:#BD090A;cursor:pointer;}
 .st-cancel{font-family:inherit;font-size:13px;padding:10px 16px;border-radius:9px;border:1px solid var(--an-line2);background:#fff;color:var(--an-ink2);cursor:pointer;}
