@@ -540,18 +540,22 @@ body{padding-bottom:34px;}
 @media(max-width:768px){.anv-bar{display:none;}.page-content{padding-top:0 !important;}}
 </style>
 
-<style id="anv-filter-style">
+
+<style id="anv-filter-strip">
 .topbar-title{display:none !important;}
-.anv-filterhead{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin:2px 0 32px;}
-.anv-ptitle{font-family:"Noto Sans KR",sans-serif;font-weight:700;font-size:27px;letter-spacing:-.01em;color:#1A1A1A;line-height:1.1;}
-.anv-psub{font-family:"AnvOldStd",Georgia,serif;font-style:italic;font-size:13px;letter-spacing:.02em;color:#9A938A;margin-top:8px;}
-.anv-chanwrap{text-align:right;flex-shrink:0;}
-.anv-chanlabel{font-family:"AnvOldStd",Georgia,serif;font-style:italic;font-size:12px;letter-spacing:.04em;color:#9A938A;margin-bottom:9px;}
-#platFilters{display:flex !important;flex-direction:column;align-items:flex-end;gap:0;margin-left:0 !important;}
-#platFilters .plat-filter-btn{font-family:"AnvOldStd","Noto Sans KR",serif !important;font-size:14px !important;letter-spacing:.04em;text-transform:uppercase;padding:0 !important;border:0 !important;border-radius:0 !important;background:none !important;color:#1A1A1A !important;opacity:.5;line-height:2.1 !important;width:auto !important;white-space:nowrap;transition:opacity .14s;}
+.anv-filterstrip{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;
+  padding:14px 20px 20px;border-top:1px solid #E8E8E8;border-bottom:1px solid #E8E8E8;background:#fff;}
+.anv-filterstrip::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:#E8E8E8;}
+.anv-fs-left{padding-right:48px;}
+.anv-fs-h{font-family:"Noto Sans KR",sans-serif;font-size:12px;letter-spacing:.09em;color:#1A1A1A;margin-bottom:14px;text-transform:none;}
+.anv-fs-h.en{font-family:"AnvOldStd",Georgia,serif;font-style:italic;font-size:12px;letter-spacing:.04em;text-transform:none;}
+.anv-fs-cap{font-family:"Noto Sans KR",sans-serif;font-size:13px;line-height:1.7;color:#1A1A1A;max-width:560px;}
+.anv-fs-right{text-align:left;padding-left:22px;}
+#platFilters{display:flex !important;flex-direction:column;align-items:flex-start;gap:0;margin-left:0 !important;}
+#platFilters .plat-filter-btn{font-family:"AnvOldStd","Noto Sans KR",serif !important;font-size:12px !important;letter-spacing:-.01em;text-transform:uppercase;padding:0 !important;border:0 !important;border-radius:0 !important;background:none !important;color:#1A1A1A !important;opacity:1;line-height:1.95 !important;width:auto !important;white-space:nowrap;transition:opacity .14s;}
 #platFilters .plat-filter-btn:hover{opacity:.82 !important;background:none !important;}
 #platFilters .plat-filter-btn.active{opacity:1 !important;background:none !important;color:#1A1A1A !important;border:0 !important;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;}
-@media(max-width:768px){.anv-filterhead{flex-direction:column;gap:14px;}.anv-chanwrap{text-align:left;}#platFilters{align-items:flex-start;}.anv-ptitle{font-size:22px;}}
+@media(max-width:768px){.anv-filterstrip{display:block;padding:24px 16px 28px;}.anv-filterstrip::before{display:none;}.anv-fs-left{padding-right:0;margin-bottom:18px;}.anv-fs-right{text-align:left;padding-left:0;}#platFilters{align-items:flex-start;}.anv-fs-cap{font-size:12px;}}
 </style>
 </head>
 <body>
@@ -626,6 +630,24 @@ body{padding-bottom:34px;}
 })();
 </script>
 <div class="page-content">
+  <div class="anv-filterstrip">
+    <div class="anv-fs-left">
+      <div class="anv-fs-h">매출현황</div>
+      <div class="anv-fs-cap">채널별 매출·주문·할인 지표를 한눈에 봅니다.<br>오른쪽에서 채널을 선택하면 아래 대시보드가 그 채널 기준으로 필터링 됩니다.</div>
+    </div>
+    <div class="anv-fs-right">
+      <div class="anv-fs-h en">Channel</div>
+      <div id="platFilters">
+        <button class="plat-filter-btn active" onclick="setPlatFilter('전체',this)">ALL</button>
+        <button class="plat-filter-btn" onclick="setPlatFilter('온라인',this)">ONLINE</button>
+        <button class="plat-filter-btn" onclick="setPlatFilter('29CM',this)">29CM</button>
+        <button class="plat-filter-btn" onclick="setPlatFilter('무신사',this)">MUSINSA</button>
+        <button class="plat-filter-btn" onclick="setPlatFilter('자사몰',this)">ANDNEEDS</button>
+        <button class="plat-filter-btn" onclick="setPlatFilter('성수',this)">SUNGSU</button>
+      </div>
+    </div>
+  </div>
+
   <div class="topbar">
     <div style="display:flex;align-items:center;gap:8px;">
       <div class="mobile-header">
@@ -640,23 +662,7 @@ body{padding-bottom:34px;}
       <button class="tab-btn" id="calToggle" onclick="toggleCalendar(this)">캘린더 보기</button>
     </div>
   </div><main>
-  <div class="anv-filterhead">
-    <div class="anv-fh-left">
-      <div class="anv-ptitle">매출현황</div>
-      <div class="anv-psub">채널별 매출 현황</div>
-    </div>
-    <div class="anv-chanwrap">
-      <div class="anv-chanlabel">Channel</div>
-      <div id="platFilters">
-        <button class="plat-filter-btn active" onclick="setPlatFilter('전체',this)">ALL</button>
-        <button class="plat-filter-btn" onclick="setPlatFilter('온라인',this)">ONLINE</button>
-        <button class="plat-filter-btn" onclick="setPlatFilter('29CM',this)">29CM</button>
-        <button class="plat-filter-btn" onclick="setPlatFilter('무신사',this)">MUSINSA</button>
-        <button class="plat-filter-btn" onclick="setPlatFilter('자사몰',this)">ANDNEEDS</button>
-        <button class="plat-filter-btn" onclick="setPlatFilter('성수',this)">SUNGSU</button>
-      </div>
-    </div>
-  </div>
+  
 
     <div id="ivToday"></div>
     <div class="metrics" id="metrics"><div class="loading">불러오는 중...</div></div>
