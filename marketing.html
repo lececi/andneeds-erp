@@ -451,6 +451,23 @@ body{padding-bottom:34px;}
 .topbar{border-bottom:none !important;}
 @media(max-width:768px){.anv-bar{display:none;}.page-content{padding-top:0 !important;}}
 </style>
+
+<style id="anv-filter-strip">
+.topbar-title{display:none !important;}
+.anv-filterstrip{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;
+  padding:14px 20px 20px;border-top:1px solid #E8E8E8;border-bottom:1px solid #E8E8E8;background:#fff;}
+.anv-filterstrip::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:#E8E8E8;}
+.anv-fs-left{padding-right:48px;}
+.anv-fs-right{text-align:left;padding-left:22px;}
+.anv-fs-h{font-family:"Noto Sans KR",sans-serif;font-size:12px;letter-spacing:.09em;color:#1A1A1A;margin-bottom:14px;text-transform:none;}
+.anv-fs-h.en{font-family:"AnvOldStd",Georgia,serif;font-style:italic;font-size:12px;letter-spacing:.04em;text-transform:none;}
+.anv-fs-cap{font-family:"Noto Sans KR",sans-serif;font-size:13px;line-height:1.7;color:#1A1A1A;max-width:560px;}
+#tabs{display:flex !important;flex-direction:column;align-items:flex-start;gap:0;overflow:visible !important;margin:0 !important;}
+#tabs .tab-btn{font-family:"AnvOldStd","Noto Sans KR",serif !important;font-size:12px !important;letter-spacing:-.01em;text-transform:uppercase;padding:0 !important;border:0 !important;border-radius:0 !important;background:none !important;color:#1A1A1A !important;opacity:1;line-height:1.95 !important;width:auto !important;white-space:nowrap;transition:opacity .14s;}
+#tabs .tab-btn:hover{opacity:.62 !important;background:none !important;}
+#tabs .tab-btn.active{opacity:1 !important;background:none !important;color:#1A1A1A !important;border:0 !important;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;}
+@media(max-width:768px){.anv-filterstrip{display:block;padding:14px 16px 18px;}.anv-filterstrip::before{display:none;}.anv-fs-left{padding-right:0;margin-bottom:16px;}.anv-fs-right{text-align:left;padding-left:0;}#tabs{align-items:flex-start;}.anv-fs-cap{font-size:12px;}}
+</style>
 </head>
 <body>
 <div class="mobile-menu-overlay" id="mmOverlay" onclick="closeMobileMenu()"></div>
@@ -550,6 +567,17 @@ body{padding-bottom:34px;}
 </script>
 
 <div class="page-content">
+  <div class="anv-filterstrip">
+    <div class="anv-fs-left">
+      <div class="anv-fs-h">마케팅 비용</div>
+      <div class="anv-fs-cap">시즌별 마케팅 예산·실집행을 한눈에 봅니다.<br>오른쪽에서 시즌을 선택하면 아래에 해당 시즌 상세가 펼쳐집니다.</div>
+    </div>
+    <div class="anv-fs-right">
+      <div class="anv-fs-h en">Season</div>
+      <div class="mk-tabs" id="tabs"></div>
+    </div>
+  </div>
+
   <div class="topbar">
     <div style="display:flex;align-items:center;gap:14px;min-width:0;flex:1;">
       <div class="mobile-header">
@@ -558,7 +586,7 @@ body{padding-bottom:34px;}
         </button>
       </div>
       <span class="topbar-title" style="white-space:nowrap;">마케팅 비용</span>
-      <div class="mk-tabs" id="tabs"></div>
+      <!-- tabs moved to strip -->
     </div>
     <div style="font-size:12px;color:var(--text-3);" id="saveNote">—</div>
   </div>
