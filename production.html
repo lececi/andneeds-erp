@@ -659,10 +659,11 @@ body{padding-bottom:34px;}
 }
 
 /* ===== 모달 ===== */
-.st-modal-bg{display:none;position:fixed;inset:0;background:rgba(20,18,16,0.42);z-index:300;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;}
+.st-modal-bg{display:none;position:fixed;inset:0;background:rgba(20,18,16,0.42);z-index:300;align-items:center;justify-content:center;padding:24px 16px;}
 .st-modal-bg.on{display:flex;}
-.st-modal{background:#fff;border-radius:18px;width:100%;max-width:560px;padding:28px;box-shadow:0 24px 70px rgba(0,0,0,0.28);}
-.st-modal h3{font-size:17px;font-weight:700;color:var(--an-ink);margin-bottom:20px;}
+.st-modal{background:#fff;border-radius:18px;width:100%;max-width:560px;box-shadow:0 24px 70px rgba(0,0,0,0.28);display:flex;flex-direction:column;max-height:calc(100vh - 48px);overflow:hidden;}
+.st-modal h3{font-size:17px;font-weight:700;color:var(--an-ink);margin:0;padding:22px 28px 16px;border-bottom:1px solid var(--an-line);flex-shrink:0;}
+.st-modal-body{padding:20px 28px 6px;overflow-y:auto;flex:1;}
 .st-modal .mrow{margin-bottom:14px;}
 .st-modal .mrow.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .st-modal label{display:block;font-size:12px;font-weight:600;color:var(--an-ink2);margin-bottom:6px;}
@@ -674,7 +675,7 @@ body{padding-bottom:34px;}
 .st-color-rows .crow input[type=color]{width:38px;height:36px;padding:2px;border-radius:8px;flex:none;}
 .st-mini{font-family:inherit;font-size:12px;padding:7px 12px;border-radius:8px;border:1px dashed var(--an-line2);background:#fff;color:var(--an-ink2);cursor:pointer;}
 .st-xrm{width:30px;height:34px;flex:none;border:1px solid var(--an-line2);background:#fff;border-radius:8px;color:var(--an-ink3);cursor:pointer;font-size:14px;}
-.st-modal-actions{display:flex;align-items:center;gap:10px;margin-top:24px;}
+.st-modal-actions{display:flex;align-items:center;gap:10px;padding:14px 28px;border-top:1px solid var(--an-line);background:#fff;flex-shrink:0;}
 .st-modal-actions .sp{flex:1;}
 .st-del{font-family:inherit;font-size:13px;padding:10px 14px;border-radius:9px;border:1px solid var(--an-line2);background:#fff;color:#BD090A;cursor:pointer;}
 .st-cancel{font-family:inherit;font-size:13px;padding:10px 16px;border-radius:9px;border:1px solid var(--an-line2);background:#fff;color:var(--an-ink2);cursor:pointer;}
@@ -739,6 +740,7 @@ body{padding-bottom:34px;}
 <div class="st-modal-bg" id="stModalBg">
   <div class="st-modal">
     <h3 id="stModalTitle">새 스타일</h3>
+    <div class="st-modal-body">
 
     <div class="mrow two">
       <div><label>품번</label><input type="text" id="mCode" placeholder="예: L7SA0017"></div>
@@ -784,6 +786,7 @@ body{padding-bottom:34px;}
     <div class="st-spec-rows" id="mSpecRows"></div>
     <button type="button" class="st-mini" onclick="STYLE.addSpecRow()">+ 항목 추가</button>
 
+    </div><!-- /st-modal-body -->
     <div class="st-modal-actions">
       <button class="st-del" id="mDelBtn" style="display:none;" onclick="STYLE.delCurrent()">삭제</button>
       <span class="sp"></span>
