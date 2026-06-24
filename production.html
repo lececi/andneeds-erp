@@ -378,7 +378,7 @@ body{padding-bottom:34px;}
 @font-face{font-family:"AnvOldStd";src:url("OldStandardTT-Regular.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap;}
 :root{--anv-paper:#FFFFFF;--anv-beige:#F6F5EF;--anv-ink:#000;--anv-hair:#E7E2D7;--anv-pad:42px;}
 .anv-bar{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--anv-paper);transition:background .18s ease,transform .33s ease;}
-.anv-bar.anv-tinted{background:var(--anv-beige);}.anv-bar.anv-sub{border-bottom:1px solid #E8E8E8;}
+.anv-bar.anv-tinted{background:var(--anv-beige);border-bottom:1px solid #E8E8E8;}
 .anv-bar.anv-hidden{transform:translateY(-105%);}
 .anv-nav{position:relative;display:flex;align-items:center;gap:40px;padding:17px var(--anv-pad);box-sizing:border-box;}
 .anv-logo{display:flex;align-items:center;padding-right:4px;}
@@ -516,290 +516,530 @@ body{padding-bottom:34px;}
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1714" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
       </div>
-      <span class="topbar-title">생산관리 · Production Board</span>
+      <span class="topbar-title">생산관리 · STYLE</span>
     </div>
     <div style="font-size:12px;color:var(--text-3);" id="saveNote">—</div>
   </div>
 
   <main>
-    <div class="toolbar">
-      <select id="fSeason" onchange="render()"><option value="">전체 시즌</option></select>
-      <button class="btn-primary" onclick="openModal(null)">+ 직접 추가</button>
-      <button class="upload-btn" onclick="openPick()">상품에서 추가</button>
-      <span class="sp" style="flex:1"></span>
+<style id="style-prod-css">
+/* ===== 스타일(도식화) 페이지 — 스코프: .st- ===== */
+.st-wrap{--an-blue:#2B6CB8;--an-line:rgba(0,0,0,0.075);--an-line2:rgba(0,0,0,0.12);--an-paper:#FBFAF8;--an-ink:#1A1A1A;--an-ink2:#6E6864;--an-ink3:#A29C96;max-width:1280px;margin:0 auto;padding:6px 4px 60px;}
+
+/* 헤더 */
+.st-head{padding:6px 4px 18px;border-bottom:1px solid var(--an-line);margin-bottom:22px;}
+.st-head .st-h1{display:flex;align-items:center;gap:9px;font-size:20px;font-weight:700;color:var(--an-ink);letter-spacing:-.01em;}
+.st-head .st-h1 svg{width:20px;height:20px;stroke:var(--an-ink);fill:none;stroke-width:1.7;}
+.st-head .st-sub{margin-top:6px;font-size:13px;color:var(--an-ink3);letter-spacing:-.01em;}
+
+/* 필터바 */
+.st-filters{display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px 16px;margin-bottom:14px;}
+.st-field{display:flex;flex-direction:column;gap:6px;min-width:130px;}
+.st-field.grow{flex:1;min-width:200px;}
+.st-field label{font-size:11px;font-weight:600;color:var(--an-ink2);letter-spacing:.01em;}
+.st-field input,.st-field select{font-family:'Noto Sans KR',sans-serif;font-size:13px;padding:9px 12px;border:1px solid var(--an-line2);border-radius:9px;background:#fff;color:var(--an-ink);outline:none;transition:border-color .15s;width:100%;box-sizing:border-box;}
+.st-field input:focus,.st-field select:focus{border-color:var(--an-blue);}
+.st-toolbar-r{display:flex;align-items:flex-end;gap:10px;margin-left:auto;flex-wrap:wrap;}
+
+/* 세그먼트(보기/열 수) */
+.st-seg{display:inline-flex;border:1px solid var(--an-line2);border-radius:9px;overflow:hidden;background:#fff;}
+.st-seg button{font-family:inherit;font-size:12px;font-weight:500;padding:8px 12px;border:none;background:transparent;color:var(--an-ink2);cursor:pointer;display:flex;align-items:center;gap:5px;transition:background .12s,color .12s;}
+.st-seg button+button{border-left:1px solid var(--an-line);}
+.st-seg button.on{background:var(--an-ink);color:#fff;}
+.st-seg svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;}
+
+.st-btn-ghost{font-family:inherit;font-size:12px;font-weight:500;padding:9px 16px;border-radius:9px;border:1px solid var(--an-line2);background:#fff;color:var(--an-ink2);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:border-color .12s,color .12s;}
+.st-btn-ghost:hover{border-color:var(--an-ink2);color:var(--an-ink);}
+.st-btn-ghost svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7;}
+.st-btn-dark{font-family:inherit;font-size:13px;font-weight:600;padding:10px 18px;border-radius:9px;border:none;background:var(--an-ink);color:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .12s;}
+.st-btn-dark:hover{opacity:.86;}
+
+.st-count{font-size:12px;color:var(--an-ink3);margin:4px 2px 16px;}
+.st-count b{color:var(--an-ink);font-weight:600;}
+
+/* 카드 그리드 */
+.st-grid{display:grid;gap:18px;}
+.st-grid[data-cols="4"]{grid-template-columns:repeat(4,1fr);}
+.st-grid[data-cols="6"]{grid-template-columns:repeat(6,1fr);}
+.st-grid[data-cols="8"]{grid-template-columns:repeat(8,1fr);}
+.st-grid[data-cols="10"]{grid-template-columns:repeat(10,1fr);}
+.st-card{background:#fff;border:1px solid var(--an-line);border-radius:0;overflow:hidden;cursor:pointer;transition:box-shadow .18s,transform .18s,border-color .18s;display:flex;flex-direction:column;}
+.st-card:hover{box-shadow:0 10px 26px rgba(0,0,0,0.09);transform:translateY(-2px);border-color:var(--an-line2);}
+.st-thumb{aspect-ratio:1/1;background:#F1EEE5;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.st-thumb img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;}
+.st-thumb .ph{width:30px;height:30px;stroke:#C8C2BB;fill:none;stroke-width:1.4;}
+.st-cbody{padding:11px 13px 14px;}
+.st-code{font-size:11.5px;font-weight:700;color:var(--an-ink);letter-spacing:.04em;}
+.st-name{font-size:13px;color:#3A3733;margin-top:4px;line-height:1.35;letter-spacing:-.01em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.st-season{font-size:11px;color:var(--an-ink3);margin-top:7px;letter-spacing:.03em;}
+.st-card .st-code[contenteditable],.st-card .st-name[contenteditable]{cursor:text;outline:none;border-radius:2px;transition:background .12s,box-shadow .12s;}
+.st-card .st-code[contenteditable]:hover,.st-card .st-name[contenteditable]:hover{background:#F6F4F0;}
+.st-card .st-code[contenteditable]:focus,.st-card .st-name[contenteditable]:focus{background:#fff;box-shadow:0 0 0 1.5px var(--an-blue);padding:1px 3px;margin:-1px -3px;}
+
+/* 리스트(목록) 보기 */
+.st-list{border:1px solid var(--an-line);border-radius:0;overflow:hidden;background:#fff;}
+.st-list table{width:100%;border-collapse:collapse;font-size:13px;}
+.st-list th{text-align:left;font-size:11px;font-weight:600;color:var(--an-ink2);padding:12px 16px;background:#FAF9F7;border-bottom:1px solid var(--an-line);letter-spacing:.02em;}
+.st-list td{padding:12px 16px;border-bottom:1px solid var(--an-line);color:#3A3733;cursor:pointer;}
+.st-list tr:last-child td{border-bottom:none;}
+.st-list tr:hover td{background:#FBFAF8;}
+.st-list .lc-code{font-weight:700;color:var(--an-ink);letter-spacing:.03em;}
+.st-badge{display:inline-block;font-size:11px;padding:2px 9px;border-radius:20px;background:#F2F0ED;color:var(--an-ink2);}
+
+.st-empty{text-align:center;padding:70px 20px;color:var(--an-ink3);font-size:13px;line-height:1.7;}
+
+/* ===== 상세 ===== */
+.st-detail{display:none;}
+.st-detail.on{display:block;}
+.st-list-view.off{display:none;}
+.st-dhead{display:flex;align-items:flex-start;gap:14px;padding:6px 4px 18px;border-bottom:1px solid var(--an-line);margin-bottom:24px;}
+.st-back{font-family:inherit;font-size:12px;font-weight:500;color:var(--an-ink2);background:#fff;border:1px solid var(--an-line2);border-radius:9px;padding:9px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:border-color .12s,color .12s;}
+.st-back:hover{border-color:var(--an-ink2);color:var(--an-ink);}
+.st-back svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;}
+.st-dtitle h2{font-size:20px;font-weight:700;color:var(--an-ink);letter-spacing:-.01em;}
+.st-dtitle .st-sub{margin-top:6px;font-size:13px;color:var(--an-ink3);}
+.st-dtitle .st-dcode{display:inline-block;margin-top:8px;font-size:11.5px;font-weight:700;letter-spacing:.05em;color:var(--an-blue);}
+.st-dactions{margin-left:auto;display:flex;gap:8px;}
+
+.st-panels{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.st-panel{background:#fff;border:1px solid var(--an-line);border-radius:16px;padding:24px;}
+.st-panel h3{font-size:15px;font-weight:700;color:var(--an-ink);margin-bottom:18px;letter-spacing:-.01em;}
+
+/* 패턴 */
+.st-flats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.st-flats .fl{flex:1;min-width:90px;aspect-ratio:3/4;background:#F1EEE5;border-radius:0;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.st-flats .fl img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;}
+.st-flats .fl svg{width:26px;height:26px;stroke:#CBC5BE;fill:none;stroke-width:1.3;}
+.st-file{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--an-line);border-radius:11px;background:#FBFAF8;}
+.st-file .fic{width:30px;height:36px;flex:none;border-radius:5px;background:var(--an-blue);display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;letter-spacing:.02em;}
+.st-file .fnm{flex:1;min-width:0;font-size:12.5px;color:#3A3733;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.st-file .fsz{font-size:11px;color:var(--an-ink3);white-space:nowrap;}
+.st-file .fdl{width:28px;height:28px;border-radius:7px;border:1px solid var(--an-line2);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--an-ink2);}
+.st-file .fdl svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;}
+
+/* 원단 */
+.st-fabric{display:flex;gap:18px;}
+.st-fabric .fswatch{width:150px;height:150px;flex:none;border-radius:12px;background:#EDE9E3;overflow:hidden;}
+.st-fabric .fswatch img{width:100%;height:100%;object-fit:cover;}
+.st-kv{flex:1;border:1px solid var(--an-line);border-radius:11px;overflow:hidden;align-self:flex-start;width:100%;}
+.st-kv .row{display:flex;border-bottom:1px solid var(--an-line);}
+.st-kv .row:last-child{border-bottom:none;}
+.st-kv .k{width:78px;flex:none;padding:9px 12px;font-size:12px;font-weight:600;color:var(--an-ink2);background:#FAF9F7;border-right:1px solid var(--an-line);}
+.st-kv .v{padding:9px 12px;font-size:12.5px;color:#3A3733;}
+
+/* 컬러 */
+.st-colors{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.st-colors .cc .chip{aspect-ratio:1/1;border-radius:12px;border:1px solid rgba(0,0,0,0.06);}
+.st-colors .cc .ccode{margin-top:9px;font-size:12px;font-weight:600;color:var(--an-ink);}
+.st-colors .cc .cname{font-size:11.5px;color:var(--an-ink3);margin-top:2px;}
+
+/* 사이즈 스펙 */
+.st-spec{display:flex;gap:20px;align-items:flex-start;}
+.st-spec .stbl{flex:1;border:1px solid var(--an-line);border-radius:11px;overflow:hidden;}
+.st-spec table{width:100%;border-collapse:collapse;font-size:12.5px;}
+.st-spec th,.st-spec td{padding:9px 10px;text-align:center;border-bottom:1px solid var(--an-line);border-right:1px solid var(--an-line);}
+.st-spec th:last-child,.st-spec td:last-child{border-right:none;}
+.st-spec tr:last-child td{border-bottom:none;}
+.st-spec thead th{background:#FAF9F7;color:var(--an-ink2);font-weight:600;}
+.st-spec tbody th{background:#FCFBFA;color:var(--an-ink);font-weight:600;text-align:left;padding-left:14px;}
+.st-spec tbody td{color:#3A3733;}
+.st-diagram{width:190px;flex:none;}
+.st-diagram svg{width:100%;height:auto;}
+
+@media(max-width:900px){
+  .st-panels{grid-template-columns:1fr;}
+  .st-spec{flex-direction:column;}
+  .st-diagram{width:100%;max-width:220px;margin:0 auto;}
+}
+@media(max-width:768px){
+  .st-grid[data-cols]{grid-template-columns:repeat(2,1fr)!important;}
+  .st-fabric{flex-direction:column;}
+  .st-fabric .fswatch{width:100%;height:140px;}
+  .st-toolbar-r{margin-left:0;width:100%;}
+}
+
+/* ===== 모달 ===== */
+.st-modal-bg{display:none;position:fixed;inset:0;background:rgba(20,18,16,0.42);z-index:300;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;}
+.st-modal-bg.on{display:flex;}
+.st-modal{background:#fff;border-radius:18px;width:100%;max-width:560px;padding:28px;box-shadow:0 24px 70px rgba(0,0,0,0.28);}
+.st-modal h3{font-size:17px;font-weight:700;color:var(--an-ink);margin-bottom:20px;}
+.st-modal .mrow{margin-bottom:14px;}
+.st-modal .mrow.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.st-modal label{display:block;font-size:12px;font-weight:600;color:var(--an-ink2);margin-bottom:6px;}
+.st-modal input,.st-modal select,.st-modal textarea{width:100%;box-sizing:border-box;font-family:inherit;font-size:13px;padding:9px 11px;border:1px solid var(--an-line2);border-radius:9px;background:#fff;color:var(--an-ink);outline:none;}
+.st-modal input:focus,.st-modal select:focus,.st-modal textarea:focus{border-color:var(--an-blue);}
+.st-modal textarea{resize:vertical;min-height:54px;}
+.st-msub{font-size:11px;font-weight:700;color:var(--an-ink3);letter-spacing:.06em;text-transform:uppercase;margin:22px 0 12px;padding-top:18px;border-top:1px solid var(--an-line);}
+.st-color-rows .crow,.st-spec-rows .srow{display:flex;gap:8px;margin-bottom:8px;align-items:center;}
+.st-color-rows .crow input[type=color]{width:38px;height:36px;padding:2px;border-radius:8px;flex:none;}
+.st-mini{font-family:inherit;font-size:12px;padding:7px 12px;border-radius:8px;border:1px dashed var(--an-line2);background:#fff;color:var(--an-ink2);cursor:pointer;}
+.st-xrm{width:30px;height:34px;flex:none;border:1px solid var(--an-line2);background:#fff;border-radius:8px;color:var(--an-ink3);cursor:pointer;font-size:14px;}
+.st-modal-actions{display:flex;align-items:center;gap:10px;margin-top:24px;}
+.st-modal-actions .sp{flex:1;}
+.st-del{font-family:inherit;font-size:13px;padding:10px 14px;border-radius:9px;border:1px solid var(--an-line2);background:#fff;color:#BD090A;cursor:pointer;}
+.st-cancel{font-family:inherit;font-size:13px;padding:10px 16px;border-radius:9px;border:1px solid var(--an-line2);background:#fff;color:var(--an-ink2);cursor:pointer;}
+.st-save{font-family:inherit;font-size:13px;font-weight:600;padding:10px 22px;border-radius:9px;border:none;background:var(--an-ink);color:#fff;cursor:pointer;}
+.st-toast2{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(90px);background:var(--an-ink);color:#fff;font-size:13px;padding:11px 22px;border-radius:10px;transition:transform .3s;z-index:400;white-space:nowrap;}
+.st-toast2.on{transform:translateX(-50%) translateY(0);}
+</style>
+
+    <div class="st-wrap">
+
+      <!-- ===== 리스트 뷰 ===== -->
+      <div class="st-list-view" id="stListView">
+
+
+        <div class="st-filters">
+          <div class="st-field grow">
+            <label>검색</label>
+            <input type="text" id="fSearch" placeholder="품번, 품명" oninput="STYLE.render()">
+          </div>
+          <div class="st-field">
+            <label>시즌</label>
+            <select id="fSeason" onchange="STYLE.render()"><option value="">전체</option></select>
+          </div>
+          <div class="st-field">
+            <label>카테고리</label>
+            <select id="fCat" onchange="STYLE.render()"><option value="">전체</option></select>
+          </div>
+          <div class="st-field">
+            <label>상태</label>
+            <select id="fStatus" onchange="STYLE.render()"><option value="">전체</option></select>
+          </div>
+          <div class="st-toolbar-r">
+            <div class="st-seg" id="viewSeg">
+              <button class="on" data-view="card" onclick="STYLE.setView('card')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>카드</button>
+              <button data-view="list" onclick="STYLE.setView('list')"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>목록</button>
+            </div>
+            <div class="st-seg" id="colSeg">
+              <button data-col="4" onclick="STYLE.setCols(4)">4</button>
+              <button class="on" data-col="6" onclick="STYLE.setCols(6)">6</button>
+              <button data-col="8" onclick="STYLE.setCols(8)">8</button>
+              <button data-col="10" onclick="STYLE.setCols(10)">10</button>
+            </div>
+            <button class="st-btn-ghost" onclick="STYLE.exportCSV()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>엑셀 다운로드</button>
+            <button class="st-btn-dark" onclick="STYLE.openEdit(null)"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>새 스타일</button>
+          </div>
+        </div>
+
+        <div class="st-count" id="stCount"></div>
+        <div class="st-grid" id="stGrid" data-cols="6"></div>
+        <div id="stListTable" style="display:none;"></div>
+      </div>
+
+      <!-- ===== 상세 뷰 ===== -->
+      <div class="st-detail" id="stDetail"></div>
+
     </div>
 
-    <div class="metrics" id="metrics"></div>
-
-    <div class="sec-head"><span class="sec-title">Production Board</span></div>
-    <div class="board" id="board"></div>
-
-    <div class="sec-head" style="margin-top:8px;"><span class="sec-title">지연 알림</span></div>
-    <div class="alert-card" id="delayBox"></div>
-
-    <div class="sec-head"><span class="sec-title">이번 주 해야 할 생산 업무</span></div>
-    <div class="alert-card" id="weekBox"></div>
-
-    <div style="font-size:11px;color:var(--text-3);line-height:1.7;margin-top:8px;">
-      · 카드를 끌어다 옮기거나 카드 안의 ← → 버튼으로 단계를 바꿔요. ✎ 편집 · 🗑 삭제.<br>
-      · 지연 = 현재 단계의 마감일이 지난 카드 · 이번 주 업무 = 현재 단계 마감일이 오늘~7일 이내인 카드.<br>
-      · 모든 변경은 클라우드에 자동 저장돼서 폰·다른 컴퓨터에서도 똑같이 보여요.
-    </div>
   </main>
 </div>
 </div>
 
-<div class="modal-bg" id="modalBg">
-  <div class="modal">
-    <h3 id="modalTitle">생산 카드 추가</h3>
-    <label>상품명</label>
-    <input type="text" id="mName" placeholder="예: Quiet turtleneck">
-    <label>시즌</label>
-    <input type="text" id="mSeason" placeholder="예: 26FW">
-    <label>현재 단계</label>
-    <select id="mStage"></select>
-    <label>단계별 마감일</label>
-    <div class="due-grid" id="dueGrid"></div>
-    <label>메모</label>
-    <textarea id="mMemo" placeholder="컬러 3종 / 부자재 확인 등"></textarea>
-    <div class="modal-actions">
-      <button class="btn-del" id="mDelBtn" style="display:none;" onclick="delCurrent()">삭제</button>
+<div class="st-modal-bg" id="stModalBg">
+  <div class="st-modal">
+    <h3 id="stModalTitle">새 스타일</h3>
+
+    <div class="mrow two">
+      <div><label>품번</label><input type="text" id="mCode" placeholder="예: L7SA0017"></div>
+      <div><label>시즌</label><input type="text" id="mSeason" placeholder="예: 27SS"></div>
+    </div>
+    <div class="mrow"><label>품명</label><input type="text" id="mName" placeholder="예: 더스티 린넨 트러커 자켓"></div>
+    <div class="mrow two">
+      <div><label>카테고리</label><input type="text" id="mCat" placeholder="예: 자켓"></div>
+      <div><label>상태</label>
+        <select id="mStatus">
+          <option>기획</option><option>샘플</option><option>확정</option><option>본생산</option><option>판매</option><option>보류</option>
+        </select>
+      </div>
+    </div>
+    <div class="mrow"><label>도식화 이미지 (선택)</label><input type="file" id="mSketch" accept="image/*"></div>
+
+    <div class="st-msub">패턴 (평면도 파일)</div>
+    <div class="mrow two">
+      <div><label>파일명</label><input type="text" id="mPatName" placeholder="예: L75A0017_평면도.pdf"></div>
+      <div><label>용량 표기</label><input type="text" id="mPatSize" placeholder="예: 2.4MB"></div>
+    </div>
+    <div class="mrow"><label>PDF 링크 (선택)</label><input type="text" id="mPatUrl" placeholder="https:// 또는 비워두기"></div>
+
+    <div class="st-msub">원단 / 소재 정보</div>
+    <div class="mrow two">
+      <div><label>품번</label><input type="text" id="mFabCode" placeholder="FAB-0001"></div>
+      <div><label>품명</label><input type="text" id="mFabName" placeholder="코튼 트윌"></div>
+    </div>
+    <div class="mrow two">
+      <div><label>혼용률</label><input type="text" id="mFabComp" placeholder="Cotton 100%"></div>
+      <div><label>중량</label><input type="text" id="mFabWeight" placeholder="310g/yd"></div>
+    </div>
+    <div class="mrow two">
+      <div><label>가공</label><input type="text" id="mFabFinish" placeholder="텐타 / 바이오워싱"></div>
+      <div><label>특이사항</label><input type="text" id="mFabNote" placeholder="워싱 수축률 주의"></div>
+    </div>
+
+    <div class="st-msub">컬러 정보</div>
+    <div class="st-color-rows" id="mColorRows"></div>
+    <button type="button" class="st-mini" onclick="STYLE.addColorRow()">+ 컬러 추가</button>
+
+    <div class="st-msub">사이즈 스펙 (S / M / L / XL)</div>
+    <div class="st-spec-rows" id="mSpecRows"></div>
+    <button type="button" class="st-mini" onclick="STYLE.addSpecRow()">+ 항목 추가</button>
+
+    <div class="st-modal-actions">
+      <button class="st-del" id="mDelBtn" style="display:none;" onclick="STYLE.delCurrent()">삭제</button>
       <span class="sp"></span>
-      <button class="btn-ghost" onclick="closeModal()">취소</button>
-      <button class="btn-primary" onclick="saveModal()">저장</button>
+      <button class="st-cancel" onclick="STYLE.closeEdit()">취소</button>
+      <button class="st-save" onclick="STYLE.save()">저장</button>
     </div>
   </div>
 </div>
 
-<div class="modal-bg" id="pickBg">
-  <div class="modal">
-    <h3>손익관리 상품에서 추가</h3>
-    <label>상품 선택</label>
-    <select id="pSelect"></select>
-    <div class="empty-note" id="pickEmpty" style="display:none;">손익관리에 등록된 상품이 없어요. 먼저 손익관리에서 원가표·매출 파일을 올려주세요.</div>
-    <div class="modal-actions">
-      <span class="sp"></span>
-      <button class="btn-ghost" onclick="closePick()">취소</button>
-      <button class="btn-primary" onclick="addFromPick()">추가</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
+<div class="st-toast2" id="stToast"></div>
 
 <script>
-const STAGES=['기획','샘플','수정','본생산','검수','입고','촬영','업로드','판매'];
-const SB_URL='https://nifytqcqfattzpwlzpmb.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs';
-const LSKEY='anniz_prod_v1';
-let ITEMS=[];
-let PRODNAMES=[];
-let cloudOK=false, editId=null;
+/* 모바일 메뉴 (공통) */
+function openMobileMenu(){ var o=document.getElementById('mmOverlay'),p=document.getElementById('mmPanel'); if(o)o.classList.add('open'); if(p)p.classList.add('open'); }
+function closeMobileMenu(){ var o=document.getElementById('mmOverlay'),p=document.getElementById('mmPanel'); if(o)o.classList.remove('open'); if(p)p.classList.remove('open'); }
 
-function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-function val(id){ return document.getElementById(id).value; }
-function todayStr(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-function daysBetween(a,b){ return Math.round((new Date(b)-new Date(a))/86400000); }
-function curDue(it){ return (it.due&&it.due[it.stage])?it.due[it.stage]:''; }
-function fmtDate(s){ if(!s) return ''; const p=s.split('-'); return p[1]+'/'+p[2]; }
-let toastTimer; function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2400); }
+/* ===== 스타일(도식화) 앱 ===== */
+var STYLE=(function(){
+  var LS='anniz_styles';
+  var SPEC_LABELS=['총장','어깨','가슴','밑단','소매장','소매통'];
+  var state={view:'card',cols:6,editId:null};
+  var data=[];
 
-async function sbFetch(path,opts={}){
-  const res=await fetch(SB_URL+'/rest/v1/'+path,{...opts,headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':opts.prefer||'return=minimal',...(opts.headers||{})}});
-  if(!res.ok) throw new Error(await res.text());
-  const t=await res.text(); if(!t||!t.trim()) return null;
-  try{return JSON.parse(t);}catch(e){return null;}
-}
-async function save(){
-  try{ localStorage.setItem(LSKEY,JSON.stringify(ITEMS)); }catch(e){}
-  try{
-    await sbFetch('sku_state',{method:'POST',prefer:'resolution=merge-duplicates',body:JSON.stringify({id:'production_board',payload:{items:ITEMS},updated_at:new Date().toISOString()})});
-    cloudOK=true;
-  }catch(e){ cloudOK=false; console.error(e); }
-  document.getElementById('saveNote').textContent=cloudOK?'☁ 클라우드 저장됨':'⚠ 이 기기에만 저장됨';
-}
-async function load(){
-  try{
-    const r=await sbFetch('sku_state?id=eq.production_board&select=payload');
-    cloudOK=true;
-    if(r&&r[0]&&r[0].payload&&r[0].payload.items) ITEMS=r[0].payload.items;
-    else { try{const s=localStorage.getItem(LSKEY); if(s) ITEMS=JSON.parse(s);}catch(e){} }
-  }catch(e){ cloudOK=false; try{const s=localStorage.getItem(LSKEY); if(s) ITEMS=JSON.parse(s);}catch(e2){} }
-  try{
-    const r=await sbFetch('sku_state?id=eq.main&select=payload');
-    if(r&&r[0]&&r[0].payload){ const p=r[0].payload; const src=((p.src&&p.src.season)||[]).concat((p.src&&p.src.inv)||[]).concat(p.costrows||[]);
-      const seen={}; PRODNAMES=[];
-      src.forEach(o=>{ if(o&&o.name&&!seen[o.name]){ seen[o.name]=1; PRODNAMES.push({name:o.name,season:o.season||''}); } });
-      PRODNAMES.sort((a,b)=>a.name.localeCompare(b.name));
+  function seed(){
+    var s=function(code,name,season,cat,status,extra){return Object.assign({id:code,code:code,name:name,season:season,category:cat,status:status,sketch:'',pattern:{name:'',size:'',url:''},fabric:{code:'',name:'',comp:'',weight:'',finish:'',note:''},colors:[],spec:{sizes:['S','M','L','XL'],rows:[]}},extra||{});};
+    return [
+      s('L7SAD002','DN320 디스체인 스네이크 플레어 데님','27SS','데님','기획'),
+      s('L7SA0017','더스티 린넨 트러커 자켓','27SS','자켓','확정',{
+        pattern:{name:'L75A0017_디스터 틴턴 트러커 자켓_평면도.pdf',size:'2.4MB',url:''},
+        fabric:{code:'FAB-0001',name:'코튼 트윌',comp:'Cotton 100%',weight:'310g/yd',finish:'텐타 / 바이오워싱',note:'워싱 수축률 주의'},
+        colors:[{code:'NVY-01',name:'네이비',hex:'#1F2A44'},{code:'BEG-02',name:'베이지',hex:'#C8B79E'},{code:'SBL-03',name:'스카이블루',hex:'#9FB8D0'},{code:'CHC-04',name:'차콜',hex:'#3A3A3C'}],
+        spec:{sizes:['S','M','L','XL'],rows:[
+          {label:'총장',v:[66,68,70,72]},{label:'어깨',v:[48,50,52,54]},{label:'가슴',v:[56,58,60,62]},
+          {label:'밑단',v:[52,54,56,58]},{label:'소매장',v:[60,61,62,63]},{label:'소매통',v:[22,23,24,25]}]}
+      }),
+      s('L7SA0016','시어 코팅 하이넥 자켓','27SS','자켓','샘플'),
+      s('L7SAD001','DN318 벡터 데님 크롭 자켓','27SS','데님','샘플'),
+      s('L7SA0015','웨인 M65 트러커 자켓','27SS','자켓','기획'),
+      s('L7SA0014','모르돈 오버사이즈 싱글 블레이저','27SS','블레이저','기획'),
+      s('L7SA0013','로더 울 나폴레옹 자켓','27SS','자켓','기획'),
+      s('L7SAS001','보이드 돌먼 셔츠','27SS','셔츠','샘플'),
+      s('L7SA0012','에드윈 싱글 블레이저','27SS','블레이저','확정'),
+      s('L7SA0011','메이슨 아세테이트 블루종 점퍼','27SS','점퍼','샘플'),
+      s('L7SA0010','마르 빈티지 M65 자켓','27SS','자켓','본생산'),
+      s('L7SA0009','프렌 밀리터리 자켓','27SS','자켓','기획'),
+      s('L7SA0008','디오 엔보 레더 자켓','27SS','자켓','확정'),
+      s('L7SA0007','리토 나그랑 레더 블루종','27SS','블루종','샘플'),
+      s('L6WAS001','테리 데님 셔츠 퓨어블랙 리오더건','26FW','셔츠','판매'),
+      s('L7SA0004','슬릿 싱글 테일러드 블레이저','27SS','블레이저','기획'),
+      s('L6WAO003','이스 벨벳 자켓','26FW','자켓','판매'),
+      s('L6WAN001','오버사이즈 보머 자켓','26FW','자켓','판매')
+    ];
+  }
+
+  function load(){
+    try{var raw=localStorage.getItem(LS); data=raw?JSON.parse(raw):seed();}catch(e){data=seed();}
+    if(!Array.isArray(data)||!data.length){data=seed();}
+    save();
+  }
+  function save(){ try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){} }
+  function uid(){ return 'S'+Date.now().toString(36); }
+  function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function byId(id){ return data.find(function(x){return x.id===id;}); }
+  function toast(msg){ var t=document.getElementById('stToast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},1900); }
+
+  function fillFilter(id,vals,cur){
+    var el=document.getElementById(id); var keep=el.value;
+    el.innerHTML='<option value="">전체</option>'+vals.map(function(v){return '<option>'+esc(v)+'</option>';}).join('');
+    el.value=keep;
+  }
+  function uniq(key){ var set=[]; data.forEach(function(d){var v=d[key]; if(v&&set.indexOf(v)<0)set.push(v);}); return set; }
+
+  function filtered(){
+    var q=(document.getElementById('fSearch').value||'').trim().toLowerCase();
+    var se=document.getElementById('fSeason').value, ca=document.getElementById('fCat').value, st=document.getElementById('fStatus').value;
+    return data.filter(function(d){
+      if(se&&d.season!==se)return false;
+      if(ca&&d.category!==ca)return false;
+      if(st&&d.status!==st)return false;
+      if(q){var hay=((d.code||'')+' '+(d.name||'')).toLowerCase(); if(hay.indexOf(q)<0)return false;}
+      return true;
+    });
+  }
+
+  var PH='<svg class="ph" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>';
+  function thumb(d,cls){ return d.sketch?'<img src="'+esc(d.sketch)+'" alt="">':PH.replace('ph',cls||'ph'); }
+
+  function render(){
+    fillFilter('fSeason',uniq('season')); fillFilter('fCat',uniq('category')); fillFilter('fStatus',uniq('status'));
+    var rows=filtered();
+    document.getElementById('stCount').innerHTML='<b>'+rows.length+'</b>개';
+    var grid=document.getElementById('stGrid'), tbl=document.getElementById('stListTable');
+    if(state.view==='card'){
+      grid.style.display=''; tbl.style.display='none'; grid.setAttribute('data-cols',state.cols);
+      if(!rows.length){grid.innerHTML=''; grid.insertAdjacentHTML('beforebegin','');}
+      grid.innerHTML = rows.length? rows.map(function(d){
+        return '<div class="st-card" onclick="STYLE.openDetail(\''+d.id+'\')">'+
+          '<div class="st-thumb">'+thumb(d)+'</div>'+
+          '<div class="st-cbody"><div class="st-code" contenteditable="true" spellcheck="false" onclick="event.stopPropagation()" onkeydown="STYLE.ieKey(event)" onblur="STYLE.inlineEdit(\''+d.id+'\',\'code\',this)">'+esc(d.code)+'</div>'+
+          '<div class="st-name" contenteditable="true" spellcheck="false" onclick="event.stopPropagation()" onkeydown="STYLE.ieKey(event)" onblur="STYLE.inlineEdit(\''+d.id+'\',\'name\',this)">'+esc(d.name)+'</div>'+
+          '<div class="st-season">'+esc(d.season)+'</div></div></div>';
+      }).join('') : '<div class="st-empty" style="grid-column:1/-1;">조건에 맞는 스타일이 없어요.<br>필터를 바꾸거나 <b>새 스타일</b>을 등록해보세요.</div>';
+    }else{
+      grid.style.display='none'; tbl.style.display='';
+      tbl.innerHTML = rows.length? '<div class="st-list"><table><thead><tr><th style="width:120px">품번</th><th>품명</th><th style="width:90px">시즌</th><th style="width:110px">카테고리</th><th style="width:90px">상태</th></tr></thead><tbody>'+
+        rows.map(function(d){return '<tr onclick="STYLE.openDetail(\''+d.id+'\')"><td class="lc-code">'+esc(d.code)+'</td><td>'+esc(d.name)+'</td><td>'+esc(d.season)+'</td><td>'+esc(d.category||'-')+'</td><td><span class="st-badge">'+esc(d.status||'-')+'</span></td></tr>';}).join('')+
+        '</tbody></table></div>' : '<div class="st-empty">조건에 맞는 스타일이 없어요.</div>';
     }
-  }catch(e){}
-}
+  }
 
-function seasons(){ return [...new Set(ITEMS.map(i=>i.season).filter(Boolean))].sort(); }
-function visible(){ const s=val('fSeason'); return ITEMS.filter(i=>!s||i.season===s); }
+  function setView(v){ state.view=v; document.querySelectorAll('#viewSeg button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-view')===v);}); render(); }
+  function setCols(c){ state.cols=c; document.querySelectorAll('#colSeg button').forEach(function(b){b.classList.toggle('on',+b.getAttribute('data-col')===c);}); render(); }
 
-function renderKPIs(){
-  const v=visible(), t=todayStr();
-  const total=v.length;
-  const prog=v.filter(i=>i.stage<5).length;
-  const done=v.filter(i=>i.stage>=5).length;
-  const late=v.filter(i=>{const d=curDue(i); return d&&d<t&&i.stage<8;}).length;
-  const card=(l,vv,sub,neg,hi)=>'<div class="metric-card'+(hi?' highlight':'')+'"><div class="metric-label">'+l+'</div><div class="metric-value'+(neg?' neg':'')+'">'+vv+'</div><div class="metric-sub">'+sub+'</div></div>';
-  document.getElementById('metrics').innerHTML=
-    card('총 SKU',total+'종','전체 생산 카드')+
-    card('진행중',prog+'종','기획~검수')+
-    card('지연',late+'종','마감일 초과',late>0)+
-    card('입고완료',done+'종','입고~판매',false,true);
-}
-function cardHtml(it){
-  const d=curDue(it), t=todayStr();
-  const over=d&&d<t&&it.stage<8;
-  const dueTxt=d?('· '+STAGES[it.stage]+' 마감 '+fmtDate(d)+(over?' (지연 '+daysBetween(d,t)+'일)':'')):'';
-  return '<div class="pcard'+(over?' delayed':'')+'" draggable="true" ondragstart="onDragStart(event,\''+it.id+'\')">'+
-    '<div class="pcard-top"><div class="pcard-name">'+esc(it.name)+'</div>'+(it.season?'<span class="sbadge">'+esc(it.season)+'</span>':'')+'</div>'+
-    (it.memo?'<div class="pcard-due">'+esc(it.memo)+'</div>':'')+
-    (dueTxt?'<div class="pcard-due'+(over?' over':'')+'">'+dueTxt+'</div>':'')+
-    '<div class="pcard-actions">'+
-      '<button onclick="move(\''+it.id+'\',-1)" title="이전 단계">←</button>'+
-      '<button onclick="move(\''+it.id+'\',1)" title="다음 단계">→</button>'+
-      '<span class="sp"></span>'+
-      '<button onclick="openModal(\''+it.id+'\')">✎</button>'+
-    '</div></div>';
-}
-function renderBoard(){
-  const v=visible();
-  let h='';
-  STAGES.forEach((st,idx)=>{
-    const cards=v.filter(i=>i.stage===idx);
-    h+='<div class="col" data-stage="'+idx+'" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'+idx+')">'+
-       '<div class="col-head"><span>'+st+'</span><span class="col-count">'+cards.length+'</span></div>'+
-       cards.map(cardHtml).join('')+'</div>';
-  });
-  document.getElementById('board').innerHTML=h;
-}
-function renderAlerts(){
-  const v=visible(), t=todayStr();
-  const late=v.filter(i=>{const d=curDue(i); return d&&d<t&&i.stage<8;}).sort((a,b)=>curDue(a).localeCompare(curDue(b)));
-  document.getElementById('delayBox').innerHTML = late.length
-    ? late.map(i=>'<div class="alert-row"><span>'+esc(i.name)+(i.season?' · '+esc(i.season):'')+' <span style="color:var(--text-3)">— '+STAGES[i.stage]+'</span></span><span class="r-late">'+daysBetween(curDue(i),t)+'일 지연</span></div>').join('')
-    : '<div class="empty-note">지연된 생산 건이 없어요. 좋아요!</div>';
-  const week=v.filter(i=>{const d=curDue(i); if(!d) return false; const dd=daysBetween(t,d); return dd>=0&&dd<=7;}).sort((a,b)=>curDue(a).localeCompare(curDue(b)));
-  document.getElementById('weekBox').innerHTML = week.length
-    ? week.map(i=>'<div class="alert-row"><span>'+esc(i.name)+(i.season?' · '+esc(i.season):'')+' <span style="color:var(--text-3)">— '+STAGES[i.stage]+'</span></span><span class="r-when">'+fmtDate(curDue(i))+' 마감</span></div>').join('')
-    : '<div class="empty-note">이번 주 마감 예정인 생산 업무가 없어요.</div>';
-}
-function fillSeasonFilter(){
-  const cur=val('fSeason');
-  document.getElementById('fSeason').innerHTML='<option value="">전체 시즌</option>'+seasons().map(s=>'<option'+(s===cur?' selected':'')+'>'+esc(s)+'</option>').join('');
-}
-function render(){ fillSeasonFilter(); renderKPIs(); renderBoard(); renderAlerts(); }
+  /* ===== 상세 ===== */
+  function kvRow(k,v){ return '<div class="row"><div class="k">'+k+'</div><div class="v">'+(v?esc(v):'<span style="color:#B5AFA8">—</span>')+'</div></div>'; }
+  function diagramSVG(){
+    return '<svg viewBox="0 0 200 230" xmlns="http://www.w3.org/2000/svg">'+
+      '<g fill="none" stroke="#CAC4BC" stroke-width="1.4" stroke-linejoin="round">'+
+      '<path d="M70 40 L55 50 L40 70 L52 86 L60 80 L60 200 L140 200 L140 80 L148 86 L160 70 L145 50 L130 40 L118 34 Q100 46 82 34 Z"/>'+
+      '<path d="M82 34 Q100 52 118 34"/><rect x="112" y="92" width="20" height="22" rx="2"/>'+
+      '</g>'+
+      '<g stroke="#C0504D" stroke-width="1" fill="none">'+
+      '<line x1="60" y1="26" x2="140" y2="26"/><path d="M60 23 60 29 M140 23 140 29"/>'+
+      '<line x1="62" y1="120" x2="138" y2="120"/><path d="M62 117 62 123 M138 117 138 123"/>'+
+      '<line x1="60" y1="206" x2="140" y2="206"/><path d="M60 203 60 209 M140 203 140 209"/>'+
+      '<line x1="30" y1="72" x2="30" y2="200"/><path d="M27 72 33 72 M27 200 33 200"/>'+
+      '<line x1="172" y1="60" x2="172" y2="120"/><path d="M169 60 175 60 M169 120 175 120"/>'+
+      '</g>'+
+      '<g fill="#9A6A66" font-size="8" font-family="Noto Sans KR,sans-serif" text-anchor="middle">'+
+      '<text x="100" y="20">어깨</text><text x="100" y="114">가슴</text><text x="100" y="218">밑단</text>'+
+      '<text x="18" y="138" transform="rotate(-90 18 138)">총장</text><text x="186" y="92" transform="rotate(90 186 92)">소매장</text>'+
+      '</g></svg>';
+  }
+  function specTable(sp){
+    if(!sp||!sp.rows||!sp.rows.length) return '<div style="color:#B5AFA8;font-size:12.5px;padding:8px 2px;">사이즈 스펙이 아직 없어요.</div>';
+    var sizes=sp.sizes||['S','M','L','XL'];
+    var head='<tr><th style="text-align:left;padding-left:14px;">사이즈 (cm)</th>'+sizes.map(function(s){return '<th>'+esc(s)+'</th>';}).join('')+'</tr>';
+    var body=sp.rows.map(function(r){return '<tr><th>'+esc(r.label)+'</th>'+(r.v||[]).map(function(x){return '<td>'+esc(x)+'</td>';}).join('')+'</tr>';}).join('');
+    return '<div class="st-spec"><div class="stbl"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="st-diagram">'+diagramSVG()+'</div></div>';
+  }
+  function flats(d){
+    if(d.sketch) return '<div class="st-flats"><div class="fl"><img src="'+esc(d.sketch)+'"></div></div>';
+    var f='<div class="fl"><svg viewBox="0 0 24 24"><path d="M16 4l-4 2-4-2-4 3 2 3 2-1v9h8V9l2 1 2-3z"/></svg></div>';
+    return '<div class="st-flats">'+f+f+f+f+'</div>';
+  }
+  function fileChip(p){
+    if(!p||!p.name) return '<div style="color:#B5AFA8;font-size:12.5px;">등록된 평면도 파일이 없어요.</div>';
+    var dl=p.url?'<a class="fdl" href="'+esc(p.url)+'" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>':'<span class="fdl" style="opacity:.45;cursor:default;"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>';
+    return '<div class="st-file"><div class="fic">PDF</div><div class="fnm">'+esc(p.name)+'</div><div class="fsz">'+esc(p.size||'')+'</div>'+dl+'</div>';
+  }
+  function colorsBlock(cs){
+    if(!cs||!cs.length) return '<div style="color:#B5AFA8;font-size:12.5px;">등록된 컬러가 없어요.</div>';
+    return '<div class="st-colors">'+cs.map(function(c){return '<div class="cc"><div class="chip" style="background:'+esc(c.hex||'#ddd')+'"></div><div class="ccode">'+esc(c.code||'')+'</div><div class="cname">'+esc(c.name||'')+'</div></div>';}).join('')+'</div>';
+  }
+  function fabricBlock(f){
+    var swatch='<div class="fswatch" style="display:flex;align-items:center;justify-content:center;color:#B6AFA6;font-size:11px;">스와치</div>';
+    if(f&&f.swatch) swatch='<div class="fswatch"><img src="'+esc(f.swatch)+'"></div>';
+    f=f||{};
+    return '<div class="st-fabric">'+swatch+'<div class="st-kv">'+
+      kvRow('품번',f.code)+kvRow('품명',f.name)+kvRow('혼용률',f.comp)+kvRow('중량',f.weight)+kvRow('가공',f.finish)+kvRow('특이사항',f.note)+
+      '</div></div>';
+  }
 
-function move(id,dir){ const it=ITEMS.find(x=>x.id===id); if(!it) return; it.stage=Math.max(0,Math.min(STAGES.length-1,it.stage+dir)); save(); render(); }
-let dragId=null;
-function onDragStart(e,id){ dragId=id; e.dataTransfer.effectAllowed='move'; }
-function onDragOver(e){ e.preventDefault(); e.currentTarget.classList.add('dragover'); }
-function onDragLeave(e){ e.currentTarget.classList.remove('dragover'); }
-function onDrop(e,idx){ e.preventDefault(); e.currentTarget.classList.remove('dragover'); const it=ITEMS.find(x=>x.id===dragId); if(it){ it.stage=idx; save(); render(); } dragId=null; }
+  function openDetail(id){
+    var d=byId(id); if(!d)return;
+    var html='<div class="st-dhead">'+
+      '<button class="st-back" onclick="STYLE.backToList()"><svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>목록</button>'+
+      '<div class="st-dtitle"><h2>스타일 핵심 정보</h2><div class="st-sub">패턴, 원단, 컬러, 사이즈 스펙을 한눈에 확인할 수 있습니다.</div>'+
+      '<span class="st-dcode">'+esc(d.code)+' · '+esc(d.name)+' · '+esc(d.season)+'</span></div>'+
+      '<div class="st-dactions"><button class="st-btn-ghost" onclick="STYLE.openEdit(\''+d.id+'\')">편집</button></div></div>'+
+      '<div class="st-panels">'+
+        '<div class="st-panel"><h3>패턴 (평면도 파일)</h3>'+flats(d)+fileChip(d.pattern)+'</div>'+
+        '<div class="st-panel"><h3>원단 / 소재 정보</h3>'+fabricBlock(d.fabric)+'</div>'+
+        '<div class="st-panel"><h3>컬러 정보</h3>'+colorsBlock(d.colors)+'</div>'+
+        '<div class="st-panel"><h3>사이즈 스펙표</h3>'+specTable(d.spec)+'</div>'+
+      '</div>';
+    var det=document.getElementById('stDetail'); det.innerHTML=html; det.classList.add('on');
+    document.getElementById('stListView').classList.add('off');
+    window.scrollTo(0,0);
+  }
+  function backToList(){ document.getElementById('stDetail').classList.remove('on'); document.getElementById('stListView').classList.remove('off'); window.scrollTo(0,0); }
 
-function buildDueGrid(due){
-  document.getElementById('dueGrid').innerHTML=STAGES.map((s,i)=>'<div class="due-item"><label>'+s+'</label><input type="date" id="due_'+i+'" value="'+((due&&due[i])||'')+'"></div>').join('');
-}
-function buildStageSelect(stage){
-  document.getElementById('mStage').innerHTML=STAGES.map((s,i)=>'<option value="'+i+'"'+(i===stage?' selected':'')+'>'+s+'</option>').join('');
-}
-function openModal(id){
-  editId=id;
-  const it=id?ITEMS.find(x=>x.id===id):null;
-  document.getElementById('modalTitle').textContent=id?'생산 카드 편집':'생산 카드 추가';
-  document.getElementById('mName').value=it?it.name:'';
-  document.getElementById('mSeason').value=it?(it.season||''):'';
-  buildStageSelect(it?it.stage:0);
-  buildDueGrid(it?it.due:null);
-  document.getElementById('mMemo').value=it?(it.memo||''):'';
-  document.getElementById('mDelBtn').style.display=id?'inline-block':'none';
-  document.getElementById('modalBg').classList.add('open');
-}
-function closeModal(){ document.getElementById('modalBg').classList.remove('open'); editId=null; }
-function saveModal(){
-  const name=val('mName').trim(); if(!name){ toast('상품명을 입력해주세요.'); return; }
-  const due={}; STAGES.forEach((s,i)=>{ const v=val('due_'+i); if(v) due[i]=v; });
-  const data={name,season:val('mSeason').trim(),stage:parseInt(val('mStage'),10)||0,due,memo:val('mMemo').trim()};
-  if(editId){ const it=ITEMS.find(x=>x.id===editId); Object.assign(it,data); }
-  else { ITEMS.push({id:'p'+Date.now()+Math.floor(Math.random()*1000),...data}); }
-  closeModal(); save(); render(); toast('저장했어요.');
-}
-function delCurrent(){ if(!editId) return; if(!confirm('이 생산 카드를 삭제할까요?')) return; ITEMS=ITEMS.filter(x=>x.id!==editId); closeModal(); save(); render(); toast('삭제했어요.'); }
+  /* ===== 모달 ===== */
+  function colorRowHTML(c){ c=c||{}; return '<div class="crow"><input type="color" value="'+(c.hex||'#cccccc')+'"><input type="text" placeholder="코드 (NVY-01)" value="'+esc(c.code||'')+'" style="width:130px"><input type="text" placeholder="컬러명" value="'+esc(c.name||'')+'"><button type="button" class="st-xrm" onclick="this.parentNode.remove()">×</button></div>'; }
+  function specRowHTML(r){ r=r||{label:'',v:['','','','']}; var v=r.v||['','','','']; return '<div class="srow"><input type="text" placeholder="항목 (총장)" value="'+esc(r.label||'')+'" style="width:120px">'+[0,1,2,3].map(function(i){return '<input type="text" placeholder="" value="'+esc(v[i]!=null?v[i]:'')+'" style="text-align:center">';}).join('')+'<button type="button" class="st-xrm" onclick="this.parentNode.remove()">×</button></div>'; }
+  function addColorRow(c){ document.getElementById('mColorRows').insertAdjacentHTML('beforeend',colorRowHTML(c)); }
+  function addSpecRow(r){ document.getElementById('mSpecRows').insertAdjacentHTML('beforeend',specRowHTML(r)); }
 
-function openPick(){
-  const sel=document.getElementById('pSelect'), empty=document.getElementById('pickEmpty');
-  if(!PRODNAMES.length){ sel.style.display='none'; empty.style.display='block'; }
-  else { sel.style.display='block'; empty.style.display='none'; sel.innerHTML=PRODNAMES.map((p,i)=>'<option value="'+i+'">'+esc(p.name)+(p.season?' ('+esc(p.season)+')':'')+'</option>').join(''); }
-  document.getElementById('pickBg').classList.add('open');
-}
-function closePick(){ document.getElementById('pickBg').classList.remove('open'); }
-function addFromPick(){
-  if(!PRODNAMES.length){ closePick(); return; }
-  const p=PRODNAMES[parseInt(val('pSelect'),10)||0];
-  closePick(); openModal(null);
-  document.getElementById('mName').value=p.name;
-  document.getElementById('mSeason').value=p.season||'';
-}
+  function openEdit(id){
+    state.editId=id;
+    var d=id?byId(id):null;
+    document.getElementById('stModalTitle').textContent=id?'스타일 편집':'새 스타일';
+    document.getElementById('mDelBtn').style.display=id?'':'none';
+    var g=function(x){return document.getElementById(x);};
+    g('mCode').value=d?d.code:''; g('mName').value=d?d.name:''; g('mSeason').value=d?d.season:''; g('mCat').value=d?(d.category||''):''; g('mStatus').value=d?(d.status||'기획'):'기획';
+    g('mSketch').value='';
+    var p=(d&&d.pattern)||{}; g('mPatName').value=p.name||''; g('mPatSize').value=p.size||''; g('mPatUrl').value=p.url||'';
+    var f=(d&&d.fabric)||{}; g('mFabCode').value=f.code||''; g('mFabName').value=f.name||''; g('mFabComp').value=f.comp||''; g('mFabWeight').value=f.weight||''; g('mFabFinish').value=f.finish||''; g('mFabNote').value=f.note||'';
+    var cr=g('mColorRows'); cr.innerHTML=''; ((d&&d.colors)||[]).forEach(function(c){addColorRow(c);}); if(!d||!d.colors||!d.colors.length){addColorRow();}
+    var sr=g('mSpecRows'); sr.innerHTML='';
+    var rows=(d&&d.spec&&d.spec.rows&&d.spec.rows.length)?d.spec.rows:SPEC_LABELS.map(function(l){return {label:l,v:['','','','']};});
+    rows.forEach(function(r){addSpecRow(r);});
+    g('_sketchData')&&(g('_sketchData').value='');
+    document.getElementById('stModalBg').classList.add('on');
+    // 도식화 파일 → dataURL 보관
+    g('mSketch').onchange=function(){ var file=this.files[0]; if(!file){state._sketch=undefined;return;} var rd=new FileReader(); rd.onload=function(){state._sketch=rd.result;}; rd.readAsDataURL(file); };
+  }
+  function closeEdit(){ document.getElementById('stModalBg').classList.remove('on'); state._sketch=undefined; }
 
-function openMobileMenu(){ document.getElementById('mmOverlay').classList.add('open'); document.getElementById('mmPanel').classList.add('open'); }
-function closeMobileMenu(){ document.getElementById('mmOverlay').classList.remove('open'); document.getElementById('mmPanel').classList.remove('open'); }
-document.getElementById('modalBg').addEventListener('click',e=>{ if(e.target.id==='modalBg') closeModal(); });
-document.getElementById('pickBg').addEventListener('click',e=>{ if(e.target.id==='pickBg') closePick(); });
+  function collectColors(){ return [].map.call(document.querySelectorAll('#mColorRows .crow'),function(row){var i=row.querySelectorAll('input'); return {hex:i[0].value,code:i[1].value.trim(),name:i[2].value.trim()};}).filter(function(c){return c.code||c.name;}); }
+  function collectSpec(){ var rows=[].map.call(document.querySelectorAll('#mSpecRows .srow'),function(row){var i=row.querySelectorAll('input'); return {label:i[0].value.trim(),v:[i[1].value.trim(),i[2].value.trim(),i[3].value.trim(),i[4].value.trim()]};}).filter(function(r){return r.label;}); return {sizes:['S','M','L','XL'],rows:rows}; }
 
-(async()=>{ document.getElementById('saveNote').textContent='불러오는 중...'; await load(); render(); document.getElementById('saveNote').textContent=cloudOK?'☁ 클라우드 저장됨':'⚠ 오프라인'; })();
-</script>
-<script id="nav-groups-js">
-(function(){function init(){
-  var f=(location.pathname.split('/').pop())||'index.html'; if(f==='')f='index.html';
-  document.querySelectorAll('.sidebar-nav a[href]').forEach(function(a){
-    if((a.getAttribute('href')||'').split('/').pop()===f){a.classList.add('active');
-      var g=a.closest('.nav-group'); if(g)g.classList.add('open','has-active');}
-  });
-  document.querySelectorAll('.nav-group-head').forEach(function(h){
-    h.addEventListener('click',function(){var g=h.parentElement,was=g.classList.contains('open');document.querySelectorAll('.nav-group.open').forEach(function(o){o.classList.remove('open');});if(!was)g.classList.add('open');});
-  });
-  document.querySelectorAll('.mobile-menu-item[href]').forEach(function(a){
-    if((a.getAttribute('href')||'').split('/').pop()===f)a.classList.add('active');
-  });
-  requestAnimationFrame(function(){document.body.classList.add('nav-ready');});
-}
-if(document.readyState!=='loading')init();else document.addEventListener('DOMContentLoaded',init);})();
-</script>
-<div class="ceo-bar">
-  <div class="ceo-fixed">
-    <span class="ceo-name" id="ceoAuth">Andneeds Ceo</span>
-  </div>
-  <div class="ceo-marquee">
-    <div class="ceo-track">
-      <span>ANDNEEDS — Minimal Total Womenswear&nbsp;&nbsp;·&nbsp;&nbsp;Refined Wild, 26FW&nbsp;&nbsp;·&nbsp;&nbsp;Craft the Essential, Wear the Confidence&nbsp;&nbsp;·&nbsp;&nbsp;Since 2024&nbsp;&nbsp;·&nbsp;&nbsp;We Build A Brand to Grow Your Style&nbsp;&nbsp;·&nbsp;&nbsp;</span>
-      <span>ANDNEEDS — Minimal Total Womenswear&nbsp;&nbsp;·&nbsp;&nbsp;Refined Wild, 26FW&nbsp;&nbsp;·&nbsp;&nbsp;Craft the Essential, Wear the Confidence&nbsp;&nbsp;·&nbsp;&nbsp;Since 2024&nbsp;&nbsp;·&nbsp;&nbsp;We Build A Brand to Grow Your Style&nbsp;&nbsp;·&nbsp;&nbsp;</span>
-    </div>
-  </div>
-</div>
-<script id="ceo-bar-js">
-(function(){
-function showDialog(){
-  var ex=document.getElementById('anniz-logout-dialog');
-  if(ex){ex.style.display='flex';return;}
-  var ov=document.createElement('div');
-  ov.id='anniz-logout-dialog';
-  ov.style.cssText='position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(26,23,20,0.42);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);';
-  ov.innerHTML="<div style='background:#F6F4F1;border-radius:18px;padding:34px 30px 24px;max-width:320px;width:100%;text-align:center;font-family:inherit;box-shadow:0 16px 48px rgba(0,0,0,0.22);'><div style='font-size:16px;font-weight:600;color:#1A1714;margin-bottom:7px;'>\uB85C\uADF8\uC544\uC6C3 \uD558\uC2DC\uACA0\uC5B4\uC694?</div><div style='font-size:12px;color:#9A938C;margin-bottom:26px;'>\uB2E4\uC2DC \uBCF4\uB824\uBA74 \uB85C\uADF8\uC778\uC774 \uD544\uC694\uD574\uC694</div><div style='display:flex;gap:10px;'><button id='anniz-lo-cancel' style='flex:1;padding:13px;border:1px solid rgba(0,0,0,0.16);background:transparent;border-radius:11px;font-family:inherit;font-size:13px;color:#1A1714;cursor:pointer;'>\uCDE8\uC18C</button><button id='anniz-lo-ok' style='flex:1;padding:13px;border:none;background:#1A1714;color:#fff;border-radius:11px;font-family:inherit;font-size:13px;cursor:pointer;'>\uB85C\uADF8\uC544\uC6C3</button></div></div>";
-  document.body.appendChild(ov);
-  function close(){ov.style.display='none';}
-  ov.addEventListener('click',function(e){if(e.target===ov)close();});
-  ov.querySelector('#anniz-lo-cancel').onclick=close;
-  ov.querySelector('#anniz-lo-ok').onclick=function(){if(window.annizLogout)window.annizLogout();};
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'){var d=document.getElementById('anniz-logout-dialog');if(d)d.style.display='none';}});
-}
-function setup(){var el=document.getElementById('ceoAuth');if(!el)return;el.classList.add('ceo-loggedin');el.style.cursor='pointer';el.title='\uB85C\uADF8\uC544\uC6C3';el.addEventListener('click',function(e){e.preventDefault();showDialog();});}
-if(document.readyState!=='loading')setup();else document.addEventListener('DOMContentLoaded',setup);
+  function save(){
+    var g=function(x){return document.getElementById(x).value.trim();};
+    if(!g('mCode')&&!g('mName')){ toast('품번 또는 품명을 입력해주세요'); return; }
+    var rec={
+      code:g('mCode'),name:g('mName'),season:g('mSeason'),category:g('mCat'),status:document.getElementById('mStatus').value,
+      pattern:{name:g('mPatName'),size:g('mPatSize'),url:g('mPatUrl')},
+      fabric:{code:g('mFabCode'),name:g('mFabName'),comp:g('mFabComp'),weight:g('mFabWeight'),finish:g('mFabFinish'),note:g('mFabNote')},
+      colors:collectColors(), spec:collectSpec()
+    };
+    if(state.editId){
+      var d=byId(state.editId); var old=d.sketch;
+      Object.assign(d,rec); d.sketch=(state._sketch!==undefined)?state._sketch:old;
+    }else{
+      rec.id=uid(); rec.sketch=state._sketch||''; data.unshift(rec);
+    }
+    save(); closeEdit(); render(); toast(state.editId?'수정했어요':'추가했어요');
+  }
+  function delCurrent(){
+    if(!state.editId)return;
+    if(!confirm('이 스타일을 삭제할까요?'))return;
+    data=data.filter(function(x){return x.id!==state.editId;});
+    save(); closeEdit(); backToList(); render(); toast('삭제했어요');
+  }
+
+  function exportCSV(){
+    var rows=filtered();
+    var head=['품번','품명','시즌','카테고리','상태'];
+    var lines=[head.join(',')].concat(rows.map(function(d){
+      return [d.code,d.name,d.season,d.category||'',d.status||''].map(function(x){var s=String(x==null?'':x); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}).join(',');
+    }));
+    var blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8;'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='스타일목록_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
+    setTimeout(function(){URL.revokeObjectURL(a.href);},500); toast('엑셀(CSV)로 내려받았어요');
+  }
+
+  function inlineEdit(id,field,el){ var d=byId(id); if(!d)return; var val=(el.textContent||'').replace(/\s+/g,' ').trim(); el.textContent=val; if(val===d[field])return; d[field]=val; save(); toast('\uC218\uC815\uD588\uC5B4\uC694'); }
+  function ieKey(e){ if(e.key==='Enter'){ e.preventDefault(); e.target.blur(); } }
+  function init(){ load(); render(); }
+  return {init:init,render:render,inlineEdit:inlineEdit,ieKey:ieKey,setView:setView,setCols:setCols,openDetail:openDetail,backToList:backToList,openEdit:openEdit,closeEdit:closeEdit,addColorRow:addColorRow,addSpecRow:addSpecRow,save:save,delCurrent:delCurrent,exportCSV:exportCSV};
 })();
+document.addEventListener('DOMContentLoaded',STYLE.init);
+if(document.readyState!=='loading')STYLE.init();
+document.getElementById('stModalBg').addEventListener('click',function(e){ if(e.target===this)STYLE.closeEdit(); });
 </script>
-<!-- old topnav script removed -->
+
 </body>
 </html>
