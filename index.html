@@ -548,7 +548,7 @@ body{padding-bottom:34px;}
 .anv-chanwrap{text-align:right;flex-shrink:0;}
 .anv-chanlabel{font-family:"AnvOldStd",Georgia,serif;font-style:italic;font-size:12px;letter-spacing:.04em;color:#9A938A;margin-bottom:9px;}
 #platFilters{display:flex !important;flex-direction:column;align-items:flex-end;gap:0;margin-left:0 !important;}
-#platFilters .plat-filter-btn{font-family:"AnvOldStd","Noto Sans KR",serif !important;font-size:14px !important;letter-spacing:.03em;padding:0 !important;border:0 !important;border-radius:0 !important;background:none !important;color:#1A1A1A !important;opacity:.5;line-height:2.05 !important;width:auto !important;white-space:nowrap;transition:opacity .14s;}
+#platFilters .plat-filter-btn{font-family:"AnvOldStd","Noto Sans KR",serif !important;font-size:14px !important;letter-spacing:.04em;text-transform:uppercase;padding:0 !important;border:0 !important;border-radius:0 !important;background:none !important;color:#1A1A1A !important;opacity:.5;line-height:2.1 !important;width:auto !important;white-space:nowrap;transition:opacity .14s;}
 #platFilters .plat-filter-btn:hover{opacity:.82 !important;background:none !important;}
 #platFilters .plat-filter-btn.active{opacity:1 !important;background:none !important;color:#1A1A1A !important;border:0 !important;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;}
 @media(max-width:768px){.anv-filterhead{flex-direction:column;gap:14px;}.anv-chanwrap{text-align:left;}#platFilters{align-items:flex-start;}.anv-ptitle{font-size:22px;}}
@@ -648,12 +648,12 @@ body{padding-bottom:34px;}
     <div class="anv-chanwrap">
       <div class="anv-chanlabel">Channel</div>
       <div id="platFilters">
-        <button class="plat-filter-btn active" onclick="setPlatFilter('전체',this)">전체</button>
-        <button class="plat-filter-btn" onclick="setPlatFilter('온라인',this)">온라인</button>
+        <button class="plat-filter-btn active" onclick="setPlatFilter('전체',this)">ALL</button>
+        <button class="plat-filter-btn" onclick="setPlatFilter('온라인',this)">ONLINE</button>
         <button class="plat-filter-btn" onclick="setPlatFilter('29CM',this)">29CM</button>
-        <button class="plat-filter-btn" onclick="setPlatFilter('무신사',this)">무신사</button>
-        <button class="plat-filter-btn" onclick="setPlatFilter('자사몰',this)">자사몰</button>
-        <button class="plat-filter-btn" onclick="setPlatFilter('성수',this)">성수</button>
+        <button class="plat-filter-btn" onclick="setPlatFilter('무신사',this)">MUSINSA</button>
+        <button class="plat-filter-btn" onclick="setPlatFilter('자사몰',this)">ANDNEEDS</button>
+        <button class="plat-filter-btn" onclick="setPlatFilter('성수',this)">SUNGSU</button>
       </div>
     </div>
   </div>
