@@ -391,7 +391,7 @@ body{padding-bottom:34px;}
 @font-face{font-family:"AnvOldStd";src:url("OldStandardTT-Regular.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap;}
 :root{--anv-paper:#FFFFFF;--anv-beige:#F6F5EF;--anv-ink:#000;--anv-hair:#E7E2D7;--anv-pad:42px;}
 .anv-bar{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--anv-paper);transition:background .18s ease,transform .33s ease;}
-.anv-bar.anv-tinted{background:var(--anv-beige);border-bottom:1px solid #E8E8E8;}
+.anv-bar.anv-tinted{background:var(--anv-beige);}.anv-bar.anv-sub{border-bottom:1px solid #E8E8E8;}
 .anv-bar.anv-hidden{transform:translateY(-105%);}
 .anv-nav{position:relative;display:flex;align-items:center;gap:40px;padding:17px var(--anv-pad);box-sizing:border-box;}
 .anv-logo{display:flex;align-items:center;padding-right:4px;}
@@ -484,14 +484,14 @@ body{padding-bottom:34px;}
   var topLabels={performance:"PERFORMANCE",collection:"COLLECTION",stock:"STOCK",business:"BUSINESS"};
   var bar=document.getElementById('anvBar'),menu=document.getElementById('anvMenu'),
       panel=document.getElementById('anvPanel'),inner=document.getElementById('anvPanelInner'),current=null;
-  function closeAll(){panel.classList.remove('anv-open');bar.classList.remove('anv-tinted');inner.innerHTML='';current=null;}
+  function closeAll(){panel.classList.remove('anv-open');bar.classList.remove('anv-tinted');bar.classList.remove('anv-sub');inner.innerHTML='';current=null;}
   function onEnter(item){
     bar.classList.add('anv-tinted');
     var key=item.getAttribute('data-key');
-    if(key){ if(current===key)return; inner.innerHTML='';
+    if(key){ bar.classList.add('anv-sub'); if(current===key)return; inner.innerHTML='';
       submenus[key].forEach(function(s){var a=document.createElement('a');a.href=s[1];a.textContent=s[0];if(s[2]==='disabled')a.className='anv-disabled';inner.appendChild(a);});
       inner.style.paddingLeft=item.getBoundingClientRect().left+'px';panel.classList.add('anv-open');current=key;
-    }else{panel.classList.remove('anv-open');inner.innerHTML='';current=null;}
+    }else{bar.classList.remove('anv-sub');panel.classList.remove('anv-open');inner.innerHTML='';current=null;}
   }
   menu.querySelectorAll('.anv-tn').forEach(function(item){item.addEventListener('mouseenter',function(){onEnter(item);});});
   bar.addEventListener('mouseleave',closeAll);
