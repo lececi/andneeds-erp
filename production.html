@@ -608,7 +608,7 @@ body{padding-bottom:34px;}
 
 /* 패턴 */
 .st-flats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
-.st-flats .fl{flex:1;min-width:90px;aspect-ratio:3/4;background:#F6F5F0;border-radius:0;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.st-flats .fl{flex:1;min-width:90px;aspect-ratio:3/4;background:#F6F5F0;border-radius:0;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
 .st-flats .fl img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;}
 .st-flats .fl svg{width:26px;height:26px;stroke:#CBC5BE;fill:none;stroke-width:1.3;}
 .st-flats .fl.clickable{cursor:pointer;flex-direction:column;gap:7px;transition:background .12s;}
@@ -616,6 +616,9 @@ body{padding-bottom:34px;}
 .st-flats .fl .fl-add{font-size:10.5px;color:#AEA89F;letter-spacing:.02em;}
 .st-fabric .fswatch.clickable{cursor:pointer;transition:filter .12s;}
 .st-fabric .fswatch.clickable:hover{filter:brightness(0.95);}
+.img-del{position:absolute;top:5px;right:5px;width:22px;height:22px;border:none;border-radius:50%;background:rgba(26,26,26,0.6);color:#fff;font-size:14px;line-height:1;cursor:pointer;display:none;align-items:center;justify-content:center;padding:0;z-index:2;}
+.st-flats .fl:hover .img-del,.st-fabric .fswatch:hover .img-del{display:flex;}
+.img-del:hover{background:rgba(189,9,10,0.92);}
 .st-file{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--an-line);border-radius:11px;background:#FBFAF8;}
 .st-file .fic{width:30px;height:36px;flex:none;border-radius:5px;background:var(--an-blue);display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;letter-spacing:.02em;}
 .st-file .fnm{flex:1;min-width:0;font-size:12.5px;color:#3A3733;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -625,7 +628,7 @@ body{padding-bottom:34px;}
 
 /* 원단 */
 .st-fabric{display:flex;gap:18px;}
-.st-fabric .fswatch{width:150px;height:150px;flex:none;border-radius:12px;background:#EDE9E3;overflow:hidden;}
+.st-fabric .fswatch{width:150px;height:150px;flex:none;border-radius:12px;background:#EDE9E3;overflow:hidden;position:relative;}
 .st-fabric .fswatch img{width:100%;height:100%;object-fit:cover;}
 .st-kv{flex:1;border:1px solid var(--an-line);border-radius:11px;overflow:hidden;align-self:flex-start;width:100%;}
 .st-kv .row{display:flex;border-bottom:1px solid var(--an-line);}
@@ -797,6 +800,7 @@ body{padding-bottom:34px;}
     </div><!-- /st-modal-body -->
     <div class="st-modal-actions">
       <button class="st-del" id="mDelBtn" style="display:none;" onclick="STYLE.delCurrent()">삭제</button>
+      <button class="st-cancel" id="mDetailBtn" style="display:none;" onclick="STYLE.viewDetail()">상세 보기</button>
       <span class="sp"></span>
       <button class="st-cancel" onclick="STYLE.closeEdit()">취소</button>
       <button class="st-save" onclick="STYLE.save()">저장</button>
@@ -891,7 +895,7 @@ var STYLE=(function(){
       grid.style.display=''; tbl.style.display='none'; grid.setAttribute('data-cols',state.cols);
       if(!rows.length){grid.innerHTML=''; grid.insertAdjacentHTML('beforebegin','');}
       grid.innerHTML = rows.length? rows.map(function(d){
-        return '<div class="st-card" onclick="STYLE.openDetail(\''+d.id+'\')">'+
+        return '<div class="st-card" onclick="STYLE.openEdit(\''+d.id+'\')">'+
           '<div class="st-thumb">'+thumb(d)+'</div>'+
           '<div class="st-cbody"><div class="st-code" contenteditable="true" spellcheck="false" onclick="event.stopPropagation()" onkeydown="STYLE.ieKey(event)" onblur="STYLE.inlineEdit(\''+d.id+'\',\'code\',this)">'+esc(d.code)+'</div>'+
           '<div class="st-name" contenteditable="true" spellcheck="false" onclick="event.stopPropagation()" onkeydown="STYLE.ieKey(event)" onblur="STYLE.inlineEdit(\''+d.id+'\',\'name\',this)">'+esc(d.name)+'</div>'+
@@ -900,7 +904,7 @@ var STYLE=(function(){
     }else{
       grid.style.display='none'; tbl.style.display='';
       tbl.innerHTML = rows.length? '<div class="st-list"><table><thead><tr><th style="width:120px">품번</th><th>품명</th><th style="width:90px">시즌</th><th style="width:110px">카테고리</th><th style="width:90px">상태</th></tr></thead><tbody>'+
-        rows.map(function(d){return '<tr onclick="STYLE.openDetail(\''+d.id+'\')"><td class="lc-code">'+esc(d.code)+'</td><td>'+esc(d.name)+'</td><td>'+esc(d.season)+'</td><td>'+esc(d.category||'-')+'</td><td><span class="st-badge">'+esc(d.status||'-')+'</span></td></tr>';}).join('')+
+        rows.map(function(d){return '<tr onclick="STYLE.openEdit(\''+d.id+'\')"><td class="lc-code">'+esc(d.code)+'</td><td>'+esc(d.name)+'</td><td>'+esc(d.season)+'</td><td>'+esc(d.category||'-')+'</td><td><span class="st-badge">'+esc(d.status||'-')+'</span></td></tr>';}).join('')+
         '</tbody></table></div>' : '<div class="st-empty">조건에 맞는 스타일이 없어요.</div>';
     }
   }
@@ -938,7 +942,7 @@ var STYLE=(function(){
   function flats(d){
     var imgs=(d.patternImages||[]).filter(Boolean);
     var oc=' onclick="STYLE.pickPatternImages(\''+d.id+'\')" title="클릭해서 평면도 이미지 올리기"';
-    if(imgs.length) return '<div class="st-flats">'+imgs.map(function(src){return '<div class="fl clickable"'+oc+'><img src="'+esc(src)+'"></div>';}).join('')+'</div>';
+    if(imgs.length) return '<div class="st-flats">'+imgs.map(function(src,i){return '<div class="fl clickable"'+oc+'><img src="'+esc(src)+'"><button class="img-del" onclick="STYLE.delPatternImage(\''+d.id+'\','+i+',event)" title="이미지 삭제">\u00d7</button></div>';}).join('')+'</div>';
     var f='<div class="fl clickable"'+oc+'><svg viewBox="0 0 24 24"><path d="M16 4l-4 2-4-2-4 3 2 3 2-1v9h8V9l2 1 2-3z"/></svg><span class="fl-add">사진 올리기</span></div>';
     return '<div class="st-flats">'+f+f+f+f+'</div>';
   }
@@ -955,7 +959,7 @@ var STYLE=(function(){
     var f=(d&&d.fabric)||{};
     var base='class="fswatch clickable" onclick="STYLE.pickSwatch(\''+d.id+'\')" title="클릭해서 원단 스와치 올리기"';
     var swatch=f.swatch
-      ? '<div '+base+'><img src="'+esc(f.swatch)+'"></div>'
+      ? '<div '+base+'><img src="'+esc(f.swatch)+'"><button class="img-del" onclick="STYLE.delSwatch(\''+d.id+'\',event)" title="스와치 삭제">\u00d7</button></div>'
       : '<div '+base+' style="display:flex;align-items:center;justify-content:center;color:#B6AFA6;font-size:11px;">스와치</div>';
     return '<div class="st-fabric">'+swatch+'<div class="st-kv">'+
       kvRow('품번',f.code)+kvRow('품명',f.name)+kvRow('혼용률',f.comp)+kvRow('중량',f.weight)+kvRow('가공',f.finish)+kvRow('특이사항',f.note)+
@@ -1021,6 +1025,7 @@ var STYLE=(function(){
     var d=id?byId(id):null;
     document.getElementById('stModalTitle').textContent=id?'스타일 편집':'새 스타일';
     document.getElementById('mDelBtn').style.display=id?'':'none';
+    document.getElementById('mDetailBtn').style.display=id?'':'none';
     var g=function(x){return document.getElementById(x);};
     g('mCode').value=d?d.code:''; g('mName').value=d?d.name:''; g('mSeason').value=d?d.season:''; g('mCat').value=d?(d.category||''):''; g('mStatus').value=d?(d.status||'기획'):'기획';
     g('mSketch').value='';
@@ -1089,7 +1094,10 @@ var STYLE=(function(){
   function inlineEdit(id,field,el){ var d=byId(id); if(!d)return; var val=(el.textContent||'').replace(/\s+/g,' ').trim(); el.textContent=val; if(val===d[field])return; d[field]=val; persist(); toast('\uC218\uC815\uD588\uC5B4\uC694'); }
   function ieKey(e){ if(e.key==='Enter'){ e.preventDefault(); e.target.blur(); } }
   function init(){ load(); render(); }
-  return {init:init,render:render,inlineEdit:inlineEdit,ieKey:ieKey,pickPatternImages:pickPatternImages,pickSwatch:pickSwatch,setView:setView,setCols:setCols,openDetail:openDetail,backToList:backToList,openEdit:openEdit,closeEdit:closeEdit,addColorRow:addColorRow,addSpecRow:addSpecRow,save:save,delCurrent:delCurrent,exportCSV:exportCSV};
+  function delPatternImage(id,idx,ev){ if(ev&&ev.stopPropagation)ev.stopPropagation(); var d=byId(id); if(!d||!d.patternImages)return; d.patternImages.splice(idx,1); persist(); openDetail(id); toast('이미지를 지웠어요'); }
+  function delSwatch(id,ev){ if(ev&&ev.stopPropagation)ev.stopPropagation(); var d=byId(id); if(!d||!d.fabric)return; d.fabric.swatch=''; persist(); openDetail(id); toast('스와치를 지웠어요'); }
+  function viewDetail(){ var id=state.editId; closeEdit(); if(id) openDetail(id); }
+  return {init:init,render:render,inlineEdit:inlineEdit,ieKey:ieKey,viewDetail:viewDetail,pickPatternImages:pickPatternImages,pickSwatch:pickSwatch,delPatternImage:delPatternImage,delSwatch:delSwatch,setView:setView,setCols:setCols,openDetail:openDetail,backToList:backToList,openEdit:openEdit,closeEdit:closeEdit,addColorRow:addColorRow,addSpecRow:addSpecRow,save:save,delCurrent:delCurrent,exportCSV:exportCSV};
 })();
 document.addEventListener('DOMContentLoaded',STYLE.init);
 if(document.readyState!=='loading')STYLE.init();
