@@ -845,9 +845,9 @@ var STYLE=(function(){
   function load(){
     try{var raw=localStorage.getItem(LS); data=raw?JSON.parse(raw):seed();}catch(e){data=seed();}
     if(!Array.isArray(data)||!data.length){data=seed();}
-    save();
+    persist();
   }
-  function save(){ try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){} }
+  function persist(){ try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){} }
   function uid(){ return 'S'+Date.now().toString(36); }
   function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
   function byId(id){ return data.find(function(x){return x.id===id;}); }
@@ -1015,13 +1015,13 @@ var STYLE=(function(){
     }else{
       rec.id=uid(); rec.sketch=state._sketch||''; data.unshift(rec);
     }
-    save(); closeEdit(); render(); toast(state.editId?'수정했어요':'추가했어요');
+    persist(); closeEdit(); render(); toast(state.editId?'수정했어요':'추가했어요');
   }
   function delCurrent(){
     if(!state.editId)return;
     if(!confirm('이 스타일을 삭제할까요?'))return;
     data=data.filter(function(x){return x.id!==state.editId;});
-    save(); closeEdit(); backToList(); render(); toast('삭제했어요');
+    persist(); closeEdit(); backToList(); render(); toast('삭제했어요');
   }
 
   function exportCSV(){
@@ -1035,7 +1035,7 @@ var STYLE=(function(){
     setTimeout(function(){URL.revokeObjectURL(a.href);},500); toast('엑셀(CSV)로 내려받았어요');
   }
 
-  function inlineEdit(id,field,el){ var d=byId(id); if(!d)return; var val=(el.textContent||'').replace(/\s+/g,' ').trim(); el.textContent=val; if(val===d[field])return; d[field]=val; save(); toast('\uC218\uC815\uD588\uC5B4\uC694'); }
+  function inlineEdit(id,field,el){ var d=byId(id); if(!d)return; var val=(el.textContent||'').replace(/\s+/g,' ').trim(); el.textContent=val; if(val===d[field])return; d[field]=val; persist(); toast('\uC218\uC815\uD588\uC5B4\uC694'); }
   function ieKey(e){ if(e.key==='Enter'){ e.preventDefault(); e.target.blur(); } }
   function init(){ load(); render(); }
   return {init:init,render:render,inlineEdit:inlineEdit,ieKey:ieKey,setView:setView,setCols:setCols,openDetail:openDetail,backToList:backToList,openEdit:openEdit,closeEdit:closeEdit,addColorRow:addColorRow,addSpecRow:addSpecRow,save:save,delCurrent:delCurrent,exportCSV:exportCSV};
