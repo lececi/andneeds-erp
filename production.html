@@ -1101,7 +1101,9 @@ var STYLE=(function(){
 })();
 document.addEventListener('DOMContentLoaded',STYLE.init);
 if(document.readyState!=='loading')STYLE.init();
-document.getElementById('stModalBg').addEventListener('click',function(e){ if(e.target===this)STYLE.closeEdit(); });
+(function(){ var bg=document.getElementById('stModalBg'); var downOnBg=false;
+  bg.addEventListener('mousedown',function(e){ downOnBg=(e.target===bg); });
+  bg.addEventListener('click',function(e){ if(downOnBg && e.target===bg) STYLE.closeEdit(); downOnBg=false; }); })();
 </script>
 
 </body>
