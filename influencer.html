@@ -573,6 +573,10 @@ body{padding-bottom:34px;}
 .inf-input{padding:9px 11px;border:1px solid var(--line,#e5e2de);border-radius:8px;font-size:14px;font-family:inherit;background:#fff;min-width:150px;}
 .inf-btn{padding:10px 16px;border-radius:8px;border:none;background:#1A1A1A;color:#fff;font-size:13px;cursor:pointer;}
 .inf-btn-ghost{background:#fff;color:#888;border:1px solid var(--line,#e5e2de);}
+.inf-table{width:100%;border-collapse:collapse;font-size:13px;}
+.inf-table th{text-align:left;color:var(--text-3);font-weight:600;padding:9px 10px;border-bottom:1px solid var(--line,#e5e2de);white-space:nowrap;}
+.inf-table td{padding:9px 10px;border-bottom:1px solid var(--line,#f0eee9);}
+.inf-table tbody tr:hover{background:var(--surface2,#faf9f7);}
 </style>
 <div class="cf-wrap">
   <div class="cf-bar">
@@ -599,6 +603,11 @@ body{padding-bottom:34px;}
     <div class="cf-cardhead"><span>상품별 판매</span><span class="cf-sub2" id="inf_matchinfo"></span></div>
     <div id="inf_products"></div>
   </div>
+
+  <div class="cf-card">
+    <div class="cf-cardhead"><span>주문 건별 목록</span><span class="cf-sub2" id="inf_ordercount"></span></div>
+    <div id="inf_orders"></div>
+  </div>
 </div>
   </main>
 </div>
@@ -615,12 +624,14 @@ body{padding-bottom:34px;}
   function won(n){return '\u20A9'+Math.round(n).toLocaleString('ko-KR');}
   function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function toNum(v){if(v==null)return 0;var n=parseFloat(String(v).replace(/[^0-9.\-]/g,''));return isNaN(n)?0:n;}
+  function dfmt(v){var s=String(v==null?'':v);var m=s.match(/(\d{4})[-./](\d{1,2})[-./](\d{1,2})/);return m?(m[1]+'-'+('0'+m[2]).slice(-2)+'-'+('0'+m[3]).slice(-2)):s.slice(0,10);}
   function findCol(H,keys){for(var i=0;i<H.length;i++){var h=(H[i]||'').replace(/\s/g,'');for(var j=0;j<keys.length;j++)if(h.indexOf(keys[j])>=0)return i;}return -1;}
 
   function parseSheet(rows){
     if(!rows||rows.length<2) return null;
     var H=rows[0].map(function(x){return String(x==null?'':x);});
     var ci={
+      date: findCol(H,['주문일시','주문일자','주문일','결제일','발주일']),
       product: findCol(H,['상품명','품목','주문상품명']),
       qty: findCol(H,['수량','주문수량']),
       paid: findCol(H,['실결제','실매출','결제금액','실주문','총결제']),
@@ -632,6 +643,7 @@ body{padding-bottom:34px;}
       var row=rows[r]; if(!row||row.length===0) continue;
       var st=ci.cancel>=0?String(row[ci.cancel]||''):'';
       out.push({
+        date: ci.date>=0?dfmt(row[ci.date]):'',
         product: ci.product>=0?String(row[ci.product]||'상품'):'상품',
         qty: ci.qty>=0?(toNum(row[ci.qty])||1):1,
         paid: toNum(row[ci.paid]),
@@ -655,6 +667,8 @@ body{padding-bottom:34px;}
     document.getElementById('inf_kpis').innerHTML='';
     document.getElementById('inf_products').innerHTML='<div class="cf-empty">'+esc(msg)+'</div>';
     document.getElementById('inf_matchinfo').textContent='';
+    document.getElementById('inf_orders').innerHTML='';
+    document.getElementById('inf_ordercount').textContent='';
   }
 
   function compute(){
@@ -672,6 +686,16 @@ body{padding-bottom:34px;}
       kcard('판매 수량', totalQty.toLocaleString()+'개')+
       kcard('주문 건수', matched.length.toLocaleString()+'건');
     document.getElementById('inf_matchinfo').textContent = code.trim()? ('쿠폰 "'+code.trim()+'" 매칭 '+matched.length+'건') : '';
+    // 주문 건별 목록
+    var slist=matched.slice().sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0;});
+    document.getElementById('inf_ordercount').textContent=matched.length+'건';
+    if(!slist.length){ document.getElementById('inf_orders').innerHTML='<div class="cf-empty">매칭된 주문이 없어요.</div>'; }
+    else {
+      var oh='<div style="overflow-x:auto"><table class="inf-table"><thead><tr><th>날짜</th><th>상품</th><th style="text-align:right">수량</th><th style="text-align:right">실결제액</th></tr></thead><tbody>';
+      slist.forEach(function(o){ oh+='<tr><td>'+esc(o.date||'-')+'</td><td>'+esc(o.product)+'</td><td style="text-align:right">'+o.qty+'</td><td style="text-align:right">'+won(o.paid).replace('\u20A9','')+'원</td></tr>'; });
+      oh+='</tbody></table></div>';
+      document.getElementById('inf_orders').innerHTML=oh;
+    }
     var byp={};
     matched.forEach(function(o){ if(!byp[o.product])byp[o.product]={qty:0,amt:0}; byp[o.product].qty+=o.qty; byp[o.product].amt+=o.paid; });
     var arr=Object.keys(byp).map(function(p){return {name:p,qty:byp[p].qty,amt:byp[p].amt};}).sort(function(a,b){return b.amt-a.amt;});
