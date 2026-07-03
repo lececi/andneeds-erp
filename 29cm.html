@@ -569,7 +569,7 @@ body{padding-bottom:34px;}
 <div class="cf-wrap">
   <div class="cf-bar">
     <div class="cf-synced" id="cf_synced">예시 데이터 · 29cm 주문 엑셀을 올리면 실제 숫자로 바뀌어요</div>
-    <label class="cf-upload">⬆ 주문 엑셀 올리기<input id="cf_file" type="file" accept=".xlsx,.xls,.csv" style="display:none;"></label>
+    <label class="cf-upload">⬆ 주문 엑셀 올리기<input id="cf_file" type="file" accept=".xlsx,.xls,.csv" style="display:none;"></label><span style="display:inline-flex;gap:6px;align-items:center;margin-left:8px;flex-wrap:wrap;"><input type="date" id="cf_from" style="padding:7px 9px;border:1px solid #e5e2de;border-radius:8px;font-size:13px;"><span style="color:#aaa">~</span><input type="date" id="cf_to" style="padding:7px 9px;border:1px solid #e5e2de;border-radius:8px;font-size:13px;"><button id="cf_apiload" class="cf-upload" style="border:none;cursor:pointer;">⟳ 29cm에서 불러오기</button></span>
   </div>
   <div class="cf-month">
     <button class="cf-mbtn" id="cf_prev">‹</button>
@@ -816,6 +816,31 @@ document.getElementById('cf_file').addEventListener('change',function(e){
   };
   rd.readAsArrayBuffer(f);
 });
+// ---- 29cm API 자동 불러오기 ----
+(function(){
+  var btn=document.getElementById('cf_apiload'); if(!btn) return;
+  var fromEl=document.getElementById('cf_from'), toEl=document.getElementById('cf_to');
+  function ymd(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+  var today=new Date(), d30=new Date(today.getTime()-30*864e5);
+  if(toEl&&!toEl.value) toEl.value=ymd(today);
+  if(fromEl&&!fromEl.value) fromEl.value=ymd(d30);
+  btn.addEventListener('click',function(){
+    var from=fromEl.value, to=toEl.value, old=btn.textContent;
+    btn.disabled=true; btn.textContent='불러오는 중…';
+    fetch('/api/29cm-orders?from='+encodeURIComponent(from)+'&to='+encodeURIComponent(to))
+      .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+      .then(function(res){
+        if(!res.ok){ alert('불러오기 실패: '+((res.j&&res.j.error)||'알 수 없는 오류')); return; }
+        ORDERS=res.j.orders||[]; DEMO=false;
+        var lm=latestMonth(); curY=lm[0]; curM=lm[1];
+        render();
+        document.getElementById('cf_synced').textContent='29CM API · '+ORDERS.length+'건 불러옴 ('+res.j.from+' ~ '+res.j.to+')';
+        if(!ORDERS.length) alert('해당 기간에 주문이 없어요.');
+      })
+      .catch(function(e){ alert('서버 통신 오류: '+e.message); })
+      .finally(function(){ btn.disabled=false; btn.textContent=old; });
+  });
+})();
 // init
 var lm0=latestMonth(); curY=lm0[0]; curM=lm0[1];
 render();
