@@ -25,7 +25,8 @@ async function getToken(diag) {
     ["NCM_OPEN_API_KEY", process.env.NCM_OPEN_API_KEY],
     ["NCM_CLIENT_ID", process.env.NCM_CLIENT_ID],
     ["NCM_CLIENT_SECRET", process.env.NCM_CLIENT_SECRET],
-  ].filter((c) => c[1]);
+    ["NCM_PARTNER_KEY", process.env.NCM_PARTNER_KEY],
+  ].filter((c) => c[1]).map((c) => [c[0], String(c[1]).trim()]);
 
   let lastMsg = "사용 가능한 키가 없습니다.";
   for (const [name, key] of candidates) {
