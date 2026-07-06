@@ -910,19 +910,27 @@ function loadInvoiceData(data) {
 }
 
 async function saveInvoice() {
+  const toEl = document.getElementById('to-name');
+  const cur = (toEl.value || '').trim();
+  // 저장할 이름(거래처명) 입력받기 — 기존 거래처명이 있으면 미리 채워둠
+  let name = prompt('저장할 이름을 입력하세요 (거래처명):', cur);
+  if (name === null) return; // 취소하면 저장 안 함
+  name = name.trim();
+  if (!name) name = cur || '미입력';
+  if (name !== '미입력') toEl.value = name; // 입력한 이름을 거래처명 칸에도 반영
   const data = collectInvoiceData();
   const grandText = document.getElementById('grandTotal').textContent.replace(/[^0-9]/g,'');
   const total = parseInt(grandText)||0;
   try {
     await sb('invoices', {method:'POST', body:JSON.stringify({
       invoice_number: data.invoiceNumber,
-      client_name: data.toName||'미입력',
+      client_name: name,
       issue_date: data.date,
       total_amount: total,
       status: '미수금',
       data: data
     })});
-    showToast('저장되었습니다 ✓');
+    showToast('"' + name + '" (으)로 저장되었습니다 ✓');
   } catch(e) { showToast('저장 실패: '+e.message); }
 }
 
