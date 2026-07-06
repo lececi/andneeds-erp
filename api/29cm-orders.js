@@ -21,11 +21,12 @@ function pickToken(j) {
 
 // 넣어둔 키 후보들 중 실제로 토큰이 발급되는 것을 자동으로 찾는다.
 async function getToken(diag) {
+  // 29CM은 'Partner-Key' 하나가 API 키 전체다. 토큰 발급 openApiKey = Partner-Key 값.
   const candidates = [
+    ["NCM_PARTNER_KEY", process.env.NCM_PARTNER_KEY],
     ["NCM_OPEN_API_KEY", process.env.NCM_OPEN_API_KEY],
     ["NCM_CLIENT_ID", process.env.NCM_CLIENT_ID],
     ["NCM_CLIENT_SECRET", process.env.NCM_CLIENT_SECRET],
-    ["NCM_PARTNER_KEY", process.env.NCM_PARTNER_KEY],
   ].filter((c) => c[1]).map((c) => [c[0], String(c[1]).trim()]);
 
   let lastMsg = "사용 가능한 키가 없습니다.";
