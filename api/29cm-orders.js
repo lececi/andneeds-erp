@@ -1,31 +1,56 @@
 // ANDNEEDS ERP - 29CM 주문 조회 중계 함수 (Vercel Serverless Function)
-// 주소: /api/29cm-orders?from=YYYY-MM-DD&to=YYYY-MM-DD
+// 주소: /api/29cm-orders?from=YYYY-MM-DD&to=YYYY-MM-DD  (&debug=1 로 진단)
 //
-// ⚠️ API 키는 코드에 넣지 말고, Vercel 환경변수에 저장하세요:
-//   NCM_CLIENT_ID     : 29CM에서 발급받은 Client ID
-//   NCM_CLIENT_SECRET : 29CM에서 발급받은 Client Secret
-//   NCM_PARTNER_KEY   : 29CM 파트너 Key
+// Vercel 환경변수 (Sensitive):
+//   NCM_OPEN_API_KEY  또는  NCM_CLIENT_ID / NCM_CLIENT_SECRET  중 하나가 29CM openApiKey
+//   NCM_PARTNER_KEY   : 29CM Partner-Key (헤더)
 //
-// 흐름: /auth/token 으로 accessToken 발급 → /api/v1/orders/search 조회 → 화면용으로 정규화
+// 인증: POST /api/v2/auth/token  { openApiKey } → accessToken
+// 조회: GET  /api/v1/orders/search  (Authorization: Bearer, Partner-Key)
 
 const BASE = "https://openapi.29cm.co.kr";
 
-async function getToken(clientId, clientSecret) {
-  const r = await fetch(BASE + "/auth/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ clientId, clientSecret }),
-  });
-  const text = await r.text();
-  if (!r.ok) throw new Error("토큰 발급 실패 (" + r.status + "): " + text.slice(0, 200));
-  let d = {};
-  try { d = JSON.parse(text); } catch (e) {}
-  const token = d.accessToken || (d.data && d.data.accessToken);
-  if (!token) throw new Error("토큰 응답에 accessToken이 없어요: " + text.slice(0, 200));
-  return token;
+function pickToken(j) {
+  const d = (j && j.data) || {};
+  if (typeof d === "string") return d;
+  return (
+    d.accessToken || d.token || d.access_token || d.jwt || d.accessTokenValue ||
+    (j && (j.accessToken || j.token)) || null
+  );
 }
 
-// KST(+09:00) 기준으로 날짜/시간 분해
+// 넣어둔 키 후보들 중 실제로 토큰이 발급되는 것을 자동으로 찾는다.
+async function getToken(diag) {
+  const candidates = [
+    ["NCM_OPEN_API_KEY", process.env.NCM_OPEN_API_KEY],
+    ["NCM_CLIENT_ID", process.env.NCM_CLIENT_ID],
+    ["NCM_CLIENT_SECRET", process.env.NCM_CLIENT_SECRET],
+  ].filter((c) => c[1]);
+
+  let lastMsg = "사용 가능한 키가 없습니다.";
+  for (const [name, key] of candidates) {
+    const r = await fetch(BASE + "/api/v2/auth/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ openApiKey: key }),
+    });
+    const text = await r.text();
+    let j = {};
+    try { j = JSON.parse(text); } catch (e) {}
+    if (r.ok && (j.result === "SUCCESS" || pickToken(j))) {
+      const token = pickToken(j);
+      if (token) {
+        if (diag) diag.tokenFrom = name, diag.tokenRespKeys = Object.keys(j.data || {});
+        return token;
+      }
+      lastMsg = "토큰 응답에서 값을 못 찾음: " + Object.keys(j.data || j || {}).join(",");
+    } else {
+      lastMsg = "[" + name + "] " + (j.message || ("HTTP " + r.status)) + " " + text.slice(0, 120);
+    }
+  }
+  throw new Error("토큰 발급 실패 - " + lastMsg);
+}
+
 function kstParts(iso) {
   if (!iso) return null;
   const d = new Date(iso);
@@ -43,8 +68,8 @@ function normalize(o) {
     hour: kp ? kp.hour : 12,
     product: o.itemName || "상품",
     qty: o.orderCount || 1,
-    gross: o.sellAmount || 0,         // 판매액
-    paid: o.saleAmount || 0,          // 실판매액
+    gross: o.sellAmount || 0,
+    paid: o.saleAmount || 0,
     coupon: o.couponResultAmount || 0,
     point: o.preDiscountMileageAmount || 0,
     cust: o.orderName || o.receiverName || "",
@@ -57,26 +82,24 @@ function normalize(o) {
 export default async function handler(req, res) {
   if (req.method === "OPTIONS") { res.status(200).end(); return; }
 
-  const { NCM_CLIENT_ID, NCM_CLIENT_SECRET, NCM_PARTNER_KEY } = process.env;
-  if (!NCM_CLIENT_ID || !NCM_CLIENT_SECRET || !NCM_PARTNER_KEY) {
+  const hasKey = process.env.NCM_OPEN_API_KEY || process.env.NCM_CLIENT_ID || process.env.NCM_CLIENT_SECRET;
+  if (!hasKey || !process.env.NCM_PARTNER_KEY) {
     res.status(500).json({
-      error:
-        "29CM API 키가 아직 설정되지 않았어요. Vercel 환경변수 NCM_CLIENT_ID, NCM_CLIENT_SECRET, NCM_PARTNER_KEY 를 설정해주세요.",
+      error: "29CM API 키가 아직 설정되지 않았어요. Vercel 환경변수(NCM_OPEN_API_KEY 또는 NCM_CLIENT_ID/SECRET, 그리고 NCM_PARTNER_KEY)를 확인해주세요.",
     });
     return;
   }
 
+  const diag = req.query.debug ? {} : null;
   try {
-    // 날짜 범위 (미지정 시 최근 30일)
     const today = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
-    const ago30 = new Date(Date.now() + 9 * 3600 * 1000 - 30 * 864e5)
-      .toISOString().slice(0, 10);
+    const ago30 = new Date(Date.now() + 9 * 3600 * 1000 - 30 * 864e5).toISOString().slice(0, 10);
     const fromDate = (req.query.from || ago30).slice(0, 10);
     const toDate = (req.query.to || today).slice(0, 10);
     const fromDateTime = fromDate + "T00:00:00+09:00";
     const toDateTime = toDate + "T23:59:59+09:00";
 
-    const token = await getToken(NCM_CLIENT_ID, NCM_CLIENT_SECRET);
+    const token = await getToken(diag);
 
     let page = 1, all = [], totalCount = 0;
     for (;;) {
@@ -88,26 +111,27 @@ export default async function handler(req, res) {
       url.searchParams.set("size", "500");
 
       const r = await fetch(url.toString(), {
-        headers: { Authorization: "Bearer " + token, "Partner-Key": NCM_PARTNER_KEY },
+        headers: { Authorization: "Bearer " + token, "Partner-Key": process.env.NCM_PARTNER_KEY },
       });
       const text = await r.text();
       if (!r.ok) throw new Error("주문 조회 실패 (" + r.status + "): " + text.slice(0, 300));
       let j = {};
       try { j = JSON.parse(text); } catch (e) { throw new Error("응답 파싱 실패: " + text.slice(0, 200)); }
-      if (j.result && j.result !== "SUCCESS") {
-        throw new Error(j.message || j.errorCode || "조회 결과 실패");
-      }
+      if (j.result && j.result !== "SUCCESS") throw new Error(j.message || j.errorCode || "조회 실패");
       const data = j.data || {};
       const list = data.resultList || [];
       totalCount = data.totalCount != null ? data.totalCount : list.length;
+      if (diag && page === 1) diag.firstOrderKeys = list[0] ? Object.keys(list[0]) : [];
       all = all.concat(list);
       if (list.length === 0 || all.length >= totalCount || page >= 40) break;
       page++;
     }
 
     const orders = all.map(normalize);
-    res.status(200).json({ orders, totalCount: orders.length, from: fromDate, to: toDate });
+    const out = { orders, totalCount: orders.length, from: fromDate, to: toDate };
+    if (diag) out.diag = diag;
+    res.status(200).json(out);
   } catch (e) {
-    res.status(502).json({ error: String((e && e.message) || e) });
+    res.status(502).json({ error: String((e && e.message) || e), diag });
   }
 }
