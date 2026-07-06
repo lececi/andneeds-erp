@@ -29,6 +29,16 @@ async function getToken(diag) {
     ["NCM_CLIENT_SECRET", process.env.NCM_CLIENT_SECRET],
   ].filter((c) => c[1]).map((c) => [c[0], String(c[1]).trim()]);
 
+  // 진단: 각 키의 앞부분(비밀 아님)·길이·마스킹(*) 포함 여부만 기록
+  if (diag) {
+    diag.candidates = candidates.map(([name, key]) => ({
+      name,
+      len: key.length,
+      prefix: key.slice(0, 17),
+      hasMask: key.indexOf("*") >= 0,
+    }));
+  }
+
   let lastMsg = "사용 가능한 키가 없습니다.";
   for (const [name, key] of candidates) {
     const r = await fetch(BASE + "/api/v2/auth/token", {
