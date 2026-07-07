@@ -41,7 +41,7 @@
   --text-3: #A09A94;
 }
 
-html, body { height: 100%; background: #FFFFFF; font-family: var(--sans); color: var(--ink); }
+html, body { height: 100%; background: #FFFFFF; font-family: var(--sans); color: #555555; }
 
 /* ── SIDEBAR ── */
 .sidebar { width:220px; flex-shrink:0; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; position:fixed; top:0; left:0; bottom:0; z-index:100; }
@@ -50,8 +50,8 @@ html, body { height: 100%; background: #FFFFFF; font-family: var(--sans); color:
 .sidebar-nav { flex:1; padding:16px 10px; }
 .nav-section-label { font-size:10px; font-weight:500; letter-spacing:0.1em; color:var(--text-3); text-transform:uppercase; padding:0 10px; margin-bottom:6px; }
 .nav-item { display:flex; align-items:center; gap:9px; padding:9px 10px; border-radius:8px; font-size:13px; color:var(--text-2); text-decoration:none; transition:all 0.15s; margin-bottom:2px; }
-.nav-item:hover { background:var(--surface2); color:var(--text); }
-.nav-item.active { background:var(--surface2); color:var(--text); font-weight:500; }
+.nav-item:hover { background:var(--surface2); color:#555555; }
+.nav-item.active { background:var(--surface2); color:#555555; font-weight:500; }
 .nav-disabled { opacity:0.4; pointer-events:none; }
 .sidebar-footer { padding:16px 20px; font-size:10px; letter-spacing:0.1em; color:var(--text-3); border-top:1px solid var(--border); }
 
@@ -83,7 +83,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
 .hero-greeting {
   font-family: 'Branch', Georgia, serif;
   font-weight: 400; font-size: 25px; line-height: 1;
-  letter-spacing: 0.04em; color: var(--ink);
+  letter-spacing: 0.04em; color: #555555;
   white-space: nowrap;
 }
 .hero-greeting span { font-style: italic; }
@@ -94,7 +94,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
 }
 .hero-season-val {
   font-family: var(--sans); font-size: 18px; font-weight: 400;
-  color: var(--ink);
+  color: #555555;
 }
 
 /* ── TODAY ROW ── */
@@ -109,7 +109,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
   transition: box-shadow 0.2s;
 }
 .today-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-.today-card.dark { background: var(--ink); border-color: var(--ink); }
+.today-card.dark { background: var(--ink); border-color: #CCCCCC; }
 .today-label {
   font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--ink-3); margin-bottom: 12px;
@@ -117,7 +117,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
 .today-card.dark .today-label { color: rgba(255,255,255,0.45); }
 .today-val {
   font-family: var(--sans); font-size: 28px; font-weight: 400;
-  color: var(--ink); line-height: 1;
+  color: #555555; line-height: 1;
 }
 .today-card.dark .today-val { color: var(--white); }
 .today-sub {
@@ -145,7 +145,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
 .goal-nums {
   font-family: var(--sans); font-size: 14px; color: var(--ink-2);
 }
-.goal-nums strong { color: var(--ink); font-size: 18px; }
+.goal-nums strong { color: #555555; font-size: 18px; }
 .goal-track {
   height: 3px; background: var(--ink-4); border-radius: 2px;
   position: relative; overflow: visible;
@@ -185,7 +185,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
   font-size: 12px; color: var(--ink-3); text-decoration: none;
   letter-spacing: 0.04em;
 }
-.section-link:hover { color: var(--ink); }
+.section-link:hover { color: #555555; }
 
 /* SKU rows */
 .sku-row {
@@ -201,11 +201,11 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
 }
 .sku-info { flex: 1; min-width: 0; }
 .sku-name {
-  font-size: 12px; font-weight: 500; color: var(--ink);
+  font-size: 12px; font-weight: 500; color: #555555;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .sku-cat { font-size: 10px; color: var(--ink-3); margin-top: 1px; }
-.sku-val { font-size: 13px; font-weight: 500; color: var(--ink); }
+.sku-val { font-size: 13px; font-weight: 500; color: #555555; }
 .sku-stock {
   font-size: 11px; font-weight: 500; padding: 2px 8px;
   border-radius: 6px; flex-shrink: 0;
@@ -227,7 +227,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
 .alert-dot.gold { background: var(--gold); }
 .alert-dot.blue { background: var(--blue); }
 .alert-text { font-size: 12px; color: var(--ink-2); line-height: 1.5; }
-.alert-text strong { color: var(--ink); }
+.alert-text strong { color: #555555; }
 .alert-time { font-size: 10px; color: var(--ink-3); margin-top: 2px; }
 
 /* ── BOTTOM GRID ── */
@@ -250,7 +250,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
   display: flex; align-items: center; justify-content: center;
   transition: all 0.15s;
 }
-.todo-check.done { background: var(--ink); border-color: var(--ink); }
+.todo-check.done { background: var(--ink); border-color: #CCCCCC; }
 .todo-check.done::after { content: '✓'; font-size: 9px; color: white; }
 .todo-text { font-size: 12px; color: var(--ink-2); flex: 1; }
 .todo-text.done { text-decoration: line-through; color: var(--ink-3); }
@@ -271,7 +271,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
   display: flex; justify-content: space-between;
   align-items: baseline; margin-bottom: 8px;
 }
-.season-name { font-size: 12px; font-weight: 500; color: var(--ink); }
+.season-name { font-size: 12px; font-weight: 500; color: #555555; }
 .season-pct { font-family: var(--sans); font-size: 14px; color: var(--ink-2); }
 .season-bar {
   height: 2px; background: var(--ink-4); border-radius: 1px;
@@ -299,7 +299,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
 }
 .inv-strip-val {
   font-family: var(--sans); font-size: 26px; font-weight: 400;
-  color: var(--ink);
+  color: #555555;
 }
 .inv-strip-sub { font-size: 11px; color: var(--ink-3); margin-top: 4px; }
 
@@ -335,7 +335,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
   padding: 12px 10px; border-radius: 8px;
   font-size: 14px; color: var(--ink-2); text-decoration: none; margin-bottom: 4px;
 }
-.mobile-menu-item.active { background: var(--bg); color: var(--ink); font-weight: 500; }
+.mobile-menu-item.active { background: var(--bg); color: #555555; font-weight: 500; }
 .mobile-menu-item-disabled { opacity: 0.4; pointer-events: none; }
 </style>
 <style id="airy-v1">
@@ -391,8 +391,8 @@ table td{padding:16px 20px;font-size:13px;}
 </style>
 <style id="textcolor-v1">
 :root{--text:#1A1A1A;--text-2:#6E6E6E;--text-3:#ABABAB;--ink:#1A1A1A;--ink-2:#6E6E6E;--ink-3:#ABABAB;--ink-4:#DADADA;}
-.nav-item{color:#1A1A1A;}
-.nav-item:hover{color:#1A1A1A;}
+.nav-item{color:#555555;}
+.nav-item:hover{color:#555555;}
 .nav-item.active{color:#2B6CB8;}
 </style>
 <style id="topbar-v1">
@@ -415,16 +415,16 @@ table td{padding:16px 20px;font-size:13px;}
 .alert-dot,.alert-dot.red,.alert-dot.gold,.alert-dot.blue{background:#2B6CB8 !important;}
 .hero-greeting{font-family:'Galvji',-apple-system,'Helvetica Neue',Arial,sans-serif !important;font-weight:300 !important;letter-spacing:0.02em !important;font-style:normal !important;font-size:26px !important;}
 .hero-greeting span{font-style:normal !important;}
-.goal-title{font-size:15px !important;color:#1A1A1A !important;}
+.goal-title{font-size:15px !important;color:#555555 !important;}
 .inv-strip-label{font-size:15px !important;color:#555555 !important;}
-.section-title{font-size:15px !important;color:#1A1A1A !important;}
+.section-title{font-size:15px !important;color:#555555 !important;}
 .todo-row{position:relative;}
 .todo-check{cursor:pointer;}
 .todo-btn{background:none;border:none;cursor:pointer;color:var(--ink-3);font-size:13px;line-height:1;padding:2px 5px;border-radius:5px;opacity:0;transition:opacity .12s,background .12s;}
 .todo-row:hover .todo-btn{opacity:1;}
-.todo-btn:hover{background:var(--bg);color:var(--ink);}
+.todo-btn:hover{background:var(--bg);color:#555555;}
 .todo-add{display:flex;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border-mid);}
-.todo-add input{flex:1;font-family:inherit;font-size:13px;padding:7px 11px;border:1px solid var(--border-mid);border-radius:8px;background:#fff;color:var(--ink);outline:none;}
+.todo-add input{flex:1;font-family:inherit;font-size:13px;padding:7px 11px;border:1px solid var(--border-mid);border-radius:8px;background:#fff;color:#555555;outline:none;}
 .todo-add input:focus{border-color:#2B6CB8;}
 .todo-add-btn{font-family:inherit;font-size:12px;font-weight:500;padding:7px 16px;border-radius:8px;border:none;background:#2B6CB8;color:#fff;cursor:pointer;white-space:nowrap;}
 </style>
@@ -520,10 +520,10 @@ body{padding-bottom:34px;}
 .anv-panel-inner a.anv-disabled{opacity:.32;pointer-events:none;}
 .anv-search{position:absolute;left:0;right:0;top:100%;background:var(--anv-paper);padding:0 var(--anv-pad);max-height:0;overflow:hidden;transition:max-height .25s ease;z-index:1001;}
 .anv-search.anv-open{max-height:460px;padding-top:18px;padding-bottom:20px;}
-.anv-search input{width:100%;border:none;border-bottom:1px solid #1A1A1A;background:none;font-family:"AnvOldStd","Noto Sans KR",serif;font-size:20px;letter-spacing:.02em;padding:8px 2px;outline:none;color:#1A1A1A;}
+.anv-search input{width:100%;border:none;border-bottom:1px solid #CCCCCC;background:none;font-family:"AnvOldStd","Noto Sans KR",serif;font-size:20px;letter-spacing:.02em;padding:8px 2px;outline:none;color:#555555;}
 .anv-search input::placeholder{color:#B7B0A4;}
 .anv-sresults{margin-top:14px;display:flex;flex-direction:column;}
-.anv-sresults a{font-family:"Noto Sans KR",sans-serif;font-size:13px;color:#1A1A1A;text-decoration:none;padding:9px 2px;border-bottom:1px solid #F0ECE3;display:flex;gap:12px;align-items:baseline;transition:opacity .12s;}
+.anv-sresults a{font-family:"Noto Sans KR",sans-serif;font-size:13px;color:#555555;text-decoration:none;padding:9px 2px;border-bottom:1px solid #F0ECE3;display:flex;gap:12px;align-items:baseline;transition:opacity .12s;}
 .anv-sresults a:hover{opacity:.55;}
 .anv-sresults a .anv-grp{font-family:"AnvOldStd",serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#A39C90;min-width:104px;}
 .anv-sempty{font-family:"Noto Sans KR",sans-serif;font-size:13px;color:#A39C90;padding:10px 2px;}
@@ -675,7 +675,7 @@ body{padding-bottom:34px;}
   <div style="max-width:1180px;margin:0 auto;padding:8px 4px 0;">
     <div style="margin-bottom:16px;">
       <div style="font-size:11px;font-weight:600;letter-spacing:0.18em;color:#2B6CB8;text-transform:uppercase;margin-bottom:8px;">COLLECTION</div>
-      <h1 style="font-size:26px;font-weight:600;letter-spacing:-0.01em;color:#1a1a1a;margin:0;">코디 스튜디오</h1>
+      <h1 style="font-size:26px;font-weight:600;letter-spacing:-0.01em;color:#555555;margin:0;">코디 스튜디오</h1>
       <div style="font-size:13px;color:#9a9a9a;margin-top:6px;">옷을 끌어다 놓으며 자유롭게 코디하고, 컬러를 바꿔보세요</div>
     </div>
     <iframe src="cody-tool.html" title="코디 스튜디오" style="width:100%;height:calc(100vh - 205px);min-height:520px;border:1px solid #ececec;border-radius:16px;background:#fff;display:block;"></iframe>
