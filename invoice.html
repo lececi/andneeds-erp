@@ -952,13 +952,13 @@ async function saveInvoice() {
     await sb('invoices', {method:'POST', body:JSON.stringify({
       invoice_number: data.invoiceNumber,
       client_name: name,
-      issue_date: data.date,
-      total_amount: total,
+      issue_date: data.date || null,
+      total_amount: Math.round(Number(total))||0,
       status: '미수금',
       data: data
     })});
     showToast('"' + name + '" (으)로 저장되었습니다 ✓');
-  } catch(e) { showToast('저장 실패: '+e.message); }
+  } catch(e) { showToast('저장 실패'); alert('저장 실패 상세:\n'+(e&&e.message||e)); }
 }
 
 async function openLoadModal() {
