@@ -936,6 +936,21 @@ function loadInvoiceData(data) {
   }
 }
 
+function compressImg(url, maxSize){
+  return new Promise(function(resolve){
+    if(!url || url.indexOf('data:image')!==0){ resolve(url); return; }
+    var img=new Image();
+    img.onload=function(){
+      var w=img.width,h=img.height,scale=Math.min(1,maxSize/Math.max(w,h));
+      var cw=Math.max(1,Math.round(w*scale)),ch=Math.max(1,Math.round(h*scale));
+      var c=document.createElement('canvas');c.width=cw;c.height=ch;
+      try{ c.getContext('2d').drawImage(img,0,0,cw,ch); resolve(c.toDataURL('image/jpeg',0.72)); }
+      catch(e){ resolve(url); }
+    };
+    img.onerror=function(){ resolve(url); };
+    img.src=url;
+  });
+}
 async function saveInvoice() {
   const toEl = document.getElementById('to-name');
   const cur = (toEl.value || '').trim();
@@ -946,6 +961,7 @@ async function saveInvoice() {
   if (!name) name = cur || '미입력';
   if (name !== '미입력') toEl.value = name; // 입력한 이름을 거래처명 칸에도 반영
   const data = collectInvoiceData();
+  if(data.rows){ for(var _i=0;_i<data.rows.length;_i++){ if(data.rows[_i].imgUrl){ try{ data.rows[_i].imgUrl=await compressImg(data.rows[_i].imgUrl,420); }catch(e){} } } } // 압축 저장
   const grandText = document.getElementById('grandTotal').textContent.replace(/[^0-9]/g,'');
   const total = parseInt(grandText)||0;
   try {
