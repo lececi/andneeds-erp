@@ -539,6 +539,13 @@ body{padding-bottom:34px;}
 <style id="charcoal-titles">
 .sec-title,.section-title,.cf-cardhead,.biz-title,.detail-title,.inv-strip-label,.rp-title,.ts-title,.ss-title,.inv-title,.goal-title,.cal-title,.bank-title,.ag-title,.topbar-title,.modal-title,.today-label{color:#3A3A3A !important;}
 </style>
+<style id="blue-theme">
+.anv-bar,.anv-bar.anv-tinted{background:#006EB6 !important;}
+.anv-menu a,.anv-menu button,.anv-rlink,.anv-right .anv-rlabel,.anv-ico{color:#fff !important;}
+.anv-logo img{filter:brightness(0) invert(1);}
+.dark,.today-card.dark,.cf-kpi.dark,.metric-card.highlight,.ss-kpi-main{background:#006EB6 !important;border-color:#006EB6 !important;}
+.today-card.dark .today-label,.today-card.dark .today-val,.today-card.dark .today-sub,.dark .l,.dark .v,.dark .d.flat,.cf-kpi.dark .l,.cf-kpi.dark .v,.metric-card.highlight .l,.metric-card.highlight .v,.ss-kpi-main .l,.ss-kpi-main .v{color:#fff !important;}
+</style>
 </head>
 <body>
 <header class="anv-bar" id="anvBar">
@@ -754,7 +761,7 @@ function showDialog(){
   var ov=document.createElement('div');
   ov.id='anniz-logout-dialog';
   ov.style.cssText='position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(26,23,20,0.42);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);';
-  ov.innerHTML="<div style='background:#F6F4F1;border-radius:18px;padding:34px 30px 24px;max-width:320px;width:100%;text-align:center;font-family:inherit;box-shadow:0 16px 48px rgba(0,0,0,0.22);'><div style='font-size:16px;font-weight:600;color:#1A1714;margin-bottom:7px;'>\uB85C\uADF8\uC544\uC6C3 \uD558\uC2DC\uACA0\uC5B4\uC694?</div><div style='font-size:12px;color:#9A938C;margin-bottom:26px;'>\uB2E4\uC2DC \uBCF4\uB824\uBA74 \uB85C\uADF8\uC778\uC774 \uD544\uC694\uD574\uC694</div><div style='display:flex;gap:10px;'><button id='anniz-lo-cancel' style='flex:1;padding:13px;border:1px solid rgba(0,0,0,0.16);background:transparent;border-radius:11px;font-family:inherit;font-size:13px;color:#1A1714;cursor:pointer;'>\uCDE8\uC18C</button><button id='anniz-lo-ok' style='flex:1;padding:13px;border:none;background:#1A1714;color:#fff;border-radius:11px;font-family:inherit;font-size:13px;cursor:pointer;'>\uB85C\uADF8\uC544\uC6C3</button></div></div>";
+  ov.innerHTML="<div style='background:#F6F4F1;border-radius:18px;padding:34px 30px 24px;max-width:320px;width:100%;text-align:center;font-family:inherit;box-shadow:0 16px 48px rgba(0,0,0,0.22);'><div style='font-size:16px;font-weight:600;color:#1A1714;margin-bottom:7px;'>\uB85C\uADF8\uC544\uC6C3 \uD558\uC2DC\uACA0\uC5B4\uC694?</div><div style='font-size:12px;color:#9A938C;margin-bottom:26px;'>\uB2E4\uC2DC \uBCF4\uB824\uBA74 \uB85C\uADF8\uC778\uC774 \uD544\uC694\uD574\uC694</div><div style='display:flex;gap:10px;'><button id='anniz-lo-cancel' style='flex:1;padding:13px;border:1px solid rgba(0,0,0,0.16);background:transparent;border-radius:11px;font-family:inherit;font-size:13px;color:#1A1714;cursor:pointer;'>\uCDE8\uC18C</button><button id='anniz-lo-ok' style='flex:1;padding:13px;border:none;background:#006EB6;color:#fff;border-radius:11px;font-family:inherit;font-size:13px;cursor:pointer;'>\uB85C\uADF8\uC544\uC6C3</button></div></div>";
   document.body.appendChild(ov);
   function close(){ov.style.display='none';}
   ov.addEventListener('click',function(e){if(e.target===ov)close();});
