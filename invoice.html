@@ -983,7 +983,7 @@ async function openLoadModal() {
   const listEl = document.getElementById('savedList');
   listEl.innerHTML = '<div style="text-align:center;padding:20px;color:#A09A94;font-size:13px;">불러오는 중...</div>';
   try {
-    const list = await sb('invoices?select=*&order=created_at.desc&limit=30') || [];
+    const list = await sb('invoices?select=id,invoice_number,client_name,issue_date,total_amount,status&order=created_at.desc&limit=30') || [];
     if(!list.length) {
       listEl.innerHTML = '<div style="text-align:center;padding:20px;color:#A09A94;font-size:13px;">저장된 인보이스가 없습니다</div>';
       return;
