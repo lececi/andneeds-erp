@@ -1200,5 +1200,56 @@ if(document.readyState!=='loading')setup();else document.addEventListener('DOMCo
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
+<style id="cal-bigger">
+/* ── 화면 꽉 차게 · 크게 ── */
+.cal-wrap{max-width:1680px !important;padding:10px 28px 70px !important;grid-template-columns:minmax(0,1fr) 384px !important;gap:36px !important;}
+/* 제목 제거, + 일정 추가 버튼만 우측 */
+.cal-title,.cal-sub{display:none !important;}
+.cal-head{justify-content:flex-end !important;margin:0 2px 12px !important;}
+.cal-add-top{font-size:15px !important;padding:12px 20px !important;border-radius:12px !important;}
+.cal-nav{margin-bottom:22px !important;gap:16px !important;}
+.cal-label{font-size:23px !important;min-width:150px !important;}
+.cal-arrow,.cal-today-btn{transform:scale(1.08);}
+/* 달력 칸 크게 (데스크톱만) */
+@media(min-width:1001px){
+  .cal-grid{gap:9px !important;}
+  .cal-cell{min-height:158px !important;padding:12px !important;border-radius:14px !important;gap:5px !important;}
+  .cal-date{font-size:16px !important;}
+  .cal-ev{font-size:13.5px !important;padding:3px 9px !important;border-radius:7px !important;line-height:1.5 !important;}
+  .cal-more{font-size:13px !important;}
+  .cal-wh{font-size:14px !important;font-weight:700 !important;padding-bottom:8px !important;}
+}
+/* ── 사이드바 고급스럽게 ── */
+.cal-side{gap:20px !important;top:70px !important;}
+.cx-card{padding:22px 22px !important;border-radius:20px !important;border:1px solid rgba(0,0,0,0.07) !important;box-shadow:0 4px 16px rgba(0,0,0,0.04) !important;background:#fff !important;}
+.cx-h{margin-bottom:16px !important;}
+.cx-h-t{font-size:16.5px !important;font-weight:700 !important;color:#1A1A1A !important;}
+.cx-count{font-size:12.5px !important;min-width:22px !important;height:22px !important;}
+.cx-h-sub{font-size:11.5px !important;}
+.cx-mini-add{font-size:12.5px !important;padding:5px 11px !important;border-radius:9px !important;}
+.cx-empty{font-size:13.5px !important;color:#B4B4B4 !important;padding:10px 2px !important;line-height:1.6 !important;}
+/* todo */
+.cx-todo{padding:11px 0 !important;gap:11px !important;border-bottom:1px solid rgba(0,0,0,0.055) !important;}
+.cx-check span{width:19px !important;height:19px !important;border-radius:6px !important;}
+.cx-check input:checked + span::after{left:6px !important;top:2px !important;width:5px !important;height:10px !important;}
+.cx-todo-txt{font-size:14.5px !important;color:#333 !important;}
+.cx-pri{font-size:11.5px !important;padding:3px 11px !important;}
+.cx-x{font-size:18px !important;}
+.cx-addrow{margin-top:15px !important;padding-top:15px !important;gap:7px !important;}
+.cx-input{padding:10px 12px !important;font-size:13.5px !important;border-radius:10px !important;}
+.cx-pri-toggle{padding:9px 11px !important;border-radius:10px !important;font-size:11.5px !important;}
+.cx-add-btn{padding:9px 15px !important;border-radius:10px !important;font-size:13px !important;}
+/* priority */
+.cx-pri-item{padding:11px 0 !important;gap:11px !important;border-bottom:1px solid rgba(0,0,0,0.055) !important;}
+.cx-dot{width:9px !important;height:9px !important;}
+.cx-pri-txt{font-size:14.5px !important;}
+.cx-dday{font-size:12.5px !important;}
+/* projects */
+.cx-proj{padding:13px 0 !important;}
+.cx-proj-name{font-size:14.5px !important;}
+.cx-proj-pct{font-size:13.5px !important;}
+.cx-bar{height:8px !important;border-radius:8px !important;}
+@media(max-width:1000px){.cal-wrap{padding:10px 16px 60px !important;}}
+</style>
 </body>
 </html>
