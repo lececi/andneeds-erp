@@ -755,7 +755,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
       <span class="topbar-title">캘린더</span>
       </div>
   </div><main>
-<div class="cal-wrap">
+<div class="cal-wrap"><div class="cal-main-col">
 
   <div class="cal-head">
     <div>
@@ -774,7 +774,26 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
 
   <div id="calBody"></div>
 
-  <div class="cal-agenda" id="calAgenda"></div>
+  <div class="cal-agenda" id="calAgenda"></div></div>
+<aside class="cal-side" id="calSide">
+  <div class="cx-card">
+    <div class="cx-h"><span class="cx-h-t">오늘 할 일</span><span class="cx-count" id="cxTodoCount">0</span></div>
+    <div id="cxTodoList"></div>
+    <div class="cx-addrow">
+      <input id="cxTodoInput" class="cx-input" placeholder="할 일 입력 후 Enter" autocomplete="off" onkeydown="if(event.key==='Enter'){cxAddTodo();}">
+      <button type="button" class="cx-pri-toggle" id="cxTodoPri" onclick="cxCyclePri()">중요</button>
+      <button type="button" class="cx-add-btn" onclick="cxAddTodo()">추가</button>
+    </div>
+  </div>
+  <div class="cx-card">
+    <div class="cx-h"><span class="cx-h-t">우선순위 업무</span><span class="cx-h-sub">캘린더 자동</span></div>
+    <div id="cxPriList"></div>
+  </div>
+  <div class="cx-card">
+    <div class="cx-h"><span class="cx-h-t">진행 중 프로젝트</span><button type="button" class="cx-mini-add" onclick="cxAddProject()">+ 추가</button></div>
+    <div id="cxProjList"></div>
+  </div>
+</aside>
 
 </div>
 
@@ -1058,5 +1077,128 @@ if(document.readyState!=='loading')setup();else document.addEventListener('DOMCo
 })();
 </script>
 <!-- old topnav script removed -->
+<style id="cal-side-css">
+.cal-wrap{max-width:1380px !important;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:30px;align-items:start;}
+.cal-main-col{min-width:0;}
+.cal-side{display:flex;flex-direction:column;gap:18px;position:sticky;top:64px;}
+.cx-card{background:#fff;border:1px solid rgba(0,0,0,0.11);border-radius:16px;padding:16px 17px;}
+.cx-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.cx-h-t{font-size:15px;font-weight:700;color:#2E2E2E;letter-spacing:.01em;}
+.cx-count{font-size:12px;font-weight:700;color:#fff;background:#2E2E2E;border-radius:20px;min-width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;padding:0 6px;}
+.cx-h-sub{font-size:11px;color:#A3A3A3;letter-spacing:.04em;}
+.cx-mini-add{font-size:12px;color:#2E2E2E;background:none;border:1px solid rgba(0,0,0,0.14);border-radius:8px;padding:4px 9px;cursor:pointer;transition:.12s;}
+.cx-mini-add:hover{background:#2E2E2E;color:#fff;}
+.cx-empty{font-size:13px;color:#B0B0B0;padding:6px 2px 4px;}
+/* todo */
+.cx-todo{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid rgba(0,0,0,0.06);}
+.cx-todo:last-child{border-bottom:none;}
+.cx-check{position:relative;display:inline-flex;cursor:pointer;flex:none;}
+.cx-check input{position:absolute;opacity:0;width:16px;height:16px;margin:0;cursor:pointer;}
+.cx-check span{width:16px;height:16px;border:1.6px solid #C4C4C4;border-radius:5px;display:inline-block;transition:.12s;}
+.cx-check input:checked + span{background:#2E2E2E;border-color:#2E2E2E;}
+.cx-check input:checked + span::after{content:'';position:absolute;left:5px;top:2px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);}
+.cx-todo-txt{flex:1;font-size:13.5px;color:#3A3A3A;line-height:1.35;}
+.cx-todo.done .cx-todo-txt{text-decoration:line-through;color:#B8B8B8;}
+.cx-pri{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;flex:none;}
+.cx-pri-urgent{background:#FCEFEA;color:#C2705A;}
+.cx-pri-mid{background:#FBF1E2;color:#C77F2B;}
+.cx-pri-low{background:#E6F2EC;color:#3E8E5A;}
+.cx-x{background:none;border:none;color:#CFCFCF;font-size:16px;line-height:1;cursor:pointer;padding:0 2px;flex:none;transition:.12s;}
+.cx-x:hover{color:#C2705A;}
+.cx-addrow{display:flex;gap:6px;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid rgba(0,0,0,0.08);}
+.cx-input{flex:1;min-width:0;border:1px solid rgba(0,0,0,0.14);border-radius:8px;padding:7px 9px;font-size:13px;outline:none;font-family:inherit;}
+.cx-input:focus{border-color:#2E2E2E;}
+.cx-pri-toggle{font-size:11px;font-weight:700;border:none;border-radius:8px;padding:7px 8px;cursor:pointer;flex:none;background:#FBF1E2;color:#C77F2B;transition:.12s;}
+.cx-add-btn{font-size:12px;font-weight:600;background:#2E2E2E;color:#fff;border:none;border-radius:8px;padding:7px 11px;cursor:pointer;flex:none;}
+/* priority list */
+.cx-pri-item{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.06);}
+.cx-pri-item:last-child{border-bottom:none;}
+.cx-dot{width:8px;height:8px;border-radius:50%;flex:none;}
+.cx-pri-txt{flex:1;font-size:13.5px;color:#3A3A3A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cx-dday{font-size:11.5px;font-weight:700;flex:none;}
+.cx-dday-u{color:#C2705A;}
+.cx-dday-m{color:#C77F2B;}
+.cx-dday-l{color:#8A8A8A;}
+/* projects */
+.cx-proj{padding:9px 0;border-bottom:1px solid rgba(0,0,0,0.06);}
+.cx-proj:last-child{border-bottom:none;}
+.cx-proj-top{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.cx-proj-name{flex:1;font-size:13.5px;font-weight:600;color:#3A3A3A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cx-proj-pct{font-size:12.5px;font-weight:700;color:#2E2E2E;cursor:pointer;flex:none;}
+.cx-proj-pct:hover{color:#C77F2B;}
+.cx-bar{height:6px;background:rgba(0,0,0,0.07);border-radius:6px;overflow:hidden;}
+.cx-bar-fill{height:100%;background:#2E2E2E;border-radius:6px;transition:width .3s;}
+@media(max-width:1000px){.cal-wrap{grid-template-columns:1fr !important;}.cal-side{position:static;}}
+</style>
+<script id="cal-side-js">
+(function(){
+  var TODO_LS='anniz_ceo_todos', PROJ_LS='anniz_ceo_projects';
+  var PRIS=['긴급','중요','여유'];
+  var PRI_CLS={'긴급':'urgent','중요':'mid','여유':'low'};
+  window.cxTodos=[]; window.cxProjects=[];
+  function uid(p){return p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+  function E(s){return (window.esc?esc(s):String(s==null?'':s));}
+  // storage
+  function loadLocal(){try{cxTodos=JSON.parse(localStorage.getItem(TODO_LS))||[];}catch(e){cxTodos=[];}
+                       try{cxProjects=JSON.parse(localStorage.getItem(PROJ_LS))||[];}catch(e){cxProjects=[];}}
+  function saveTodos(){try{localStorage.setItem(TODO_LS,JSON.stringify(cxTodos));}catch(e){} cloudSave('ceo_todos',cxTodos); renderTodos();}
+  function saveProjects(){try{localStorage.setItem(PROJ_LS,JSON.stringify(cxProjects));}catch(e){} cloudSave('ceo_projects',cxProjects); renderProjects();}
+  async function cloudSave(id,payload){ if(typeof sbFetch!=='function')return; try{await sbFetch('sku_state',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify([{id:id,payload:payload}])});}catch(e){} }
+  async function cloudLoad(id){ if(typeof sbFetch!=='function')return null; try{var r=await sbFetch('sku_state?id=eq.'+id+'&select=payload'); if(r&&r[0]&&Array.isArray(r[0].payload))return r[0].payload;}catch(e){} return null; }
+  // renders
+  function renderTodos(){
+    var el=document.getElementById('cxTodoList'); if(!el)return;
+    var open=cxTodos.filter(function(t){return !t.done;}).length;
+    var ce=document.getElementById('cxTodoCount'); if(ce)ce.textContent=open;
+    if(!cxTodos.length){el.innerHTML='<div class="cx-empty">할 일을 추가해보세요.</div>';return;}
+    var order={'긴급':0,'중요':1,'여유':2};
+    var sorted=cxTodos.slice().sort(function(a,b){return (a.done-b.done)|| ((order[a.pri]||1)-(order[b.pri]||1));});
+    el.innerHTML=sorted.map(function(t){return '<div class="cx-todo'+(t.done?' done':'')+'">'
+      +'<label class="cx-check"><input type="checkbox" '+(t.done?'checked':'')+' onchange="cxToggleTodo(\''+t.id+'\')"><span></span></label>'
+      +'<span class="cx-todo-txt">'+E(t.text)+'</span>'
+      +'<span class="cx-pri cx-pri-'+(PRI_CLS[t.pri]||'mid')+'">'+(t.pri||'중요')+'</span>'
+      +'<button class="cx-x" title="삭제" onclick="cxDelTodo(\''+t.id+'\')">×</button></div>';}).join('');
+  }
+  function renderProjects(){
+    var el=document.getElementById('cxProjList'); if(!el)return;
+    if(!cxProjects.length){el.innerHTML='<div class="cx-empty">+ 추가로 프로젝트를 등록하세요.</div>';return;}
+    el.innerHTML=cxProjects.map(function(p){var pct=Math.max(0,Math.min(100,p.pct||0));return '<div class="cx-proj">'
+      +'<div class="cx-proj-top"><span class="cx-proj-name">'+E(p.name)+'</span>'
+      +'<span class="cx-proj-pct" title="진행률 수정" onclick="cxEditPct(\''+p.id+'\')">'+pct+'%</span>'
+      +'<button class="cx-x" title="삭제" onclick="cxDelProject(\''+p.id+'\')">×</button></div>'
+      +'<div class="cx-bar"><div class="cx-bar-fill" style="width:'+pct+'%"></div></div></div>';}).join('');
+  }
+  function dday(ds){var t=new Date();t.setHours(0,0,0,0);var d=new Date(ds+'T00:00:00');var n=Math.round((d-t)/86400000);return n;}
+  function renderPriority(){
+    var el=document.getElementById('cxPriList'); if(!el)return;
+    var evs=window.calEvents||[];
+    var today=(window._ymd?_ymd(new Date()):new Date().toISOString().slice(0,10));
+    var up=evs.filter(function(e){return e.date>=today;}).sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0;}).slice(0,6);
+    if(!up.length){el.innerHTML='<div class="cx-empty">예정된 일정이 없어요.<br>달력에서 일정을 추가하면 여기에 D-day로 떠요.</div>';return;}
+    el.innerHTML=up.map(function(e){var n=dday(e.date);var lab=n<=0?'D-DAY':'D-'+n;var cls=n<=1?'u':n<=3?'m':'l';
+      var col=(window.calCatColor?calCatColor(e.cat):['#eee','#8A8A8A']);
+      return '<div class="cx-pri-item"><span class="cx-dot" style="background:'+(col[1]||'#8A8A8A')+'"></span>'
+        +'<span class="cx-pri-txt">'+E(e.title)+'</span><span class="cx-dday cx-dday-'+cls+'">'+lab+'</span></div>';}).join('');
+  }
+  // actions (global)
+  window.cxCyclePri=function(){var b=document.getElementById('cxTodoPri');var i=PRIS.indexOf(b.textContent);var nx=PRIS[(i+1)%3];b.textContent=nx;b.className='cx-pri-toggle';b.style.background=nx==='긴급'?'#FCEFEA':nx==='여유'?'#E6F2EC':'#FBF1E2';b.style.color=nx==='긴급'?'#C2705A':nx==='여유'?'#3E8E5A':'#C77F2B';};
+  window.cxAddTodo=function(){var i=document.getElementById('cxTodoInput');var v=(i.value||'').trim();if(!v)return;var pri=document.getElementById('cxTodoPri').textContent;cxTodos.push({id:uid('td'),text:v,pri:pri,done:false});i.value='';saveTodos();};
+  window.cxToggleTodo=function(id){var t=cxTodos.filter(function(x){return x.id===id;})[0];if(t){t.done=!t.done;saveTodos();}};
+  window.cxDelTodo=function(id){cxTodos=cxTodos.filter(function(x){return x.id!==id;});saveTodos();};
+  window.cxAddProject=function(){var name=prompt('프로젝트 이름');if(!name)return;name=name.trim();if(!name)return;var pct=parseInt(prompt('진행률(%) 0~100','0'),10);if(isNaN(pct))pct=0;cxProjects.push({id:uid('pj'),name:name,pct:Math.max(0,Math.min(100,pct))});saveProjects();};
+  window.cxEditPct=function(id){var p=cxProjects.filter(function(x){return x.id===id;})[0];if(!p)return;var v=parseInt(prompt(p.name+' 진행률(%)',p.pct),10);if(isNaN(v))return;p.pct=Math.max(0,Math.min(100,v));saveProjects();};
+  window.cxDelProject=function(id){cxProjects=cxProjects.filter(function(x){return x.id!==id;});saveProjects();};
+  window.cxRenderPriority=renderPriority;
+  // calRender 이 돌 때마다 우선순위도 새로고침
+  if(typeof window.calRender==='function'){var _cr=window.calRender;window.calRender=function(){var r=_cr.apply(this,arguments);try{renderPriority();}catch(e){}return r;};}
+  // init
+  function init(){loadLocal();renderTodos();renderProjects();renderPriority();
+    cloudLoad('ceo_todos').then(function(d){if(d){cxTodos=d;try{localStorage.setItem(TODO_LS,JSON.stringify(d));}catch(e){}renderTodos();}});
+    cloudLoad('ceo_projects').then(function(d){if(d){cxProjects=d;try{localStorage.setItem(PROJ_LS,JSON.stringify(d));}catch(e){}renderProjects();}});
+    setTimeout(renderPriority,1600);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
 </body>
 </html>
