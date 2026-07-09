@@ -529,7 +529,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
   Object.keys(submenus).forEach(function(k){submenus[k].forEach(function(s){flat.push([s[0],s[1],topLabels[k]]);});});
   var sBtn=document.getElementById('anvSearchBtn'),sBox=document.getElementById('anvSearch'),
       sIn=document.getElementById('anvSearchInput'),sRes=document.getElementById('anvSresults');
-  function render(q){q=(q||'').trim().toLowerCase();
+  function render(q){q=(q||'').trim().toLowerCase();if(!q){sRes.innerHTML='';return;}
     var list=q?flat.filter(function(f){return f[0].toLowerCase().indexOf(q)>=0||f[2].toLowerCase().indexOf(q)>=0;}):flat;
     if(!list.length){sRes.innerHTML='<div class="anv-sempty">\uAC80\uC0C9 \uACB0\uACFC\uAC00 \uC5C6\uC5B4\uC694</div>';return;}
     sRes.innerHTML='';list.forEach(function(f){var a=document.createElement('a');a.href=f[1];a.innerHTML='<span class="anv-grp">'+f[2]+'</span><span>'+f[0]+'</span>';sRes.appendChild(a);});}
