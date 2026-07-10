@@ -49,7 +49,7 @@ html, body { height: 100%; background: #FFFFFF; font-family: var(--sans); color:
 .sidebar-logo img { height:24px; width:auto; display:block; }
 .sidebar-nav { flex:1; padding:16px 10px; }
 .nav-section-label { font-size:12px; font-weight:500; letter-spacing:0.1em; color:var(--text-3); text-transform:uppercase; padding:0 10px; margin-bottom:6px; }
-.nav-item { display:flex; align-items:center; gap:9px; padding:9px 10px; border-radius:0; font-size:15px; color:var(--text-2); text-decoration:none; transition:all 0.15s; margin-bottom:2px; }
+.nav-item { display:flex; align-items:center; gap:9px; padding:9px 10px; border-radius:4px; font-size:15px; color:var(--text-2); text-decoration:none; transition:all 0.15s; margin-bottom:2px; }
 .nav-item:hover { background:var(--surface2); color:#8A8A8A; }
 .nav-item.active { background:var(--surface2); color:#8A8A8A; font-weight:500; }
 .nav-disabled { opacity:0.4; pointer-events:none; }
@@ -104,7 +104,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
 }
 .today-card {
   background: var(--white); border: 1px solid var(--border);
-  border-radius:0; padding: 36px 30px; min-height: 158px;
+  border-radius:4px; padding: 36px 30px; min-height: 158px;
   position: relative; overflow: hidden;
   transition: box-shadow 0.2s;
 }
@@ -127,7 +127,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
 .today-badge {
   display: inline-flex; align-items: center; gap: 3px;
   font-size:12px; font-weight: 500; margin-top: 8px;
-  padding: 2px 8px; border-radius:0;
+  padding: 2px 8px; border-radius:4px;
 }
 .today-badge.up { background: var(--blue-light); color: var(--blue); }
 .today-badge.down { background: var(--red-light); color: var(--red); }
@@ -147,11 +147,11 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
 }
 .goal-nums strong { color: #8A8A8A; font-size:20px; }
 .goal-track {
-  height: 3px; background: var(--ink-4); border-radius:0;
+  height: 3px; background: var(--ink-4); border-radius:4px;
   position: relative; overflow: visible;
 }
 .goal-fill {
-  height: 100%; background: var(--ink); border-radius:0;
+  height: 100%; background: var(--ink); border-radius:4px;
   transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
 }
 .goal-milestones {
@@ -170,7 +170,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
 
 .section-card {
   background: var(--white); border: 1px solid var(--border);
-  border-radius:0; overflow: hidden;
+  border-radius:4px; overflow: hidden;
 }
 .section-head {
   display: flex; align-items: center; justify-content: space-between;
@@ -208,7 +208,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
 .sku-val { font-size:15px; font-weight: 500; color: #8A8A8A; }
 .sku-stock {
   font-size:13px; font-weight: 500; padding: 2px 8px;
-  border-radius:0; flex-shrink: 0;
+  border-radius:4px; flex-shrink: 0;
 }
 .sku-stock.danger { background: var(--red-light); color: var(--red); }
 .sku-stock.warn { background: var(--gold-light); color: var(--gold); }
@@ -245,7 +245,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
 .todo-row:last-child { border-bottom: none; }
 .todo-row:hover { background: var(--bg); }
 .todo-check {
-  width: 16px; height: 16px; border-radius:0;
+  width: 16px; height: 16px; border-radius:4px;
   border: 1.5px solid var(--ink-4); flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   transition: all 0.15s;
@@ -256,7 +256,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
 .todo-text.done { text-decoration: line-through; color: var(--ink-3); }
 .todo-tag {
   font-size:11px; letter-spacing: 0.06em; text-transform: uppercase;
-  padding: 2px 6px; border-radius:0; flex-shrink: 0;
+  padding: 2px 6px; border-radius:4px; flex-shrink: 0;
 }
 .todo-tag.ops { background: var(--blue-light); color: var(--blue); }
 .todo-tag.design { background: var(--gold-light); color: var(--gold); }
@@ -274,10 +274,10 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
 .season-name { font-size:14px; font-weight: 500; color: #8A8A8A; }
 .season-pct { font-family: var(--sans); font-size:16px; color: var(--ink-2); }
 .season-bar {
-  height: 2px; background: var(--ink-4); border-radius:0;
+  height: 2px; background: var(--ink-4); border-radius:4px;
 }
 .season-bar-fill {
-  height: 100%; border-radius:0; background: var(--ink);
+  height: 100%; border-radius:4px; background: var(--ink);
   transition: width 1s cubic-bezier(0.4,0,0.2,1);
 }
 .season-bar-fill.blue { background: var(--blue); }
@@ -288,7 +288,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
   display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 1px; background: var(--border);
   margin-bottom: 40px;
-  border: 1px solid var(--border); border-radius:0; overflow: hidden;
+  border: 1px solid var(--border); border-radius:4px; overflow: hidden;
 }
 .inv-strip-item {
   background: var(--white); padding: 20px 22px;
@@ -332,7 +332,7 @@ main { padding: 24px 28px 64px; max-width:none; margin: 0 auto; }
 .mobile-menu-logo { height: 40px; display: flex; align-items: center; margin-bottom: 24px; }
 .mobile-menu-item {
   display: flex; align-items: center; gap: 10px;
-  padding: 12px 10px; border-radius:0;
+  padding: 12px 10px; border-radius:4px;
   font-size:16px; color: var(--ink-2); text-decoration: none; margin-bottom: 4px;
 }
 .mobile-menu-item.active { background: var(--bg); color: #8A8A8A; font-weight: 500; }
@@ -347,22 +347,22 @@ main{max-width:none;padding:42px 44px 100px;}
 .nav-item{padding:11px 12px;margin-bottom:4px;}
 .nav-section-label{margin-bottom:12px;letter-spacing:0.16em;}
 .metrics{gap:20px;margin-bottom:48px;}
-.metric-card{padding:28px 30px;border-radius:0;}
+.metric-card{padding:28px 30px;border-radius:4px;}
 .metric-label{letter-spacing:0.14em;margin-bottom:14px;}
 .metric-value{font-size:34px;letter-spacing:-0.03em;}
 .metric-sub{margin-top:8px;}
 .sec-head{margin:52px 0 22px;}
 .sec-title{font-size:21px;font-weight:500;letter-spacing:-0.01em;}
-.table-card{border-radius:0;}
+.table-card{border-radius:4px;}
 table th{padding:16px 20px;}
 table td{padding:16px 20px;font-size:15px;}
-.upload-area{padding:48px 34px;border-radius:0;}
+.upload-area{padding:48px 34px;border-radius:4px;}
 .insight-grid{gap:20px;margin-bottom:40px;}
-.insight-card{padding:24px 26px;border-radius:0;}
+.insight-card{padding:24px 26px;border-radius:4px;}
 .ic-row{padding:12px 0;}
 .board{gap:16px;}
-.col{padding:14px;border-radius:0;}
-.pcard{padding:14px 15px;border-radius:0;margin-bottom:10px;}
+.col{padding:14px;border-radius:4px;}
+.pcard{padding:14px 15px;border-radius:4px;margin-bottom:10px;}
 @media(max-width:768px){main{padding:24px 16px 76px;}.topbar{padding:0 16px;}}
 </style>
 <style id="navcolor-v1">
@@ -420,13 +420,13 @@ table td{padding:16px 20px;font-size:15px;}
 .section-title{font-size:17px !important;color:#8A8A8A !important;}
 .todo-row{position:relative;}
 .todo-check{cursor:pointer;}
-.todo-btn{background:none;border:none;cursor:pointer;color:var(--ink-3);font-size:15px;line-height:1;padding:2px 5px;border-radius:0;opacity:0;transition:opacity .12s,background .12s;}
+.todo-btn{background:none;border:none;cursor:pointer;color:var(--ink-3);font-size:15px;line-height:1;padding:2px 5px;border-radius:4px;opacity:0;transition:opacity .12s,background .12s;}
 .todo-row:hover .todo-btn{opacity:1;}
 .todo-btn:hover{background:var(--bg);color:#8A8A8A;}
 .todo-add{display:flex;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border-mid);}
-.todo-add input{flex:1;font-family:inherit;font-size:15px;padding:7px 11px;border:1px solid var(--border-mid);border-radius:0;background:#fff;color:#8A8A8A;outline:none;}
+.todo-add input{flex:1;font-family:inherit;font-size:15px;padding:7px 11px;border:1px solid var(--border-mid);border-radius:4px;background:#fff;color:#8A8A8A;outline:none;}
 .todo-add input:focus{border-color:#2B6CB8;}
-.todo-add-btn{font-family:inherit;font-size:14px;font-weight:500;padding:7px 16px;border-radius:0;border:none;background:#2B6CB8;color:#fff;cursor:pointer;white-space:nowrap;}
+.todo-add-btn{font-family:inherit;font-size:14px;font-weight:500;padding:7px 16px;border-radius:4px;border:none;background:#2B6CB8;color:#fff;cursor:pointer;white-space:nowrap;}
 </style>
 <style id="buttons-v1">
 .btn-primary{background:#2B6CB8 !important;border-color:#2B6CB8 !important;color:#fff !important;}
@@ -438,7 +438,7 @@ table td{padding:16px 20px;font-size:15px;}
 </style>
 <style id="nav-groups-v1">
 .sidebar-nav{padding:18px 12px;}
-.nav-group-link,.nav-group-head{display:flex;align-items:center;justify-content:space-between;width:100%;box-sizing:border-box;padding:11px 12px;margin-bottom:2px;border:none;background:none;border-radius:0;cursor:pointer;text-decoration:none;font-family:inherit;text-align:left;color:var(--text-2);transition:background .15s,color .15s;}
+.nav-group-link,.nav-group-head{display:flex;align-items:center;justify-content:space-between;width:100%;box-sizing:border-box;padding:11px 12px;margin-bottom:2px;border:none;background:none;border-radius:4px;cursor:pointer;text-decoration:none;font-family:inherit;text-align:left;color:var(--text-2);transition:background .15s,color .15s;}
 .nav-group-link:hover,.nav-group-head:hover{background:var(--surface2);}
 .nav-group-head .nav-htxt,.nav-group-link .nav-label{font-size:15px !important;font-weight:600 !important;letter-spacing:0.1em !important;text-transform:uppercase;color:inherit !important;}
 .nav-group-link.active{color:#2B6CB8;background:var(--surface2);}
@@ -719,7 +719,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
       <h1 style="font-size:28px;font-weight:600;letter-spacing:-0.01em;color:#8A8A8A;margin:0;">코디 스튜디오</h1>
       <div style="font-size:15px;color:#9a9a9a;margin-top:6px;">옷을 끌어다 놓으며 자유롭게 코디하고, 컬러를 바꿔보세요</div>
     </div>
-    <iframe src="cody-tool.html" title="코디 스튜디오" style="width:100%;height:calc(100vh - 205px);min-height:520px;border:1px solid rgba(0,0,0,0.11);border-radius:0;background:#fff;display:block;"></iframe>
+    <iframe src="cody-tool.html" title="코디 스튜디오" style="width:100%;height:calc(100vh - 205px);min-height:520px;border:1px solid rgba(0,0,0,0.11);border-radius:4px;background:#fff;display:block;"></iframe>
   </div>
 </main>
 </div>
@@ -792,7 +792,7 @@ function showDialog(){
   var ov=document.createElement('div');
   ov.id='anniz-logout-dialog';
   ov.style.cssText='position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(26,23,20,0.42);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);';
-  ov.innerHTML="<div style='background:#F6F4F1;border-radius:0;padding:34px 30px 24px;max-width:320px;width:100%;text-align:center;font-family:inherit;box-shadow:0 16px 48px rgba(0,0,0,0.22);'><div style='font-size:18px;font-weight:600;color:#1A1714;margin-bottom:7px;'>\uB85C\uADF8\uC544\uC6C3 \uD558\uC2DC\uACA0\uC5B4\uC694?</div><div style='font-size:14px;color:#9A938C;margin-bottom:26px;'>\uB2E4\uC2DC \uBCF4\uB824\uBA74 \uB85C\uADF8\uC778\uC774 \uD544\uC694\uD574\uC694</div><div style='display:flex;gap:10px;'><button id='anniz-lo-cancel' style='flex:1;padding:13px;border:1px solid rgba(0,0,0,0.11);background:transparent;border-radius:0;font-family:inherit;font-size:15px;color:#1A1714;cursor:pointer;'>\uCDE8\uC18C</button><button id='anniz-lo-ok' style='flex:1;padding:13px;border:none;background:#2E2E2E;color:#fff;border-radius:0;font-family:inherit;font-size:15px;cursor:pointer;'>\uB85C\uADF8\uC544\uC6C3</button></div></div>";
+  ov.innerHTML="<div style='background:#F6F4F1;border-radius:4px;padding:34px 30px 24px;max-width:320px;width:100%;text-align:center;font-family:inherit;box-shadow:0 16px 48px rgba(0,0,0,0.22);'><div style='font-size:18px;font-weight:600;color:#1A1714;margin-bottom:7px;'>\uB85C\uADF8\uC544\uC6C3 \uD558\uC2DC\uACA0\uC5B4\uC694?</div><div style='font-size:14px;color:#9A938C;margin-bottom:26px;'>\uB2E4\uC2DC \uBCF4\uB824\uBA74 \uB85C\uADF8\uC778\uC774 \uD544\uC694\uD574\uC694</div><div style='display:flex;gap:10px;'><button id='anniz-lo-cancel' style='flex:1;padding:13px;border:1px solid rgba(0,0,0,0.11);background:transparent;border-radius:4px;font-family:inherit;font-size:15px;color:#1A1714;cursor:pointer;'>\uCDE8\uC18C</button><button id='anniz-lo-ok' style='flex:1;padding:13px;border:none;background:#2E2E2E;color:#fff;border-radius:4px;font-family:inherit;font-size:15px;cursor:pointer;'>\uB85C\uADF8\uC544\uC6C3</button></div></div>";
   document.body.appendChild(ov);
   function close(){ov.style.display='none';}
   ov.addEventListener('click',function(e){if(e.target===ov)close();});
