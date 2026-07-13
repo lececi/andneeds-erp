@@ -1763,5 +1763,23 @@ if(document.readyState!=='loading')setup();else document.addEventListener('DOMCo
 .anv-sresults a .anv-grp{color:rgba(0,0,0,0.45) !important;}
 .anv-sempty{color:rgba(0,0,0,0.45) !important;}
 </style>
+<style id="menu-anim">
+.anv-panel{transition:max-height .38s cubic-bezier(.22,.61,.36,1) !important;}
+.anv-bar{transition:background .25s ease, box-shadow .25s ease, transform .33s ease !important;}
+@keyframes anvItemIn{from{opacity:0;transform:translateY(-9px);}to{opacity:1;transform:translateY(0);}}
+.anv-panel.anv-open .anv-panel-inner a{animation:anvItemIn .44s cubic-bezier(.22,.61,.36,1) both;}
+.anv-panel.anv-open .anv-panel-inner a:nth-child(1){animation-delay:0.03s;}
+.anv-panel.anv-open .anv-panel-inner a:nth-child(2){animation-delay:0.06s;}
+.anv-panel.anv-open .anv-panel-inner a:nth-child(3){animation-delay:0.09s;}
+.anv-panel.anv-open .anv-panel-inner a:nth-child(4){animation-delay:0.12s;}
+.anv-panel.anv-open .anv-panel-inner a:nth-child(5){animation-delay:0.15s;}
+.anv-panel.anv-open .anv-panel-inner a:nth-child(6){animation-delay:0.18s;}
+.anv-panel.anv-open .anv-panel-inner a:nth-child(7){animation-delay:0.21s;}
+.anv-panel.anv-open .anv-panel-inner a:nth-child(8){animation-delay:0.24s;}
+.anv-panel.anv-open .anv-panel-inner a:nth-child(9){animation-delay:0.27s;}
+.anv-panel.anv-open .anv-panel-inner a:nth-child(10){animation-delay:0.30s;}
+.anv-panel.anv-open .anv-panel-inner a:nth-child(11){animation-delay:0.33s;}
+.anv-panel.anv-open .anv-panel-inner a:nth-child(12){animation-delay:0.36s;}
+</style>
 </body>
 </html>
