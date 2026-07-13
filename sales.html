@@ -4,7 +4,7 @@
 <script>/*anniz-auth-guard*/(function(){var SBA="https://nifytqcqfattzpwlzpmb.supabase.co";var ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs";var K="anniz_auth";var s=null;try{s=JSON.parse(localStorage.getItem(K)||"null");}catch(e){}if(!s||!s.access_token){location.replace("login.html");return;}var now=Math.floor(Date.now()/1000);if(s.expires_at&&now>s.expires_at-60&&s.refresh_token){fetch(SBA+"/auth/v1/token?grant_type=refresh_token",{method:"POST",headers:{apikey:ANON,"Content-Type":"application/json"},body:JSON.stringify({refresh_token:s.refresh_token})}).then(function(r){return r.json();}).then(function(d){if(d&&d.access_token){localStorage.setItem(K,JSON.stringify({access_token:d.access_token,refresh_token:d.refresh_token,expires_at:d.expires_at,email:(d.user&&d.user.email)||s.email}));}else{localStorage.removeItem(K);location.replace("login.html");}}).catch(function(){});}window.annizLogout=function(){try{localStorage.removeItem(K);}catch(e){}location.replace("login.html");};})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>영상 타이틀 스튜디오 · ANDNEEDS</title>
+<title>매출 대시보드 · ANDNEEDS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 @font-face {
@@ -576,7 +576,6 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
 .anv-menu a,.anv-menu button{font-size:13.5px !important;}
 .anv-right .anv-rlink,.anv-right .anv-rlabel{font-size:13px !important;}
 </style>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link id="vid-gfonts" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Black+Han+Sans&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Do+Hyeon&family=Gaegu:wght@300;400;700&family=Gowun+Dodum&family=Montserrat:wght@300;400;500;600;700;800;900&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Oswald:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&family=Song+Myung&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -668,209 +667,219 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
   </header>
 
   <main>
-<style id="vid-css">
-.vid-wrap{max-width:1400px;margin:0 auto;padding:8px 4px 90px;}
-.vid-eyebrow{font-size:12px;font-weight:600;letter-spacing:.18em;color:#8A8A8A;text-transform:uppercase;}
-.vid-title{font-size:29px;font-weight:700;color:#1A1A1A;margin:6px 0 4px;letter-spacing:-.01em;}
-.vid-sub{font-size:14px;color:#8A8A8A;margin-bottom:24px;}
-.vid-editor{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;align-items:start;}
-.vid-left{position:sticky;top:64px;}
-.vid-stage{position:relative;background:#111;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
-.vid-cbox{position:relative;display:inline-block;line-height:0;}
-#vidCanvas{max-width:100%;max-height:60vh;display:block;touch-action:none;cursor:move;}
-.vid-h{position:absolute;box-sizing:border-box;z-index:5;}
-.vid-h-frame{border:1.5px dashed rgba(255,255,255,.65);pointer-events:none;}
-.vid-h-dot{width:16px;height:16px;background:#fff;border:2px solid #2E2E2E;border-radius:50%;transform:translate(-50%,-50%);cursor:nwse-resize;box-shadow:0 1px 4px rgba(0,0,0,.4);}
-.vid-h-rot{width:18px;height:18px;background:#2E2E2E;border:2px solid #fff;border-radius:50%;transform:translate(-50%,-50%);cursor:grab;box-shadow:0 1px 4px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;}
-.vid-playbar{display:flex;gap:8px;margin-top:12px;}
-.vid-pbtn{flex:1;background:#F0F0EE;border:1px solid rgba(0,0,0,0.08);border-radius:8px;padding:11px;font-size:12.5px;font-weight:600;color:#2E2E2E;cursor:pointer;font-family:inherit;transition:.12s;}
-.vid-pbtn:hover{background:#E7E7E3;}
-.vid-pbtn.dark{background:#2E2E2E;color:#fff;border-color:#2E2E2E;}
-.vid-pbtn.dark:hover{background:#1A1A1A;}
-/* 우측 패널 */
-.vid-panel{background:#fff;border:1px solid rgba(0,0,0,0.09);border-radius:10px;padding:0;overflow:hidden;}
-.vid-sec{border-bottom:1px solid rgba(0,0,0,0.06);}
-.vid-sec:last-child{border-bottom:none;}
-.vid-sec-h{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;font-size:12.5px;font-weight:700;color:#2A2A2A;cursor:pointer;user-select:none;}
-.vid-sec-h .chev{color:#B0B0B0;font-size:11px;transition:transform .15s;}
-.vid-sec.closed .chev{transform:rotate(-90deg);}
-.vid-sec-b{padding:4px 16px 16px;}
-.vid-sec.closed .vid-sec-b{display:none;}
-.vid-presets{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
-.vid-preset{border:1px solid rgba(0,0,0,0.12);border-radius:8px;padding:9px 6px;font-size:11px;font-weight:600;cursor:pointer;text-align:center;background:#fff;transition:.12s;font-family:inherit;color:#3A3A3A;}
-.vid-preset:hover{border-color:#2E2E2E;}
-.vid-preset.on{background:#2E2E2E;color:#fff;border-color:#2E2E2E;}
-.vid-preset.save{grid-column:1/3;background:#F6F5EF;border-style:dashed;color:#6A6A6A;}
-.vid-fld{margin-top:13px;}
-.vid-fld:first-child{margin-top:4px;}
-.vid-fld>label{display:block;font-size:11px;font-weight:600;color:#7A7A7A;margin-bottom:6px;}
-.vid-in{width:100%;border:1px solid rgba(0,0,0,0.14);border-radius:7px;padding:9px 10px;font-size:12.5px;font-family:inherit;outline:none;box-sizing:border-box;background:#fff;}
-.vid-in:focus{border-color:#2E2E2E;}
-textarea.vid-in{resize:vertical;min-height:56px;line-height:1.4;}
-.vid-slider{display:flex;align-items:center;gap:10px;}
-.vid-slider input[type=range]{flex:1;accent-color:#2E2E2E;}
-.vid-slider .val{font-size:11px;font-weight:700;color:#2E2E2E;min-width:38px;text-align:right;}
-.vid-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.vid-color{display:flex;align-items:center;gap:8px;}
-.vid-color input[type=color]{width:38px;height:32px;border:1px solid rgba(0,0,0,0.14);border-radius:6px;padding:2px;background:#fff;cursor:pointer;}
-.vid-color span{font-size:11.5px;color:#6A6A6A;}
-.vid-seg{display:flex;gap:5px;flex-wrap:wrap;}
-.vid-seg button{border:1px solid rgba(0,0,0,0.14);background:#fff;border-radius:7px;padding:8px 10px;font-size:11.5px;font-weight:600;color:#8A8A8A;cursor:pointer;font-family:inherit;transition:.12s;flex:1;min-width:56px;}
-.vid-seg button.on{background:#2E2E2E;color:#fff;border-color:#2E2E2E;}
-.vid-tog{display:flex;align-items:center;justify-content:space-between;padding:9px 0;}
-.vid-tog>span{font-size:12px;font-weight:600;color:#3A3A3A;}
-.vid-switch{position:relative;width:40px;height:22px;border-radius:22px;background:#D5D5D2;cursor:pointer;transition:.15s;flex:none;}
-.vid-switch.on{background:#2E2E2E;}
-.vid-switch::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.15s;}
-.vid-switch.on::after{left:20px;}
-.vid-subctl{padding-left:2px;}
-/* 하단 렌더 영역 */
-.vid-render{margin-top:26px;background:#fff;border:1px solid rgba(0,0,0,0.09);border-radius:10px;padding:22px;}
-.vid-render-h{font-size:15px;font-weight:700;color:#1A1A1A;margin-bottom:16px;}
-.vid-render-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:22px;align-items:start;}
-.vid-drop{border:1.5px dashed rgba(0,0,0,0.18);border-radius:8px;padding:24px 16px;text-align:center;cursor:pointer;transition:.15s;background:#FAFAF8;}
-.vid-drop:hover,.vid-drop.drag{border-color:#2E2E2E;background:#F4F3F0;}
-.vid-drop-ic{font-size:25px;color:#2E2E2E;font-weight:300;}
-.vid-drop-t{font-size:13.5px;font-weight:700;color:#2E2E2E;margin-top:5px;}
-.vid-drop-s{font-size:11px;color:#9A9A9A;margin-top:3px;}
-.vid-thumbs{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;}
-.vid-thumb{position:relative;width:58px;height:58px;border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,0.1);}
-.vid-thumb img{width:100%;height:100%;object-fit:cover;}
-.vid-thumb button{position:absolute;top:2px;right:2px;width:17px;height:17px;border:none;border-radius:50%;background:rgba(0,0,0,0.6);color:#fff;font-size:11px;line-height:1;cursor:pointer;padding:0;}
-.vid-thumb .ord{position:absolute;bottom:1px;left:3px;color:#fff;font-size:10px;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.6);}
-.vid-make{width:100%;margin-top:16px;background:#2E2E2E;color:#fff;border:none;border-radius:8px;padding:15px;font-size:14.5px;font-weight:700;cursor:pointer;transition:.15s;font-family:inherit;}
-.vid-make:hover{background:#1A1A1A;}.vid-make:disabled{opacity:.5;cursor:default;}
-.vid-progress{margin-top:13px;font-size:11.5px;color:#8A8A8A;}
-.vid-progress-track{height:7px;background:rgba(0,0,0,0.08);border-radius:8px;overflow:hidden;margin-bottom:6px;}
-.vid-progress-bar{height:100%;width:0;background:#2E2E2E;transition:width .1s;}
-#vidResult{max-width:100%;max-height:52vh;border-radius:8px;display:block;background:#000;}
-.vid-download{display:inline-block;margin-top:12px;background:#2E2E2E;color:#fff;text-decoration:none;border-radius:8px;padding:12px 20px;font-size:13px;font-weight:700;}
-.vid-note{margin-top:11px;font-size:11.5px;color:#9A9A9A;line-height:1.6;}
-.vid-hint{font-size:11px;color:#B0B0B0;margin-top:8px;}
-@media(max-width:980px){.vid-editor{grid-template-columns:1fr;}.vid-left{position:static;}.vid-render-grid{grid-template-columns:1fr;}}
+<style id="sales-css">
+.sb{max-width:1480px;margin:0 auto;padding:10px 4px 90px;color:#1A1A1A;}
+.sb *{box-sizing:border-box;}
+.sb-layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:24px;align-items:start;}
+.sb-eyebrow{font-family:'HelveticaLight',Helvetica,Arial,sans-serif;font-size:12px;letter-spacing:.22em;color:#A7A39B;text-transform:uppercase;}
+.sb-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:18px;flex-wrap:wrap;}
+.sb-title{font-size:29px;font-weight:700;letter-spacing:-.02em;margin:8px 0 4px;}
+.sb-sub{font-size:14px;color:#8A8A8A;}
+.sb-updated{font-size:12.5px;color:#A7A39B;}
+/* filter */
+.sb-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.sb-seg{display:inline-flex;background:#F4F3EF;border-radius:8px;padding:3px;gap:2px;}
+.sb-seg button{border:none;background:none;font-size:12.5px;font-weight:600;color:#8A8A8A;padding:7px 13px;border-radius:6px;cursor:pointer;font-family:inherit;transition:.12s;}
+.sb-seg button.on{background:#fff;color:#1A1A1A;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+/* card base */
+.sb-card{background:#fff;border:1px solid rgba(0,0,0,0.09);border-radius:8px;padding:22px 24px;}
+.sb-sec{margin-top:22px;}
+.sb-sec-h{display:flex;align-items:baseline;justify-content:space-between;margin:0 2px 13px;}
+.sb-sec-h h2{font-size:17px;font-weight:700;margin:0;}
+.sb-sec-hint{font-size:12.5px;color:#A7A39B;}
+/* KPI */
+.sb-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.sb-kpi{position:relative;background:#fff;border:1px solid rgba(0,0,0,0.09);border-radius:8px;padding:16px 18px;cursor:default;transition:border-color .15s, transform .1s;}
+.sb-kpi:hover{border-color:#2E2E2E;}
+.sb-kpi.dark{background:#2E2E2E;border-color:#2E2E2E;}
+.sb-kpi-label{font-size:12px;color:#8A8A8A;font-weight:500;}
+.sb-kpi.dark .sb-kpi-label{color:rgba(255,255,255,.62);}
+.sb-kpi-num{font-size:24px;font-weight:700;letter-spacing:-.01em;margin-top:7px;font-variant-numeric:tabular-nums;}
+.sb-kpi.dark .sb-kpi-num{color:#fff;}
+.sb-kpi-delta{font-size:12.5px;font-weight:600;margin-top:6px;}
+.up{color:#1E6E4E;}.down{color:#C0392B;}.flat{color:#9A968E;}
+.sb-kpi.dark .sb-kpi-delta{color:rgba(255,255,255,.8);}
+.sb-kpi-tip{position:absolute;left:0;right:0;top:calc(100% + 6px);background:#1A1A1A;color:#fff;border-radius:8px;padding:12px 14px;font-size:12.5px;line-height:1.6;opacity:0;visibility:hidden;transform:translateY(-4px);transition:.15s;z-index:20;box-shadow:0 8px 24px rgba(0,0,0,.22);}
+.sb-kpi:hover .sb-kpi-tip{opacity:1;visibility:visible;transform:translateY(0);}
+.sb-kpi-tip b{color:#fff;}
+.sb-kpi-tip .r{display:flex;justify-content:space-between;gap:12px;}
+.sb-kpi-tip .r span:last-child{color:#fff;font-weight:700;}
+.sb-kpi-tip .r span:first-child{color:rgba(255,255,255,.6);}
+/* charts */
+.sb-charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
+.sb-chart-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;}
+.sb-chart-h h3{font-size:15px;font-weight:700;margin:0;}
+.sb-why{font-size:11.5px;color:#8A8A8A;background:#F4F3EF;border-radius:6px;padding:3px 9px;}
+.sb-chart-note{font-size:12px;color:#9A968E;margin-top:8px;line-height:1.5;}
+.sb-legend{display:flex;gap:14px;margin-top:6px;font-size:12px;color:#6A6A6A;}
+.sb-legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle;}
+/* insight */
+.sb-ins{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid rgba(0,0,0,0.055);}
+.sb-ins:last-child{border-bottom:none;}
+.sb-ins-ic{width:28px;height:28px;border-radius:7px;flex:none;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
+.sb-ins-t{font-size:13.5px;font-weight:600;color:#2A2A2A;line-height:1.5;}
+/* table */
+.sb-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+.sb-table th{text-align:right;font-size:12px;font-weight:600;color:#9A968E;padding:10px 12px;border-bottom:1px solid rgba(0,0,0,0.09);}
+.sb-table th:first-child{text-align:left;}
+.sb-table td{text-align:right;padding:13px 12px;border-bottom:1px solid rgba(0,0,0,0.05);font-variant-numeric:tabular-nums;}
+.sb-table td:first-child{text-align:left;font-weight:600;}
+.sb-table tr:last-child td{border-bottom:none;}
+.sb-dotc{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:8px;vertical-align:middle;}
+/* timeline */
+.sb-tl{list-style:none;margin:0;padding:0;}
+.sb-tl li{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.055);}
+.sb-tl li:last-child{border-bottom:none;}
+.sb-tl-dot{width:8px;height:8px;border-radius:50%;flex:none;}
+.sb-tl-b{flex:1;}
+.sb-tl-t{font-size:13.5px;font-weight:600;color:#2A2A2A;}
+.sb-tl-d{font-size:12px;color:#9A968E;margin-top:2px;}
+.sb-tl-badge{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:20px;}
+/* AI rail */
+.sb-ai{position:sticky;top:64px;background:#fff;border:1px solid rgba(0,0,0,0.09);border-radius:8px;display:flex;flex-direction:column;max-height:calc(100vh - 80px);overflow:hidden;}
+.sb-ai-h{padding:16px 18px;border-bottom:1px solid rgba(0,0,0,0.07);}
+.sb-ai-h .t{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.sb-ai-h .d{font-size:12px;color:#9A968E;margin-top:3px;}
+.sb-ai-badge{width:7px;height:7px;border-radius:50%;background:#1E6E4E;}
+.sb-ai-body{padding:14px 16px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:12px;}
+.sb-msg{max-width:92%;font-size:13px;line-height:1.55;padding:11px 13px;border-radius:10px;}
+.sb-msg.a{background:#F4F3EF;color:#2A2A2A;align-self:flex-start;border-bottom-left-radius:3px;}
+.sb-msg.q{background:#2E2E2E;color:#fff;align-self:flex-end;border-bottom-right-radius:3px;}
+.sb-msg.a b{color:#1A1A1A;}
+.sb-chips{padding:12px 16px;border-top:1px solid rgba(0,0,0,0.07);display:flex;flex-wrap:wrap;gap:7px;}
+.sb-chip{font-size:12px;border:1px solid rgba(0,0,0,0.14);background:#fff;border-radius:20px;padding:7px 12px;cursor:pointer;color:#3A3A3A;font-family:inherit;transition:.12s;}
+.sb-chip:hover{background:#2E2E2E;color:#fff;border-color:#2E2E2E;}
+.sb-ai-input{display:flex;gap:8px;padding:12px 16px;border-top:1px solid rgba(0,0,0,0.07);}
+.sb-ai-input input{flex:1;border:1px solid rgba(0,0,0,0.14);border-radius:8px;padding:10px 12px;font-size:13px;outline:none;font-family:inherit;}
+.sb-ai-input input:focus{border-color:#2E2E2E;}
+.sb-ai-input button{background:#2E2E2E;color:#fff;border:none;border-radius:8px;padding:0 15px;font-size:16px;cursor:pointer;}
+@media(max-width:1120px){.sb-layout{grid-template-columns:1fr;}.sb-ai{position:static;max-height:none;}.sb-charts{grid-template-columns:1fr;}.sb-kpis{grid-template-columns:repeat(2,1fr);}}
 </style>
-<div class="vid-wrap">
-  <div class="vid-eyebrow">STUDIO</div>
-  <h1 class="vid-title">영상 타이틀 스튜디오</h1>
-  <p class="vid-sub">인트로 타이틀을 자유롭게 디자인하고, 사진을 더해 영상으로 완성하세요</p>
-
-  <div class="vid-editor">
-    <!-- 좌: 미리보기 -->
-    <div class="vid-left">
-      <div class="vid-stage">
-        <div class="vid-cbox" id="vidCbox">
-          <canvas id="vidCanvas" width="1280" height="720"></canvas>
-          <div class="vid-h vid-h-frame" id="hFrame"></div>
-          <div class="vid-h vid-h-dot" id="hResize"></div>
-          <div class="vid-h vid-h-rot" id="hRot">↻</div>
-        </div>
-      </div>
-      <div class="vid-playbar">
-        <button class="vid-pbtn" id="vidPlayIntro">▶ 인트로 애니 미리보기</button>
-        <div class="vid-seg" id="vidRatio" style="flex:1">
-          <button type="button" data-r="16:9" class="on">가로 16:9</button>
-          <button type="button" data-r="9:16">세로 9:16</button>
-        </div>
-      </div>
-      <div class="vid-hint">미리보기에서 <b>드래그=이동</b>, <b>흰 점=크기</b>, <b>회전 아이콘=회전</b></div>
+<div class="sb">
+  <div class="sb-head">
+    <div>
+      <div class="sb-eyebrow">Sales Command</div>
+      <h1 class="sb-title">매출 대시보드</h1>
+      <p class="sb-sub">전 채널 매출·수익을 한 화면에서 — 5초 안에 오늘의 결정을</p>
     </div>
-
-    <!-- 우: 편집 패널 -->
-    <div class="vid-panel" id="vidPanel">
-      <div class="vid-sec">
-        <div class="vid-sec-h">프리셋<span class="chev">▾</span></div>
-        <div class="vid-sec-b">
-          <div class="vid-presets" id="vidPresets"></div>
-          <div class="vid-presets" id="vidMyPresets" style="margin-top:7px"></div>
-        </div>
-      </div>
-      <div class="vid-sec">
-        <div class="vid-sec-h">텍스트<span class="chev">▾</span></div>
-        <div class="vid-sec-b">
-          <div class="vid-fld"><label>인트로 문구 (줄바꿈 가능)</label><textarea id="tText" class="vid-in" rows="2">26FW
-COLLECTION</textarea></div>
-          <div class="vid-fld"><label>정렬</label>
-            <div class="vid-seg" id="tAlign"><button data-a="left">왼쪽</button><button data-a="center" class="on">가운데</button><button data-a="right">오른쪽</button></div>
-          </div>
-        </div>
-      </div>
-      <div class="vid-sec">
-        <div class="vid-sec-h">폰트 & 크기<span class="chev">▾</span></div>
-        <div class="vid-sec-b">
-          <div class="vid-fld"><label>폰트</label><select id="tFont" class="vid-in"></select></div>
-          <div class="vid-fld"><label>크기 <span style="font-weight:400;color:#B0B0B0">(px)</span></label><div class="vid-slider"><input type="range" id="tSize" min="20" max="180" step="1"><span class="val" id="tSizeV"></span></div></div>
-          <div class="vid-fld"><label>굵기</label><div class="vid-slider"><input type="range" id="tWeight" min="100" max="900" step="100"><span class="val" id="tWeightV"></span></div></div>
-          <div class="vid-fld"><label>자간</label><div class="vid-slider"><input type="range" id="tLS" min="-8" max="40" step="1"><span class="val" id="tLSV"></span></div></div>
-          <div class="vid-fld"><label>줄간격</label><div class="vid-slider"><input type="range" id="tLH" min="80" max="220" step="5"><span class="val" id="tLHV"></span></div></div>
-        </div>
-      </div>
-      <div class="vid-sec">
-        <div class="vid-sec-h">색상<span class="chev">▾</span></div>
-        <div class="vid-sec-b">
-          <div class="vid-row">
-            <div class="vid-fld"><label>글자색</label><div class="vid-color"><input type="color" id="tColor"><span id="tColorV"></span></div></div>
-            <div class="vid-fld"><label>배경색</label><div class="vid-color"><input type="color" id="tBg"><span id="tBgV"></span></div></div>
-          </div>
-        </div>
-      </div>
-      <div class="vid-sec">
-        <div class="vid-sec-h">효과<span class="chev">▾</span></div>
-        <div class="vid-sec-b">
-          <div class="vid-tog"><span>그림자</span><div class="vid-switch" id="tShadow"></div></div>
-          <div class="vid-subctl" id="tShadowCtl">
-            <div class="vid-row"><div class="vid-fld"><label>색</label><input type="color" id="tShadowColor"></div><div class="vid-fld"><label>흐림</label><div class="vid-slider"><input type="range" id="tShadowBlur" min="0" max="40" step="1"><span class="val" id="tShadowBlurV"></span></div></div></div>
-          </div>
-          <div class="vid-tog"><span>외곽선</span><div class="vid-switch" id="tOutline"></div></div>
-          <div class="vid-subctl" id="tOutlineCtl">
-            <div class="vid-row"><div class="vid-fld"><label>색</label><input type="color" id="tOutlineColor"></div><div class="vid-fld"><label>두께</label><div class="vid-slider"><input type="range" id="tOutlineW" min="1" max="16" step="1"><span class="val" id="tOutlineWV"></span></div></div></div>
-          </div>
-          <div class="vid-tog"><span>배경 박스</span><div class="vid-switch" id="tBox"></div></div>
-          <div class="vid-subctl" id="tBoxCtl">
-            <div class="vid-row"><div class="vid-fld"><label>박스색</label><input type="color" id="tBoxColor"></div><div class="vid-fld"><label>투명도</label><div class="vid-slider"><input type="range" id="tBoxOpacity" min="10" max="100" step="5"><span class="val" id="tBoxOpacityV"></span></div></div></div>
-            <div class="vid-fld"><label>여백</label><div class="vid-slider"><input type="range" id="tBoxPad" min="0" max="80" step="2"><span class="val" id="tBoxPadV"></span></div></div>
-          </div>
-        </div>
-      </div>
-      <div class="vid-sec">
-        <div class="vid-sec-h">애니메이션<span class="chev">▾</span></div>
-        <div class="vid-sec-b">
-          <div class="vid-fld"><div class="vid-seg" id="tAnim">
-            <button data-an="fade" class="on">페이드</button><button data-an="slideUp">슬라이드↑</button><button data-an="slideLeft">슬라이드←</button><button data-an="zoomIn">확대</button><button data-an="zoomOut">축소</button><button data-an="none">없음</button>
-          </div></div>
-        </div>
-      </div>
-    </div>
+    <div class="sb-updated">업데이트 방금 · 2026.07.13 09:12</div>
   </div>
 
-  <!-- 하단: 사진 + 영상 생성 -->
-  <div class="vid-render">
-    <div class="vid-render-h">사진 추가하고 영상 만들기</div>
-    <div class="vid-render-grid">
-      <div>
-        <div class="vid-drop" id="vidDrop">
-          <input type="file" id="vidFiles" accept="image/*" multiple hidden>
-          <div class="vid-drop-ic">＋</div>
-          <div class="vid-drop-t">사진 올리기</div>
-          <div class="vid-drop-s">클릭 또는 드래그 · 여러 장 (순서대로 재생)</div>
-        </div>
-        <div class="vid-thumbs" id="vidThumbs"></div>
-        <div class="vid-row" style="margin-top:14px">
-          <div class="vid-fld"><label>사진당 시간(초)</label><input id="vidPer" type="number" min="1.5" max="6" step="0.5" value="3" class="vid-in"></div>
-          <div class="vid-fld"><label>배경 음악(선택)</label><input type="file" id="vidAudio" accept="audio/*" class="vid-in" style="padding:7px"></div>
-        </div>
-        <div class="vid-fld"><label>아웃트로 문구</label><input id="vidOutro" class="vid-in" value="@andneeds"></div>
-        <button class="vid-make" id="vidMake">🎬  영상 만들기</button>
-        <div class="vid-progress" id="vidProg" style="display:none"><div class="vid-progress-track"><div class="vid-progress-bar" id="vidProgBar"></div></div><span id="vidProgTxt"></span></div>
+  <div class="sb-layout">
+    <div class="sb-main">
+      <!-- Filter -->
+      <div class="sb-filter">
+        <div class="sb-seg"><button>오늘</button><button>이번주</button><button class="on">이번달</button><button>분기</button><button>연간</button></div>
+        <div class="sb-seg"><button class="on">전체 채널</button><button>29CM</button><button>자사몰</button><button>성수</button></div>
+        <div class="sb-seg"><button class="on">전월 대비</button><button>전년 대비</button><button>목표 대비</button></div>
       </div>
-      <div>
-        <video id="vidResult" controls playsinline style="display:none"></video>
-        <div class="vid-stage-empty2" id="vidResultEmpty" style="color:#B0B0B0;font-size:12.5px;line-height:1.7;padding:30px 8px;text-align:center;border:1px dashed rgba(0,0,0,0.12);border-radius:8px;">완성된 영상이 여기에 나와요</div>
-        <div><a id="vidDownload" class="vid-download" style="display:none" download>⬇  영상 다운로드</a></div>
-        <div class="vid-note" id="vidNote"></div>
+
+      <!-- KPI -->
+      <div class="sb-kpis">
+        <div class="sb-kpi dark"><div class="sb-kpi-label">이번 달 매출</div><div class="sb-kpi-num">₩59,200,000</div><div class="sb-kpi-delta">전월 대비 ▲ 7.6%</div>
+          <div class="sb-kpi-tip"><div class="r"><span>29CM</span><span>₩30.0M</span></div><div class="r"><span>자사몰</span><span>₩20.0M</span></div><div class="r"><span>성수</span><span>₩9.2M</span></div></div></div>
+        <div class="sb-kpi"><div class="sb-kpi-label">목표 달성률</div><div class="sb-kpi-num">74%</div><div class="sb-kpi-delta flat">목표 ₩80.0M</div>
+          <div class="sb-kpi-tip">남은 12일 동안 <b>₩20.8M</b> 필요 · 일 평균 ₩1.73M</div></div>
+        <div class="sb-kpi"><div class="sb-kpi-label">객단가 (AOV)</div><div class="sb-kpi-num">₩68,400</div><div class="sb-kpi-delta up">▲ 3.1%</div>
+          <div class="sb-kpi-tip"><div class="r"><span>29CM</span><span>₩72,000</span></div><div class="r"><span>자사몰</span><span>₩61,000</span></div><div class="r"><span>성수</span><span>₩85,000</span></div></div></div>
+        <div class="sb-kpi"><div class="sb-kpi-label">영업이익</div><div class="sb-kpi-num">₩11,900,000</div><div class="sb-kpi-delta up">이익률 20.1%</div>
+          <div class="sb-kpi-tip">매출 59.2 − 원가 24.0 − 광고 9.0 − 고정비 14.3 = <b>11.9M</b></div></div>
+        <div class="sb-kpi"><div class="sb-kpi-label">구매 전환율</div><div class="sb-kpi-num">2.4%</div><div class="sb-kpi-delta down">▼ 0.2%p</div>
+          <div class="sb-kpi-tip">방문 24,800 → 주문 595건 · 장바구니 이탈 68%</div></div>
+        <div class="sb-kpi"><div class="sb-kpi-label">재구매율</div><div class="sb-kpi-num">25.7%</div><div class="sb-kpi-delta up">▲ 1.4%p</div>
+          <div class="sb-kpi-tip">신규 74% / 재구매 26% · 재구매 객단가 1.4배</div></div>
+        <div class="sb-kpi"><div class="sb-kpi-label">광고 ROAS</div><div class="sb-kpi-num">4.2</div><div class="sb-kpi-delta up">▲ 0.3</div>
+          <div class="sb-kpi-tip">광고비 ₩9.0M → 기여매출 ₩37.8M · 최고 캠페인 6.1</div></div>
+        <div class="sb-kpi"><div class="sb-kpi-label">예상 재고 소진일</div><div class="sb-kpi-num">D-9</div><div class="sb-kpi-delta down">베스트 SKU 기준</div>
+          <div class="sb-kpi-tip">Combi 캐시미어 글러브 잔여 364개 · 일 40개 소진 → 발주 필요</div></div>
+      </div>
+
+      <!-- Charts -->
+      <div class="sb-charts">
+        <div class="sb-card">
+          <div class="sb-chart-h"><h3>채널별 매출 추이</h3><span class="sb-why">왜? 채널 믹스 + 총합 동시 판단</span></div>
+          <svg viewBox="0 0 520 210" width="100%" role="img" aria-label="채널별 매출 추이"><rect x="6.0" y="165.4" width="40" height="16.6" fill="#CFCCC4"></rect><rect x="6.0" y="126.5" width="40" height="38.8" fill="#8A8781"></rect><rect x="6.0" y="65.5" width="40" height="61.0" fill="#2E2E2E"></rect><text x="26.0" y="58.5" text-anchor="middle" font-size="12" font-weight="700" fill="#2E2E2E">42</text><text x="26.0" y="202" text-anchor="middle" font-size="12" fill="#9A968E">2월</text><rect x="99.6" y="162.6" width="40" height="19.4" fill="#CFCCC4"></rect><rect x="99.6" y="121.0" width="40" height="41.6" fill="#8A8781"></rect><rect x="99.6" y="54.4" width="40" height="66.6" fill="#2E2E2E"></rect><text x="119.6" y="47.4" text-anchor="middle" font-size="12" font-weight="700" fill="#2E2E2E">46</text><text x="119.6" y="202" text-anchor="middle" font-size="12" fill="#9A968E">3월</text><rect x="193.2" y="162.6" width="40" height="19.4" fill="#CFCCC4"></rect><rect x="193.2" y="118.2" width="40" height="44.4" fill="#8A8781"></rect><rect x="193.2" y="46.1" width="40" height="72.1" fill="#2E2E2E"></rect><text x="213.2" y="39.1" text-anchor="middle" font-size="12" font-weight="700" fill="#2E2E2E">49</text><text x="213.2" y="202" text-anchor="middle" font-size="12" fill="#9A968E">4월</text><rect x="286.8" y="159.8" width="40" height="22.2" fill="#CFCCC4"></rect><rect x="286.8" y="109.9" width="40" height="49.9" fill="#8A8781"></rect><rect x="286.8" y="40.5" width="40" height="69.4" fill="#2E2E2E"></rect><text x="306.8" y="33.5" text-anchor="middle" font-size="12" font-weight="700" fill="#2E2E2E">51</text><text x="306.8" y="202" text-anchor="middle" font-size="12" fill="#9A968E">5월</text><rect x="380.4" y="159.8" width="40" height="22.2" fill="#CFCCC4"></rect><rect x="380.4" y="107.1" width="40" height="52.7" fill="#8A8781"></rect><rect x="380.4" y="29.4" width="40" height="77.7" fill="#2E2E2E"></rect><text x="400.4" y="22.4" text-anchor="middle" font-size="12" font-weight="700" fill="#2E2E2E">55</text><text x="400.4" y="202" text-anchor="middle" font-size="12" fill="#9A968E">6월</text><rect x="474.0" y="157.0" width="40" height="25.0" fill="#CFCCC4"></rect><rect x="474.0" y="101.5" width="40" height="55.5" fill="#8A8781"></rect><rect x="474.0" y="18.3" width="40" height="83.2" fill="#2E2E2E"></rect><text x="494.0" y="11.3" text-anchor="middle" font-size="12" font-weight="700" fill="#2E2E2E">59</text><text x="494.0" y="202" text-anchor="middle" font-size="12" fill="#9A968E">7월</text></svg>
+          <div class="sb-legend"><span><i style="background:#2E2E2E"></i>29CM</span><span><i style="background:#8A8781"></i>자사몰</span><span><i style="background:#CFCCC4"></i>성수</span></div>
+          <div class="sb-chart-note">누적 막대 → 총매출 성장(42→59M)과 <b>채널 기여 비중</b>을 한 번에. 29CM 의존도(51%)가 결정 포인트.</div>
+        </div>
+        <div class="sb-card">
+          <div class="sb-chart-h"><h3>매출 → 영업이익</h3><span class="sb-why">왜? 돈이 어디서 새는지</span></div>
+          <svg viewBox="0 0 520 210" width="100%" role="img" aria-label="매출에서 영업이익까지 워터폴"><rect x="6.0" y="23.5" width="64" height="158.5" rx="3" fill="#2E2E2E"></rect><text x="38.0" y="17.5" text-anchor="middle" font-size="11.5" font-weight="700" fill="#2E2E2E">59.2</text><text x="38.0" y="202" text-anchor="middle" font-size="11.5" fill="#9A968E">매출</text><rect x="117.0" y="23.5" width="64" height="64.3" rx="3" fill="#C9A24B"></rect><text x="149.0" y="17.5" text-anchor="middle" font-size="11.5" font-weight="700" fill="#B8862B">-24.0</text><text x="149.0" y="202" text-anchor="middle" font-size="11.5" fill="#9A968E">매출원가</text><rect x="228.0" y="87.8" width="64" height="24.1" rx="3" fill="#C9A24B"></rect><text x="260.0" y="81.8" text-anchor="middle" font-size="11.5" font-weight="700" fill="#B8862B">-9.0</text><text x="260.0" y="202" text-anchor="middle" font-size="11.5" fill="#9A968E">광고비</text><rect x="339.0" y="111.9" width="64" height="38.3" rx="3" fill="#C9A24B"></rect><text x="371.0" y="105.9" text-anchor="middle" font-size="11.5" font-weight="700" fill="#B8862B">-14.3</text><text x="371.0" y="202" text-anchor="middle" font-size="11.5" fill="#9A968E">고정비</text><rect x="450.0" y="150.1" width="64" height="31.9" rx="3" fill="#1E6E4E"></rect><text x="482.0" y="144.1" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1E6E4E">11.9</text><text x="482.0" y="202" text-anchor="middle" font-size="11.5" fill="#9A968E">영업이익</text></svg>
+          <div class="sb-chart-note">워터폴 → 매출 59.2M이 원가·광고·고정비를 거쳐 <b>영업이익 11.9M</b>으로. 고정비(14.3M)가 최대 유출 → 인건비/임대 점검.</div>
+        </div>
+      </div>
+
+      <!-- Insight -->
+      <div class="sb-sec">
+        <div class="sb-sec-h"><h2>인사이트</h2><span class="sb-sec-hint">AI 자동 요약</span></div>
+        <div class="sb-card">
+          <div class="sb-ins"><div class="sb-ins-ic" style="background:#FBEDEA;color:#C0392B">↓</div><div class="sb-ins-t">이번 주 매출 전주 대비 <b>−6%</b> — 29CM 썸머 기획전 종료 + 주말 광고예산 조기 소진이 주원인.</div></div>
+          <div class="sb-ins"><div class="sb-ins-ic" style="background:#FBF2E2;color:#B8862B">₩</div><div class="sb-ins-t">'리타겟팅' 캠페인 ROAS <b>1.8</b>로 최저 — 예산을 ROAS 6.1 '신상' 캠페인으로 이전 시 <b>+₩3M</b> 예상.</div></div>
+          <div class="sb-ins"><div class="sb-ins-ic" style="background:#EAF3EC;color:#1E6E4E">↑</div><div class="sb-ins-t">재구매율 <b>+1.4%p</b> 상승, 재구매 고객 객단가 신규 대비 <b>1.4배</b> — 리텐션 투자 효율 우수.</div></div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="sb-sec">
+        <div class="sb-sec-h"><h2>채널별 성과</h2><span class="sb-sec-hint">이번 달 · 클릭 시 드릴다운</span></div>
+        <div class="sb-card" style="padding:8px 10px">
+          <table class="sb-table">
+            <thead><tr><th>채널</th><th>매출</th><th>비중</th><th>전월비</th><th>객단가</th><th>전환율</th></tr></thead>
+            <tbody>
+              <tr><td><span class="sb-dotc" style="background:#2E2E2E"></span>29CM</td><td>₩30,000,000</td><td>51%</td><td class="up">▲ 7%</td><td>₩72,000</td><td>2.8%</td></tr>
+              <tr><td><span class="sb-dotc" style="background:#8A8781"></span>자사몰</td><td>₩20,000,000</td><td>34%</td><td class="up">▲ 5%</td><td>₩61,000</td><td>2.1%</td></tr>
+              <tr><td><span class="sb-dotc" style="background:#CFCCC4"></span>성수 오프라인</td><td>₩9,200,000</td><td>15%</td><td class="up">▲ 13%</td><td>₩85,000</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="sb-sec">
+        <div class="sb-sec-h"><h2>최근 · 다가오는 이벤트</h2><span class="sb-sec-hint">매출 영향</span></div>
+        <div class="sb-card">
+          <ul class="sb-tl">
+            <li><span class="sb-tl-dot" style="background:#1E6E4E"></span><div class="sb-tl-b"><div class="sb-tl-t">29CM 정산 입금 예정 ₩7,280,000</div><div class="sb-tl-d">오늘</div></div><span class="sb-tl-badge" style="background:#EAF3EC;color:#1E6E4E">입금</span></li>
+            <li><span class="sb-tl-dot" style="background:#C0392B"></span><div class="sb-tl-b"><div class="sb-tl-t">자사몰 여름 쿠폰 종료</div><div class="sb-tl-d">7월 16일 · 종료 후 전환율 하락 주의</div></div><span class="sb-tl-badge" style="background:#FBEDEA;color:#C0392B">D-3</span></li>
+            <li><span class="sb-tl-dot" style="background:#B8862B"></span><div class="sb-tl-b"><div class="sb-tl-t">26FW 상세페이지 마감</div><div class="sb-tl-d">7월 18일</div></div><span class="sb-tl-badge" style="background:#FBF2E2;color:#B8862B">D-5</span></li>
+            <li><span class="sb-tl-dot" style="background:#A7A39B"></span><div class="sb-tl-b"><div class="sb-tl-t">인스타 릴스 업로드 완료 (도달 12.1k)</div><div class="sb-tl-d">어제</div></div><span class="sb-tl-badge" style="background:#F1F0EC;color:#8A8A8A">완료</span></li>
+          </ul>
+        </div>
       </div>
     </div>
+
+    <!-- AI Assistant rail -->
+    <aside class="sb-ai" id="sbAi">
+      <div class="sb-ai-h"><div class="t"><span class="sb-ai-badge"></span>앤니즈 AI</div><div class="d">이 화면의 데이터에 물어보세요</div></div>
+      <div class="sb-ai-body" id="sbAiBody">
+        <div class="sb-msg a">안녕하세요 대표님 👋 오늘 매출·광고·재고 데이터를 다 보고 있어요. 아래 질문을 누르거나 직접 입력해 주세요.</div>
+      </div>
+      <div class="sb-chips" id="sbChips"></div>
+      <div class="sb-ai-input"><input id="sbAiInput" placeholder="예: 이번주 왜 매출 떨어졌어?" onkeydown="if(event.key==='Enter')sbAsk(this.value)"><button onclick="sbAsk(document.getElementById('sbAiInput').value)">↑</button></div>
+    </aside>
   </div>
 </div>
+<script id="sales-js">
+(function(){
+  var QA=[
+    ['이번주 왜 매출 떨어졌어?','전주 대비 <b>−6%</b>예요. ①29CM \'썸머 기획전\'이 지난주 종료되며 29CM 매출 −11% ②주말 메타 광고 예산이 토요일 오후 조기 소진돼 전환 −18건. → <b>이번주 기획전 재참여 + 주말 예산 +20%</b>를 추천해요.'],
+    ['29CM만 분석해줘','이번 달 29CM <b>₩30.0M</b>(비중 51%, 전월비 ▲7%). 객단가 ₩72k로 채널 중 2위, 취소율 4.1%. 베스트: Combi 캐시미어 글러브. → 기획전 상시 노출 시 <b>+₩4M</b> 여력이 보여요.'],
+    ['ROAS 가장 높은 광고는?','메타 \'신상 컬렉션\' 캠페인이 <b>ROAS 6.1</b>(광고비 ₩2.1M → 매출 ₩12.8M)로 1위예요. 반대로 \'리타겟팅\'은 1.8로 최저 → <b>예산 이전</b>을 추천해요.'],
+    ['재고 위험상품 알려줘','품절 임박 5종: A라인 데님스커트(1개), 앤니즈 숄더백(1개) 등. 재고 5개 미만이 <b>88종</b>이에요. 베스트셀러 Combi 글러브는 <b>D-9</b>면 소진돼요.'],
+    ['이번달 발주 추천','회전율·소진일 기준 우선 발주 <b>6종, 총 ₩8.4M</b>. 1순위 Combi 캐시미어 글러브 300개(소진 D-9). → 발주서를 만들어 드릴까요?'],
+    ['잘 팔릴 상품 예측','최근 4주 판매 가속 + 재구매 높은 3종: Stripe 캐시미어 글러브, Tipo 로고 볼캡, Combi 글러브. → <b>26FW 물량 우선 배정</b>을 추천해요.'],
+    ['죽어가는 상품 알려줘','8주간 판매 −60% 이상 <b>4종</b> 발견. 재고 소진 후 단종 또는 아울렛 이관을 추천해요. 적자상품 1종은 즉시 확인이 필요해요.'],
+    ['오늘 해야 할 일','①29CM 정산 입금 확인 ₩7.28M ②원단 발주 마감(긴급) ③리타겟팅 광고 예산 재배분 ④26FW 상세 검수. <b>4건 중 2건 긴급</b>이에요.']
+  ];
+  var chips=document.getElementById('sbChips'), body=document.getElementById('sbAiBody');
+  QA.forEach(function(qa){var b=document.createElement('button');b.className='sb-chip';b.textContent=qa[0];b.onclick=function(){answer(qa[0],qa[1]);};chips.appendChild(b);});
+  function bubble(cls,html){var d=document.createElement('div');d.className='sb-msg '+cls;d.innerHTML=html;body.appendChild(d);body.scrollTop=body.scrollHeight;return d;}
+  function answer(q,a){bubble('q',q);var t=bubble('a','<span style="opacity:.5">분석 중…</span>');setTimeout(function(){t.innerHTML=a;body.scrollTop=body.scrollHeight;},500);}
+  window.sbAsk=function(v){v=(v||'').trim();if(!v)return;document.getElementById('sbAiInput').value='';
+    var hit=null,best=0;QA.forEach(function(qa){var score=0;qa[0].replace(/[?\s]/g,'').split('').forEach(function(c){if(v.indexOf(c)>=0)score++;});if(score>best){best=score;hit=qa;}});
+    if(hit&&best>=3)answer(v,hit[1]);else answer(v,'좋은 질문이에요! 지금은 예시 데이터 기반이라, 곧 <b>실시간 AI(Claude)</b>와 ERP 데이터를 연결하면 이 질문도 실제 수치로 답해드릴 수 있어요. 아래 추천 질문을 눌러보세요.');};
+})();
+</script>
 </main>
 </div>
 
@@ -956,293 +965,6 @@ if(document.readyState!=='loading')setup();else document.addEventListener('DOMCo
 </script>
 
 <!-- old topnav script removed -->
-<script id="vid-js">
-(function(){
-  // ── 폰트 목록 ──
-  var FONTS=[
-    {css:'Noto Sans KR',label:'고딕 (Noto Sans KR)',g:'한글'},
-    {css:'Nanum Myeongjo',label:'명조 (나눔명조)',g:'한글'},
-    {css:'Black Han Sans',label:'임팩트 (검은고딕)',g:'한글'},
-    {css:'Do Hyeon',label:'둥근굵게 (도현)',g:'한글'},
-    {css:'Song Myung',label:'세리프 (송명)',g:'한글'},
-    {css:'Gowun Dodum',label:'깔끔 (고운돋움)',g:'한글'},
-    {css:'Gaegu',label:'손글씨 (개구)',g:'한글'},
-    {css:'Montserrat',label:'Montserrat',g:'영문'},
-    {css:'Poppins',label:'Poppins',g:'영문'},
-    {css:'Playfair Display',label:'Playfair Display',g:'영문'},
-    {css:'Cormorant Garamond',label:'Cormorant (시네마)',g:'영문'},
-    {css:'Bebas Neue',label:'Bebas Neue',g:'영문'},
-    {css:'Oswald',label:'Oswald',g:'영문'},
-    {css:'HelveticaLight',label:'Helvetica Light',g:'영문'}
-  ];
-  // ── 프리셋 ──
-  var PRESETS={
-    '미니멀':{font:'Montserrat',size:70,weight:300,ls:8,lh:125,color:'#ffffff',bg:'#1A1A1A',shadow:false,outline:false,box:false,anim:'fade'},
-    '감성 브이로그':{font:'Nanum Myeongjo',size:66,weight:400,ls:2,lh:140,color:'#F3EEE6',bg:'#2B2622',shadow:true,shadowColor:'#000000',shadowBlur:16,outline:false,box:false,anim:'slideUp'},
-    '유튜브':{font:'Black Han Sans',size:96,weight:400,ls:0,lh:105,color:'#FFFFFF',bg:'#111111',shadow:true,shadowColor:'#000000',shadowBlur:10,outline:false,box:true,boxColor:'#E4002B',boxOpacity:100,boxPad:26,anim:'zoomIn'},
-    '뉴스':{font:'Noto Sans KR',size:64,weight:700,ls:0,lh:120,color:'#FFFFFF',bg:'#0A2A5E',shadow:false,outline:false,box:true,boxColor:'#C2101B',boxOpacity:100,boxPad:20,align:'left',anim:'slideLeft'},
-    '브랜드 광고':{font:'Playfair Display',size:78,weight:500,ls:4,lh:130,color:'#FFFFFF',bg:'#000000',shadow:true,shadowColor:'#000000',shadowBlur:14,outline:false,box:false,anim:'fade'},
-    '시네마틱':{font:'Cormorant Garamond',size:70,weight:400,ls:14,lh:145,color:'#EDE9E3',bg:'#000000',shadow:false,outline:false,box:false,anim:'fade'}
-  };
-  var DEF={text:'26FW\nCOLLECTION',font:'Montserrat',size:70,weight:300,ls:8,lh:125,
-    color:'#ffffff',bg:'#1A1A1A',align:'center',
-    shadow:false,shadowColor:'#000000',shadowBlur:12,
-    outline:false,outlineColor:'#000000',outlineW:3,
-    box:false,boxColor:'#E4002B',boxOpacity:100,boxPad:24,
-    anim:'fade',x:0.5,y:0.5,rot:0};
-  var T=Object.assign({},DEF);
-  var ratio='16:9', files=[], audioFile=null;
-
-  var cv=document.getElementById('vidCanvas'), ctx=cv.getContext('2d');
-  var cbox=document.getElementById('vidCbox');
-  var $=function(id){return document.getElementById(id);};
-
-  // ── 텍스트 렌더 엔진 ──
-  function hexA(hex,op){ // #rrggbb + opacity 0..100 → rgba
-    hex=hex.replace('#',''); if(hex.length===3)hex=hex.split('').map(function(c){return c+c;}).join('');
-    var r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);
-    return 'rgba('+r+','+g+','+b+','+(op/100)+')';
-  }
-  function measure(lines,fontStr,ls){
-    ctx.font=fontStr; try{ctx.letterSpacing=ls+'px';}catch(e){}
-    var w=0; lines.forEach(function(l){var m=ctx.measureText(l).width; if(m>w)w=m;});
-    try{ctx.letterSpacing='0px';}catch(e){}
-    return w;
-  }
-  function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
-  // p: 0..1 애니 진행, alpha 곱
-  function drawIntro(t,p,alpha){
-    var W=cv.width,H=cv.height;
-    ctx.fillStyle=t.bg; ctx.fillRect(0,0,W,H);
-    var lines=(t.text||'').split('\n');
-    var fontStr=t.weight+' '+t.size+'px "'+t.font+'", sans-serif';
-    var lhpx=t.size*(t.lh/100);
-    var maxW=measure(lines,fontStr,t.ls);
-    var totalH=lines.length*lhpx;
-    // 애니 변환
-    var a=alpha, dx=0,dy=0,sc=1;
-    if(t.anim==='fade'){a*=p;}
-    else if(t.anim==='slideUp'){a*=p;dy=(1-p)*H*0.07;}
-    else if(t.anim==='slideLeft'){a*=p;dx=(1-p)*W*0.09;}
-    else if(t.anim==='zoomIn'){a*=p;sc=0.82+0.18*p;}
-    else if(t.anim==='zoomOut'){a*=p;sc=1.18-0.18*p;}
-    a=Math.max(0,Math.min(1,a));
-    ctx.save();
-    ctx.globalAlpha=a;
-    ctx.translate(t.x*W+dx, t.y*H+dy);
-    ctx.rotate(t.rot*Math.PI/180);
-    ctx.scale(sc,sc);
-    // 박스
-    if(t.box){
-      var bw=maxW+t.boxPad*2, bh=totalH+t.boxPad*1.4;
-      ctx.fillStyle=hexA(t.boxColor,t.boxOpacity);
-      roundRect(-bw/2,-bh/2,bw,bh,8); ctx.fill();
-    }
-    // 텍스트
-    ctx.font=fontStr; ctx.textAlign=t.align; ctx.textBaseline='middle';
-    try{ctx.letterSpacing=t.ls+'px';}catch(e){}
-    var ax = t.align==='left'?-maxW/2 : t.align==='right'?maxW/2 : 0;
-    for(var i=0;i<lines.length;i++){
-      var yy=-totalH/2+lhpx*(i+0.5);
-      if(t.shadow){ctx.shadowColor=t.shadowColor;ctx.shadowBlur=t.shadowBlur;ctx.shadowOffsetX=0;ctx.shadowOffsetY=Math.max(1,t.shadowBlur*0.25);}
-      if(t.outline){ctx.lineJoin='round';ctx.strokeStyle=t.outlineColor;ctx.lineWidth=t.outlineW;ctx.strokeText(lines[i],ax,yy);}
-      ctx.shadowColor=t.shadow?t.shadowColor:'transparent'; if(!t.shadow)ctx.shadowBlur=0;
-      ctx.fillStyle=t.color; ctx.fillText(lines[i],ax,yy);
-      ctx.shadowColor='transparent';ctx.shadowBlur=0;
-    }
-    try{ctx.letterSpacing='0px';}catch(e){}
-    ctx.restore();
-    return {maxW:maxW,totalH:totalH}; // 편집 핸들용 bbox
-  }
-  var lastBox={maxW:200,totalH:100};
-  function render(){ lastBox=drawIntro(T,1,1); placeHandles(); }
-
-  // ── 편집 핸들 ──
-  var hFrame=$('hFrame'),hResize=$('hResize'),hRot=$('hRot');
-  function placeHandles(){
-    var W=cv.width,H=cv.height, dispW=cv.clientWidth, dispH=cv.clientHeight;
-    var sx=dispW/W, sy=dispH/H;
-    var pad=T.box?T.boxPad:12;
-    var hw=(lastBox.maxW/2+pad), hh=(lastBox.totalH/2+pad);
-    var cxp=T.x*W, cyp=T.y*H;
-    // frame (회전 미반영 단순 박스, 시각 가이드)
-    var fx=(cxp-hw)*sx, fy=(cyp-hh)*sy, fw=hw*2*sx, fh=hh*2*sy;
-    hFrame.style.left=fx+'px';hFrame.style.top=fy+'px';hFrame.style.width=fw+'px';hFrame.style.height=fh+'px';
-    hFrame.style.transform='rotate('+T.rot+'deg)';hFrame.style.transformOrigin='center';
-    // resize (우하단), rot (상단중앙) — 회전 반영
-    function rotv(vx,vy){var a=T.rot*Math.PI/180;return {x:vx*Math.cos(a)-vy*Math.sin(a),y:vx*Math.sin(a)+vy*Math.cos(a)};}
-    var rr=rotv(hw,hh); hResize.style.left=(cxp+rr.x)*sx+'px';hResize.style.top=(cyp+rr.y)*sy+'px';
-    var ro=rotv(0,-hh-24/sy); hRot.style.left=(cxp+ro.x)*sx+'px';hRot.style.top=(cyp+ro.y)*sy+'px';
-  }
-  function evCanvas(e){var r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*(cv.width/r.width),y:(e.clientY-r.top)*(cv.height/r.height)};}
-  var mode=null,startAng=0,startRot=0,startDist=0,startSize=0;
-  function down(m){return function(e){e.preventDefault();e.stopPropagation();mode=m;
-    var p=evCanvas(e),cxp=T.x*cv.width,cyp=T.y*cv.height;
-    if(m==='rot'){startAng=Math.atan2(p.y-cyp,p.x-cxp)*180/Math.PI;startRot=T.rot;}
-    if(m==='resize'){startDist=Math.hypot(p.x-cxp,p.y-cyp);startSize=T.size;}
-    window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);
-  };}
-  function move(e){if(!mode)return;var p=evCanvas(e),cxp=T.x*cv.width,cyp=T.y*cv.height;
-    if(mode==='move'){T.x=Math.max(0,Math.min(1,p.x/cv.width));T.y=Math.max(0,Math.min(1,p.y/cv.height));}
-    else if(mode==='rot'){var ang=Math.atan2(p.y-cyp,p.x-cxp)*180/Math.PI;T.rot=Math.round(startRot+(ang-startAng));}
-    else if(mode==='resize'){var d=Math.hypot(p.x-cxp,p.y-cyp);T.size=Math.max(20,Math.min(200,Math.round(startSize*(d/(startDist||1)))));syncOne('tSize',T.size);syncOne('tSizeV',T.size);}
-    render();
-  }
-  function up(){mode=null;window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);}
-  cv.addEventListener('pointerdown',function(e){
-    var p=evCanvas(e),cxp=T.x*cv.width,cyp=T.y*cv.height;
-    var pad=T.box?T.boxPad:12; if(Math.abs(p.x-cxp)<lastBox.maxW/2+pad+40 && Math.abs(p.y-cyp)<lastBox.totalH/2+pad+40){down('move')(e);}
-  });
-  hResize.addEventListener('pointerdown',down('resize'));
-  hRot.addEventListener('pointerdown',down('rot'));
-
-  // ── 컨트롤 바인딩 ──
-  function syncOne(id,v){var el=$(id);if(!el)return; if(el.classList&&el.classList.contains('val'))el.textContent=v; else el.value=v;}
-  function buildFontSelect(){var sel=$('tFont');var groups={};FONTS.forEach(function(f){(groups[f.g]=groups[f.g]||[]).push(f);});
-    sel.innerHTML=Object.keys(groups).map(function(g){return '<optgroup label="'+g+'">'+groups[g].map(function(f){return '<option value="'+f.css+'">'+f.label+'</option>';}).join('')+'</optgroup>';}).join('');}
-  function pushToUI(){
-    $('tText').value=T.text; syncOne('tFont',T.font);
-    syncOne('tSize',T.size);syncOne('tSizeV',T.size);
-    syncOne('tWeight',T.weight);syncOne('tWeightV',T.weight);
-    syncOne('tLS',T.ls);syncOne('tLSV',T.ls);
-    syncOne('tLH',T.lh);syncOne('tLHV',T.lh);
-    $('tColor').value=T.color;$('tColorV').textContent=T.color.toUpperCase();
-    $('tBg').value=T.bg;$('tBgV').textContent=T.bg.toUpperCase();
-    setSwitch('tShadow',T.shadow);$('tShadowColor').value=T.shadowColor;syncOne('tShadowBlur',T.shadowBlur);syncOne('tShadowBlurV',T.shadowBlur);
-    setSwitch('tOutline',T.outline);$('tOutlineColor').value=T.outlineColor;syncOne('tOutlineW',T.outlineW);syncOne('tOutlineWV',T.outlineW);
-    setSwitch('tBox',T.box);$('tBoxColor').value=T.boxColor;syncOne('tBoxOpacity',T.boxOpacity);syncOne('tBoxOpacityV',T.boxOpacity);syncOne('tBoxPad',T.boxPad);syncOne('tBoxPadV',T.boxPad);
-    segSet('tAlign','a',T.align);segSet('tAnim','an',T.anim);
-    toggleCtl();
-  }
-  function setSwitch(id,on){$(id).classList.toggle('on',!!on);}
-  function segSet(wrapId,attr,val){var w=$(wrapId);[].forEach.call(w.children,function(b){b.classList.toggle('on',b.getAttribute('data-'+attr)===val);});}
-  function toggleCtl(){$('tShadowCtl').style.display=T.shadow?'block':'none';$('tOutlineCtl').style.display=T.outline?'block':'none';$('tBoxCtl').style.display=T.box?'block':'none';}
-  async function ensureFont(){try{await document.fonts.load(T.weight+' 60px "'+T.font+'"');await document.fonts.load('400 60px "'+T.font+'"');}catch(e){}render();}
-
-  function bind(){
-    $('tText').addEventListener('input',function(){T.text=this.value;render();});
-    $('tFont').addEventListener('change',function(){T.font=this.value;ensureFont();});
-    [['tSize','size'],['tWeight','weight'],['tLS','ls'],['tLH','lh'],['tShadowBlur','shadowBlur'],['tOutlineW','outlineW'],['tBoxOpacity','boxOpacity'],['tBoxPad','boxPad']].forEach(function(p){
-      $(p[0]).addEventListener('input',function(){T[p[1]]=parseInt(this.value,10);syncOne(p[0]+'V',this.value);if(p[1]==='weight')ensureFont();else render();});});
-    $('tColor').addEventListener('input',function(){T.color=this.value;$('tColorV').textContent=this.value.toUpperCase();render();});
-    $('tBg').addEventListener('input',function(){T.bg=this.value;$('tBgV').textContent=this.value.toUpperCase();render();});
-    $('tShadowColor').addEventListener('input',function(){T.shadowColor=this.value;render();});
-    $('tOutlineColor').addEventListener('input',function(){T.outlineColor=this.value;render();});
-    $('tBoxColor').addEventListener('input',function(){T.boxColor=this.value;render();});
-    $('tShadow').addEventListener('click',function(){T.shadow=!T.shadow;setSwitch('tShadow',T.shadow);toggleCtl();render();});
-    $('tOutline').addEventListener('click',function(){T.outline=!T.outline;setSwitch('tOutline',T.outline);toggleCtl();render();});
-    $('tBox').addEventListener('click',function(){T.box=!T.box;setSwitch('tBox',T.box);toggleCtl();render();});
-    $('tAlign').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;T.align=b.getAttribute('data-a');segSet('tAlign','a',T.align);render();});
-    $('tAnim').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;T.anim=b.getAttribute('data-an');segSet('tAnim','an',T.anim);playIntro();});
-    // 섹션 접기
-    [].forEach.call(document.querySelectorAll('.vid-sec-h'),function(h){h.addEventListener('click',function(){this.parentNode.classList.toggle('closed');});});
-    // 비율
-    $('vidRatio').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;[].forEach.call(this.children,function(x){x.classList.remove('on');});b.classList.add('on');ratio=b.getAttribute('data-r');sizeCanvas();render();});
-    $('vidPlayIntro').addEventListener('click',playIntro);
-  }
-
-  // ── 프리셋 ──
-  function applyPreset(name,obj){Object.assign(T,DEF); // reset 확장값
-    Object.assign(T,obj); if(!obj.align)T.align='center'; T.text=$('tText').value; // 텍스트 유지
-    // 켜짐 기본값 보정
-    if(obj.shadow&&obj.shadowColor===undefined)T.shadowColor='#000000';
-    pushToUI(); ensureFont(); segSetActivePreset(name);
-  }
-  function segSetActivePreset(name){[].forEach.call(document.querySelectorAll('#vidPresets .vid-preset'),function(b){b.classList.toggle('on',b.getAttribute('data-p')===name);});}
-  function buildPresets(){
-    var host=$('vidPresets');
-    host.innerHTML=Object.keys(PRESETS).map(function(k){return '<button class="vid-preset" data-p="'+k+'">'+k+'</button>';}).join('')+'<button class="vid-preset save" id="vidSavePreset">＋ 현재 스타일 저장</button>';
-    host.addEventListener('click',function(e){var b=e.target.closest('.vid-preset');if(!b)return;
-      if(b.id==='vidSavePreset'){savePreset();return;}
-      var k=b.getAttribute('data-p'); if(PRESETS[k])applyPreset(k,PRESETS[k]);});
-    renderMyPresets();
-  }
-  var MYKEY='anniz_vid_presets';
-  function getMy(){try{return JSON.parse(localStorage.getItem(MYKEY))||[];}catch(e){return [];}}
-  function savePreset(){var name=prompt('프리셋 이름');if(!name)return;var arr=getMy();var snap=Object.assign({},T);delete snap.x;delete snap.y;delete snap.rot;delete snap.text;arr.push({name:name,t:snap});try{localStorage.setItem(MYKEY,JSON.stringify(arr));}catch(e){}renderMyPresets();}
-  function renderMyPresets(){var arr=getMy();var host=$('vidMyPresets');
-    host.innerHTML=arr.map(function(p,i){return '<button class="vid-preset" data-my="'+i+'">'+p.name+' <span style="opacity:.5" data-del="'+i+'">✕</span></button>';}).join('');
-    host.onclick=function(e){var del=e.target.getAttribute('data-del');if(del!=null){var arr=getMy();arr.splice(+del,1);localStorage.setItem(MYKEY,JSON.stringify(arr));renderMyPresets();return;}
-      var b=e.target.closest('.vid-preset');if(!b)return;var i=+b.getAttribute('data-my');var p=getMy()[i];if(p){Object.assign(T,p.t);pushToUI();ensureFont();segSetActivePreset(null);}};
-  }
-
-  // ── 인트로 애니 미리보기 ──
-  var playing=false;
-  function playIntro(){ if(playing)return; playing=true; var dur=1.6, st=performance.now();
-    function loop(){var e=(performance.now()-st)/1000; var p=Math.min(1,e/0.8); drawIntro(T,p,1);
-      if(e<dur){requestAnimationFrame(loop);}else{playing=false;render();}}
-    requestAnimationFrame(loop);
-  }
-
-  // ── 캔버스 크기 ──
-  function sizeCanvas(){ if(ratio==='9:16'){cv.width=720;cv.height=1280;}else{cv.width=1280;cv.height=720;} }
-
-  // ══ 사진/렌더 (영상 생성) ══
-  var elFiles=$('vidFiles'),elDrop=$('vidDrop'),elThumbs=$('vidThumbs');
-  elDrop.addEventListener('click',function(){elFiles.click();});
-  elFiles.addEventListener('change',function(e){addFiles(e.target.files);elFiles.value='';});
-  ['dragover','dragenter'].forEach(function(ev){elDrop.addEventListener(ev,function(e){e.preventDefault();elDrop.classList.add('drag');});});
-  ['dragleave','drop'].forEach(function(ev){elDrop.addEventListener(ev,function(e){e.preventDefault();elDrop.classList.remove('drag');});});
-  elDrop.addEventListener('drop',function(e){if(e.dataTransfer&&e.dataTransfer.files)addFiles(e.dataTransfer.files);});
-  function addFiles(list){var arr=[].slice.call(list).filter(function(f){return f.type.indexOf('image')===0;});var left=arr.length;if(!left)return;
-    arr.forEach(function(f){var img=new Image();img.onload=function(){files.push({img:img,url:img.src});if(--left===0)renderThumbs();};img.onerror=function(){if(--left===0)renderThumbs();};img.src=URL.createObjectURL(f);});}
-  function renderThumbs(){elThumbs.innerHTML=files.map(function(f,i){return '<div class="vid-thumb"><img src="'+f.url+'"><span class="ord">'+(i+1)+'</span><button onclick="__vidDel('+i+')">×</button></div>';}).join('');}
-  window.__vidDel=function(i){files.splice(i,1);renderThumbs();};
-  $('vidAudio').addEventListener('change',function(e){audioFile=e.target.files[0]||null;});
-
-  var INTRO=2.4,OUTRO=2.4,FADE=0.6;
-  function coverDraw(img,scale,panX,panY,alpha){var W=cv.width,H=cv.height;var s=Math.max(W/img.width,H/img.height)*scale;var w=img.width*s,h=img.height*s;var x=(W-w)/2+panX,y=(H-h)/2+panY;ctx.save();ctx.globalAlpha=alpha;ctx.drawImage(img,x,y,w,h);ctx.restore();}
-  function kb(i,p){var dir=i%2===0?1:-1;return {scale:1.06+0.10*p,panX:(cv.width*0.04)*dir*(p-0.5)*2,panY:cv.height*0.02*(p-0.5)*2*dir};}
-  function slideAt(i,p,alpha){var k=kb(i,p);coverDraw(files[i].img,k.scale,k.panX,k.panY,alpha);}
-  function watermark(){var W=cv.width,H=cv.height;ctx.save();ctx.globalAlpha=0.85;ctx.fillStyle='#fff';ctx.textAlign='left';ctx.textBaseline='alphabetic';try{ctx.letterSpacing=Math.round(W*0.006)+'px';}catch(e){}ctx.font='300 '+Math.round(W*0.022)+'px "Montserrat", Helvetica, Arial';ctx.shadowColor='rgba(0,0,0,0.45)';ctx.shadowBlur=8;ctx.fillText('ANDNEEDS',W*0.045,H-H*0.05);ctx.restore();try{ctx.letterSpacing='0px';}catch(e){}}
-  function clear2E(){ctx.fillStyle=T.bg;ctx.fillRect(0,0,cv.width,cv.height);}
-  function fade(t,dur){var f=0.5;if(t<f)return t/f;if(t>dur-f)return Math.max(0,(dur-t)/f);return 1;}
-  function drawOutro(t2,alpha){var o=Object.assign({},T);o.text=($('vidOutro').value||'ANDNEEDS');o.anim='fade';o.x=0.5;o.y=0.5;o.rot=0;o.align='center';drawIntro(o,alpha,alpha);}
-
-  function pickMime(){var c=['video/mp4;codecs=avc1.42E01E','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];for(var i=0;i<c.length;i++){if(window.MediaRecorder&&MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(c[i]))return c[i];}return '';}
-
-  $('vidMake').addEventListener('click',async function(){
-    if(!files.length){alert('먼저 사진을 올려주세요!');return;}
-    if(!window.MediaRecorder){alert('이 브라우저는 영상 녹화를 지원하지 않아요. 크롬/사파리 최신 버전을 써주세요.');return;}
-    sizeCanvas();
-    var per=Math.max(1.5,Math.min(6,parseFloat($('vidPer').value)||3));var N=files.length;
-    var total=INTRO+N*per+OUTRO;
-    try{await document.fonts.load(T.weight+' 60px "'+T.font+'"');await document.fonts.ready;}catch(e){}
-    $('vidResultEmpty').style.display='none';$('vidResult').style.display='none';$('vidDownload').style.display='none';
-    var mk=$('vidMake');mk.disabled=true;mk.textContent='영상 만드는 중…';$('vidProg').style.display='block';
-    var stream=cv.captureStream(30),audioEl=null,ac=null;
-    if(audioFile){try{ac=new (window.AudioContext||window.webkitAudioContext)();await ac.resume();audioEl=document.createElement('audio');audioEl.src=URL.createObjectURL(audioFile);audioEl.loop=true;var src=ac.createMediaElementSource(audioEl);var dest=ac.createMediaStreamDestination();src.connect(dest);dest.stream.getAudioTracks().forEach(function(tr){stream.addTrack(tr);});}catch(e){audioEl=null;}}
-    var mime=pickMime();var rec=new MediaRecorder(stream,mime?{mimeType:mime,videoBitsPerSecond:6000000}:{videoBitsPerSecond:6000000});var chunks=[];
-    rec.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data);};
-    rec.onstop=function(){var type=(mime&&mime.indexOf('mp4')>=0)?'video/mp4':'video/webm';var ext=type.indexOf('mp4')>=0?'mp4':'webm';var blob=new Blob(chunks,{type:type});var url=URL.createObjectURL(blob);
-      var v=$('vidResult');v.src=url;v.style.display='block';var dl=$('vidDownload');dl.href=url;dl.download='andneeds_'+(ratio==='9:16'?'shorts':'video')+'.'+ext;dl.style.display='inline-block';
-      mk.disabled=false;mk.textContent='🎬  다시 만들기';$('vidProg').style.display='none';
-      $('vidNote').innerHTML=(ext==='mp4'?'✅ MP4로 완성 — 유튜브·쇼츠·릴스 어디든 바로 업로드돼요.':'✅ WebM으로 완성 — 유튜브·쇼츠는 바로 업로드돼요.')+(audioFile?'':'<br>🎵 배경음악을 넣으면 소리도 같이 들어가요(지금은 무음).');
-      if(ac)try{ac.close();}catch(e){} render();};
-    rec.start(120);if(audioEl){try{await audioEl.play();}catch(e){}}
-    var start=performance.now();
-    function loop(){var t=(performance.now()-start)/1000;
-      if(t>=total){drawFrameV(total-0.001,per,N);setTimeout(function(){try{rec.stop();}catch(e){}if(audioEl)try{audioEl.pause();}catch(e){}},120);return;}
-      drawFrameV(t,per,N);var pct=Math.min(100,Math.round(t/total*100));$('vidProgBar').style.width=pct+'%';$('vidProgTxt').textContent=pct+'%';requestAnimationFrame(loop);}
-    requestAnimationFrame(loop);
-  });
-  function drawFrameV(t,per,N){
-    clear2E();
-    if(t<INTRO){var reveal=Math.min(1,t/0.8);drawIntro(T,reveal,fade(t,INTRO));return;}
-    var st=t-INTRO,slidesDur=N*per;
-    if(st>=slidesDur){drawOutro(st-slidesDur,fade(st-slidesDur,OUTRO));return;}
-    var idx=Math.min(N-1,Math.floor(st/per)),lt=st-idx*per,p=lt/per;
-    if(idx>0&&lt<FADE){slideAt(idx-1,1,1);slideAt(idx,0,lt/FADE);}else{slideAt(idx,p,1);}
-    if(idx===0&&lt<FADE){ctx.save();ctx.globalAlpha=1-lt/FADE;ctx.fillStyle=T.bg;ctx.fillRect(0,0,cv.width,cv.height);ctx.restore();}
-    watermark();
-  }
-
-  // ── init ──
-  buildFontSelect();buildPresets();bind();pushToUI();sizeCanvas();
-  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(render);}
-  ensureFont();
-})();
-</script>
 <style id="white-menu">
 .anv-bar,.anv-bar.anv-tinted{background:#ffffff !important;border-bottom:1px solid rgba(0,0,0,0.10) !important;}
 .anv-panel{background:#ffffff !important;}
