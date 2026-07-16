@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<script>/*anniz-auth-guard*/(function(){var SBA="https://nifytqcqfattzpwlzpmb.supabase.co";var ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs";var K="anniz_auth";var s=null;try{s=JSON.parse(localStorage.getItem(K)||"null");}catch(e){}if(!s||!s.access_token){location.replace("login.html");return;}var now=Math.floor(Date.now()/1000);if(s.expires_at&&now>s.expires_at-60&&s.refresh_token){fetch(SBA+"/auth/v1/token?grant_type=refresh_token",{method:"POST",headers:{apikey:ANON,"Content-Type":"application/json"},body:JSON.stringify({refresh_token:s.refresh_token})}).then(function(r){return r.json();}).then(function(d){if(d&&d.access_token){localStorage.setItem(K,JSON.stringify({access_token:d.access_token,refresh_token:d.refresh_token,expires_at:d.expires_at,email:(d.user&&d.user.email)||s.email}));}else{localStorage.removeItem(K);location.replace("login.html");}}).catch(function(){});}window.annizLogout=function(){try{localStorage.removeItem(K);}catch(e){}location.replace("login.html");};})();</script>
+<script>/*anniz-auth-guard*/window.__anvTok=function(){try{var a=JSON.parse(localStorage.getItem("anniz_auth")||"null");var t=a&&a.access_token;return (t&&typeof t==="string"&&t.slice(0,3)==="eyJ")?t:null;}catch(e){return null;}};(function(){var SBA="https://nifytqcqfattzpwlzpmb.supabase.co";var ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs";var K="anniz_auth";var s=null;try{s=JSON.parse(localStorage.getItem(K)||"null");}catch(e){}if(!s||!s.access_token){location.replace("login.html");return;}var now=Math.floor(Date.now()/1000);if(s.expires_at&&now>s.expires_at-60&&s.refresh_token){fetch(SBA+"/auth/v1/token?grant_type=refresh_token",{method:"POST",headers:{apikey:ANON,"Content-Type":"application/json"},body:JSON.stringify({refresh_token:s.refresh_token})}).then(function(r){return r.json();}).then(function(d){if(d&&d.access_token){localStorage.setItem(K,JSON.stringify({access_token:d.access_token,refresh_token:d.refresh_token,expires_at:d.expires_at,email:(d.user&&d.user.email)||s.email}));}else{localStorage.removeItem(K);location.replace("login.html");}}).catch(function(){});}window.annizLogout=function(){try{localStorage.removeItem(K);}catch(e){}location.replace("login.html");};})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ANDNEEDS · THE DAILY EDIT.</title>
@@ -876,7 +876,7 @@ const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZi
 
 async function sb(path) {
   const res = await fetch(SB+'/rest/v1/'+path, {
-    headers:{'apikey':KEY,'Authorization':'Bearer '+KEY}
+    headers:{'apikey':KEY,'Authorization':'Bearer '+((window.__anvTok&&window.__anvTok())||KEY)}
   });
   const t = await res.text();
   try{return JSON.parse(t);}catch{return[];}
@@ -1049,7 +1049,7 @@ const TODO_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 let todos=[];
 const TODO_TAGS={ops:'운영',design:'디자인',cs:'CS'};
 function todoEsc(x){return String(x==null?'':x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-async function todoSB(path,opts={}){const r=await fetch(TODO_URL+'/rest/v1/'+path,{...opts,headers:{'apikey':TODO_KEY,'Authorization':'Bearer '+TODO_KEY,'Content-Type':'application/json','Prefer':opts.prefer||'return=minimal',...(opts.headers||{})}});if(!r.ok)throw new Error(await r.text());const t=await r.text();return t&&t.trim()?JSON.parse(t):null;}
+async function todoSB(path,opts={}){const r=await fetch(TODO_URL+'/rest/v1/'+path,{...opts,headers:{'apikey':TODO_KEY,'Authorization':'Bearer '+((window.__anvTok&&window.__anvTok())||TODO_KEY),'Content-Type':'application/json','Prefer':opts.prefer||'return=minimal',...(opts.headers||{})}});if(!r.ok)throw new Error(await r.text());const t=await r.text();return t&&t.trim()?JSON.parse(t):null;}
 async function loadTodos(){try{const r=await todoSB('sku_state?id=eq.'+TODO_SB+'&select=payload');if(r&&r[0]&&r[0].payload&&r[0].payload.todos){todos=r[0].payload.todos;return;}}catch(e){}try{const s=localStorage.getItem(TODO_LS);if(s){todos=JSON.parse(s);return;}}catch(e){}todos=[{text:'무신사 26FW 상품 등록 완료',tag:'ops',done:false},{text:'케빈 인보이스 입금 확인',tag:'cs',done:false},{text:'룩북 상세 이미지 편집본 수령',tag:'design',done:false},{text:'29CM 5월 정산 확인',tag:'ops',done:true},{text:'성수매장 재고 정리',tag:'ops',done:false}];}
 async function saveTodos(){try{localStorage.setItem(TODO_LS,JSON.stringify(todos));}catch(e){}try{await todoSB('sku_state',{method:'POST',prefer:'resolution=merge-duplicates',body:JSON.stringify({id:TODO_SB,payload:{todos:todos},updated_at:new Date().toISOString()})});}catch(e){}}
 function renderTodos(){
