@@ -136,8 +136,8 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
   <div class="tb-right">
     <span class="count" id="count"></span>
     <div class="vtog" id="vtog">
-      <button data-v="grid" class="on" title="갤러리">▦</button>
-      <button data-v="list" title="목록">☰</button>
+      <button data-v="list" class="on" title="목록">☰</button>
+      <button data-v="grid" title="갤러리">▦</button>
     </div>
   </div>
 </div>
@@ -180,7 +180,7 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
   function won(n){ n=Number(String(n).replace(/[^0-9]/g,""))||0; return "₩ "+n.toLocaleString("en-US"); }
 
   var DATA=[{"cat":"OUTER","img":"","name":"Shawl collar reversible jacket","color":"Camel","size":"FREE","price":339000,"material":"SHELL  POLYESTER 100%","desc":"양면 착용이 가능한 리버시블 숄카라 무스탕 자켓입니다.\n소프트한 스웨이드와 부드러운 비건 FUR 두가지 형태로 스타일링이 가능합니다.\n리얼 무스탕에 사용되는 링킹 봉제를 사용하여 깔끔하게 떨어지는 실루엣으로 제작되었습니다.\n여유있는 사이즈로 겨울 이너를 다양하게 착용 가능합니다.\n양면 모두에 아웃포켓이 있어 높은 실용성을 가집니다.\n볼단추와 앤니즈의 로고가 각인된 단추를 사용하여 포인트를 더하였습니다.","url":"https://product.29cm.co.kr/catalog/2912476"},{"cat":"OUTER","img":"","name":"Shawl collar reversible jacket","color":"Brown","size":"FREE","price":339000,"material":"SHELL  POLYESTER 100%","desc":"양면 착용이 가능한 리버시블 숄카라 무스탕 자켓입니다.\n소프트한 스웨이드와 부드러운 비건 FUR 두가지 형태로 스타일링이 가능합니다.\n리얼 무스탕에 사용되는 링킹 봉제를 사용하여 깔끔하게 떨어지는 실루엣으로 제작되었습니다.\n여유있는 사이즈로 겨울 이너를 다양하게 착용 가능합니다.\n양면 모두에 아웃포켓이 있어 높은 실용성을 가집니다.\n볼단추와 앤니즈의 로고가 각인된 단추를 사용하여 포인트를 더하였습니다.","url":"https://product.29cm.co.kr/catalog/2912472"},{"cat":"OUTER","img":"","name":"Alpaca belted half coat","color":"Charcoal","size":"FREE","price":489000,"material":"SHELL  Alpaca 10% Wool 65% Nylon 25%\nLINING  Polyester 100%","desc":"하프한 기장감으로 다양한 스타일이 연출가능한 하프 코트입니다.\n헤어감 있는 알파카 울 혼방 소재를 활용하여 부드럽고 우수한 보온성을 가집니다.\n입체감 있는 래글런 슬리브와 넉넉한 실루엣으로 다양한 이너에도 착용 가능합니다.\n탈부착이 가능한 벨트를 통해 다양한 실루엣을 연출 할 수 있습니다.\n넥라인의 비조와 소매비조를 통해 한겨울 추위에도 따뜻하게 착용가능합니다.\n앤니즈의 로고가 각인된 단추를 사용하여 포인트를 더하였습니다.","url":"https://product.29cm.co.kr/catalog/2912465"}];
-  var ready=false, cloudOK=true, curIdx=-1, filterCat="", view="grid";
+  var ready=false, cloudOK=true, curIdx=-1, filterCat="", view="list";
   var grid=document.getElementById("grid"), listBody=document.getElementById("listBody"), listWrap=document.getElementById("listWrap");
   var cats=document.getElementById("cats"), countEl=document.getElementById("count"), md=document.getElementById("md");
 
