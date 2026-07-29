@@ -73,6 +73,8 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
 .lsx td.c{text-align:center;color:var(--mut);}
 .lsx td.price{text-align:right;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;}
 .lsx td.mat{font-size:11px;color:var(--mut);white-space:pre-line;max-width:220px;line-height:1.5;}
+.lsx td.code{font-size:11.5px;color:var(--mut);letter-spacing:.04em;white-space:nowrap;}
+.lsx td.desc{font-size:11px;color:var(--mut);line-height:1.55;min-width:240px;max-width:340px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
 .lsx td.lnk a{color:var(--ink);font-size:11px;letter-spacing:.06em;text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:1px;}
 .lsx td.lnk a:hover{opacity:.6;}
 .empty{grid-column:1/-1;text-align:center;padding:90px 20px;color:var(--mut2);font-size:13px;letter-spacing:.05em;}
@@ -150,7 +152,7 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
 <div class="wrap">
   <div class="grid" id="grid"></div>
   <div id="listWrap" style="display:none"><table class="lsx"><thead><tr>
-    <th>No</th><th>Image</th><th>Product</th><th class="c">Color</th><th class="c">Size</th><th class="r">Price</th><th>Fabric</th><th>29CM</th>
+    <th>No</th><th>Image</th><th>Product</th><th>품번</th><th class="c">Color</th><th class="c">Size</th><th class="r">Price</th><th>Fabric</th><th>상품 설명</th>
   </tr></thead><tbody id="listBody"></tbody></table></div>
 </div>
 
@@ -160,6 +162,7 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
     <div class="md-form">
       <div class="md-head"><span class="t" id="mdT">EDIT</span><span class="md-x" id="mdX">×</span></div>
       <div class="fld serif"><label>Product name</label><input id="fName" placeholder="상품명"></div>
+      <div class="fld"><label>품번 · Style No.</label><input id="fCode" placeholder="예: AN26-OT01"></div>
       <div class="r3">
         <div class="fld"><label>Category</label><input id="fCat" list="catList" placeholder="OUTER"><datalist id="catList"></datalist></div>
         <div class="fld"><label>Color</label><input id="fColor" placeholder="Camel"></div>
@@ -185,7 +188,7 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
   function esc(v){return String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
   function won(n){ n=Number(String(n).replace(/[^0-9]/g,""))||0; return "₩ "+n.toLocaleString("en-US"); }
 
-  var DATA=[{"cat":"OUTER","img":"","name":"Shawl collar reversible jacket","color":"Camel","size":"FREE","price":339000,"material":"SHELL  POLYESTER 100%","desc":"양면 착용이 가능한 리버시블 숄카라 무스탕 자켓입니다.\n소프트한 스웨이드와 부드러운 비건 FUR 두가지 형태로 스타일링이 가능합니다.\n리얼 무스탕에 사용되는 링킹 봉제를 사용하여 깔끔하게 떨어지는 실루엣으로 제작되었습니다.\n여유있는 사이즈로 겨울 이너를 다양하게 착용 가능합니다.\n양면 모두에 아웃포켓이 있어 높은 실용성을 가집니다.\n볼단추와 앤니즈의 로고가 각인된 단추를 사용하여 포인트를 더하였습니다.","url":"https://product.29cm.co.kr/catalog/2912476"},{"cat":"OUTER","img":"","name":"Shawl collar reversible jacket","color":"Brown","size":"FREE","price":339000,"material":"SHELL  POLYESTER 100%","desc":"양면 착용이 가능한 리버시블 숄카라 무스탕 자켓입니다.\n소프트한 스웨이드와 부드러운 비건 FUR 두가지 형태로 스타일링이 가능합니다.\n리얼 무스탕에 사용되는 링킹 봉제를 사용하여 깔끔하게 떨어지는 실루엣으로 제작되었습니다.\n여유있는 사이즈로 겨울 이너를 다양하게 착용 가능합니다.\n양면 모두에 아웃포켓이 있어 높은 실용성을 가집니다.\n볼단추와 앤니즈의 로고가 각인된 단추를 사용하여 포인트를 더하였습니다.","url":"https://product.29cm.co.kr/catalog/2912472"},{"cat":"OUTER","img":"","name":"Alpaca belted half coat","color":"Charcoal","size":"FREE","price":489000,"material":"SHELL  Alpaca 10% Wool 65% Nylon 25%\nLINING  Polyester 100%","desc":"하프한 기장감으로 다양한 스타일이 연출가능한 하프 코트입니다.\n헤어감 있는 알파카 울 혼방 소재를 활용하여 부드럽고 우수한 보온성을 가집니다.\n입체감 있는 래글런 슬리브와 넉넉한 실루엣으로 다양한 이너에도 착용 가능합니다.\n탈부착이 가능한 벨트를 통해 다양한 실루엣을 연출 할 수 있습니다.\n넥라인의 비조와 소매비조를 통해 한겨울 추위에도 따뜻하게 착용가능합니다.\n앤니즈의 로고가 각인된 단추를 사용하여 포인트를 더하였습니다.","url":"https://product.29cm.co.kr/catalog/2912465"}];
+  var DATA=[{"cat":"OUTER","img":"","code":"AN26-OT01","name":"Shawl collar reversible jacket","color":"Camel","size":"FREE","price":339000,"material":"SHELL  POLYESTER 100%","desc":"양면 착용이 가능한 리버시블 숄카라 무스탕 자켓입니다.\n소프트한 스웨이드와 부드러운 비건 FUR 두가지 형태로 스타일링이 가능합니다.\n리얼 무스탕에 사용되는 링킹 봉제를 사용하여 깔끔하게 떨어지는 실루엣으로 제작되었습니다.\n여유있는 사이즈로 겨울 이너를 다양하게 착용 가능합니다.\n양면 모두에 아웃포켓이 있어 높은 실용성을 가집니다.\n볼단추와 앤니즈의 로고가 각인된 단추를 사용하여 포인트를 더하였습니다.","url":"https://product.29cm.co.kr/catalog/2912476"},{"cat":"OUTER","img":"","code":"AN26-OT01","name":"Shawl collar reversible jacket","color":"Brown","size":"FREE","price":339000,"material":"SHELL  POLYESTER 100%","desc":"양면 착용이 가능한 리버시블 숄카라 무스탕 자켓입니다.\n소프트한 스웨이드와 부드러운 비건 FUR 두가지 형태로 스타일링이 가능합니다.\n리얼 무스탕에 사용되는 링킹 봉제를 사용하여 깔끔하게 떨어지는 실루엣으로 제작되었습니다.\n여유있는 사이즈로 겨울 이너를 다양하게 착용 가능합니다.\n양면 모두에 아웃포켓이 있어 높은 실용성을 가집니다.\n볼단추와 앤니즈의 로고가 각인된 단추를 사용하여 포인트를 더하였습니다.","url":"https://product.29cm.co.kr/catalog/2912472"},{"cat":"OUTER","img":"","code":"AN26-OT02","name":"Alpaca belted half coat","color":"Charcoal","size":"FREE","price":489000,"material":"SHELL  Alpaca 10% Wool 65% Nylon 25%\nLINING  Polyester 100%","desc":"하프한 기장감으로 다양한 스타일이 연출가능한 하프 코트입니다.\n헤어감 있는 알파카 울 혼방 소재를 활용하여 부드럽고 우수한 보온성을 가집니다.\n입체감 있는 래글런 슬리브와 넉넉한 실루엣으로 다양한 이너에도 착용 가능합니다.\n탈부착이 가능한 벨트를 통해 다양한 실루엣을 연출 할 수 있습니다.\n넥라인의 비조와 소매비조를 통해 한겨울 추위에도 따뜻하게 착용가능합니다.\n앤니즈의 로고가 각인된 단추를 사용하여 포인트를 더하였습니다.","url":"https://product.29cm.co.kr/catalog/2912465"}];
   var ready=false, cloudOK=true, curIdx=-1, filterCat="", view="list";
   var grid=document.getElementById("grid"), listBody=document.getElementById("listBody"), listWrap=document.getElementById("listWrap");
   var cats=document.getElementById("cats"), countEl=document.getElementById("count"), md=document.getElementById("md");
@@ -204,7 +207,7 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
       grid.style.display=""; listWrap.style.display="none";
       grid.innerHTML = list.length? list.map(function(x,n){ var p=x.p;
         return '<div class="card" data-i="'+x.i+'"><div class="card-img"><span class="card-no">'+String(n+1).padStart(2,"0")+'</span>'+imgOrPh(p.img,"card-noimg")+'</div>'+
-          '<div class="card-b">'+(p.cat?'<div class="card-cat">'+esc(p.cat)+'</div>':'')+
+          '<div class="card-b">'+((p.cat||p.code)?'<div class="card-cat">'+[p.cat,p.code].filter(Boolean).map(esc).join(" · ")+'</div>':'')+
           '<div class="card-name">'+esc(p.name||"Untitled")+'</div>'+
           '<div class="card-meta">'+[p.color,p.size].filter(Boolean).map(esc).join("  ·  ")+'</div>'+
           '<div class="card-price">'+won(p.price)+'</div>'+
@@ -216,11 +219,12 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
         return '<tr data-i="'+x.i+'"><td class="no">'+String(n+1).padStart(2,"0")+'</td>'+
           '<td class="img">'+(p.img?'<img src="'+esc(p.img)+'" loading="lazy">':'<div class="th-no">—</div>')+'</td>'+
           '<td class="nm"><small>'+esc(p.cat||"")+'</small>'+esc(p.name||"")+'</td>'+
+          '<td class="code">'+esc(p.code||"—")+'</td>'+
           '<td class="c">'+esc(p.color||"—")+'</td><td class="c">'+esc(p.size||"—")+'</td>'+
           '<td class="price">'+won(p.price)+'</td>'+
           '<td class="mat">'+esc(p.material||"—")+'</td>'+
-          '<td class="lnk">'+(p.url?'<a href="'+esc(p.url)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">보기 ↗</a>':'—')+'</td></tr>';
-      }).join("") : '<tr><td colspan="8" class="empty">등록된 상품이 없어요.</td></tr>';
+          '<td class="desc">'+esc(p.desc||"—")+'</td></tr>';
+      }).join("") : '<tr><td colspan="9" class="empty">등록된 상품이 없어요.</td></tr>';
     }
   }
   cats.addEventListener("click",function(e){ var b=e.target.closest(".cat"); if(!b)return; filterCat=b.getAttribute("data-c"); render(); });
@@ -229,7 +233,7 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
   listBody.addEventListener("click",function(e){ var tr=e.target.closest("tr"); if(tr&&tr.hasAttribute("data-i"))openEdit(parseInt(tr.getAttribute("data-i"),10)); });
 
   function setImg(u){ var col=document.getElementById("mdImgCol"); col.querySelectorAll("img").forEach(function(x){x.remove();}); var ph=document.getElementById("mdPh"); if(u){ var im=document.createElement("img"); im.src=u; col.appendChild(im); ph.style.display="none"; } else ph.style.display="flex"; }
-  function fill(p){ document.getElementById("fName").value=p.name||""; document.getElementById("fCat").value=p.cat||""; document.getElementById("fColor").value=p.color||""; document.getElementById("fSize").value=p.size||""; document.getElementById("fPrice").value=p.price||""; document.getElementById("fMaterial").value=p.material||""; document.getElementById("fDesc").value=p.desc||""; document.getElementById("fUrl").value=p.url||""; document.getElementById("fImg").value=p.img||""; setImg(p.img); }
+  function fill(p){ document.getElementById("fName").value=p.name||""; document.getElementById("fCode").value=p.code||""; document.getElementById("fCat").value=p.cat||""; document.getElementById("fColor").value=p.color||""; document.getElementById("fSize").value=p.size||""; document.getElementById("fPrice").value=p.price||""; document.getElementById("fMaterial").value=p.material||""; document.getElementById("fDesc").value=p.desc||""; document.getElementById("fUrl").value=p.url||""; document.getElementById("fImg").value=p.img||""; setImg(p.img); }
   function openEdit(i){ curIdx=i; document.getElementById("mdT").textContent="EDIT"; document.getElementById("lsDel").style.display=""; fill(DATA[i]); md.classList.add("open"); }
   function openAdd(){ curIdx=-1; document.getElementById("mdT").textContent="NEW"; document.getElementById("lsDel").style.display="none"; fill({}); md.classList.add("open"); setTimeout(function(){document.getElementById("fName").focus();},40); }
   function close(){ md.classList.remove("open"); }
@@ -241,7 +245,7 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
   document.getElementById("fImg").addEventListener("input",function(){ setImg(this.value.trim()); });
   document.getElementById("fImgFile").addEventListener("change",function(){ var f=this.files&&this.files[0]; if(!f)return; if(f.size>1400000)alert("이미지가 커요(1.4MB↑). 가능하면 URL 붙여넣기를 권장해요."); var r=new FileReader(); r.onload=function(){ document.getElementById("fImg").value=r.result; setImg(r.result); }; r.readAsDataURL(f); });
   document.getElementById("lsSave").addEventListener("click",function(){
-    var p={ name:document.getElementById("fName").value.trim(), cat:document.getElementById("fCat").value.trim(), color:document.getElementById("fColor").value.trim(), size:document.getElementById("fSize").value.trim(), price:parseInt(document.getElementById("fPrice").value.replace(/[^0-9]/g,""),10)||0, material:document.getElementById("fMaterial").value, desc:document.getElementById("fDesc").value, url:document.getElementById("fUrl").value.trim(), img:document.getElementById("fImg").value.trim() };
+    var p={ name:document.getElementById("fName").value.trim(), code:document.getElementById("fCode").value.trim(), cat:document.getElementById("fCat").value.trim(), color:document.getElementById("fColor").value.trim(), size:document.getElementById("fSize").value.trim(), price:parseInt(document.getElementById("fPrice").value.replace(/[^0-9]/g,""),10)||0, material:document.getElementById("fMaterial").value, desc:document.getElementById("fDesc").value, url:document.getElementById("fUrl").value.trim(), img:document.getElementById("fImg").value.trim() };
     if(!p.name){ document.getElementById("fName").focus(); return; }
     if(curIdx>=0)DATA[curIdx]=p; else DATA.push(p);
     render(); save(); close(); toast(curIdx>=0?"수정했어요":"등록했어요");
@@ -264,10 +268,10 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
       if(hi<0){ alert("표에서 '상품명' 열을 찾지 못했어요."); return; }
       var H=rows[hi].map(function(x){return String(x).trim();});
       function col(){ for(var a=0;a<arguments.length;a++){ var key=arguments[a]; for(var j=0;j<H.length;j++){ if(H[j].replace(/\s/g,"").indexOf(key.replace(/\s/g,""))>=0)return j; } } return -1; }
-      var cCat=col("분류","카테고리"),cName=col("상품명"),cColor=col("컬러","색상"),cSize=col("사이즈"),cPrice=col("가격"),cMat=col("소재"),cDesc=col("상품설명","설명"),cUrl=col("29CM","페이지","URL","링크"),cImg=col("이미지");
+      var cCat=col("분류","카테고리"),cCode=col("품번","스타일번호","스타일","코드","STYLE"),cName=col("상품명"),cColor=col("컬러","색상"),cSize=col("사이즈"),cPrice=col("가격"),cMat=col("소재"),cDesc=col("상품설명","설명"),cUrl=col("29CM","페이지","URL","링크"),cImg=col("이미지");
       var added=[];
       rows.slice(hi+1).forEach(function(r){ var nm=String(r[cName]||"").trim(); if(!nm)return;
-        added.push({ cat:cCat>=0?String(r[cCat]||"").trim():"", name:nm, color:cColor>=0?String(r[cColor]||"").trim():"", size:cSize>=0?String(r[cSize]||"").trim():"", price:parseInt(String(r[cPrice]||"").replace(/[^0-9]/g,""),10)||0, material:cMat>=0?String(r[cMat]||"").trim():"", desc:cDesc>=0?String(r[cDesc]||"").trim():"", url:cUrl>=0?String(r[cUrl]||"").trim():"", img:cImg>=0?String(r[cImg]||"").trim():"" }); });
+        added.push({ cat:cCat>=0?String(r[cCat]||"").trim():"", code:cCode>=0?String(r[cCode]||"").trim():"", name:nm, color:cColor>=0?String(r[cColor]||"").trim():"", size:cSize>=0?String(r[cSize]||"").trim():"", price:parseInt(String(r[cPrice]||"").replace(/[^0-9]/g,""),10)||0, material:cMat>=0?String(r[cMat]||"").trim():"", desc:cDesc>=0?String(r[cDesc]||"").trim():"", url:cUrl>=0?String(r[cUrl]||"").trim():"", img:cImg>=0?String(r[cImg]||"").trim():"" }); });
       if(!added.length){ alert("불러올 상품이 없어요."); return; }
       if(!confirm(added.length+"개 상품을 불러왔어요. 기존 "+DATA.length+"개에 추가할까요?")) return;
       DATA=DATA.concat(added); render(); save(); toast(added.length+"개 추가했어요");
