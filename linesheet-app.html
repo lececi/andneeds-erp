@@ -32,7 +32,7 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
 .lh-btn.pri{color:var(--ink);border:1px solid var(--mut2);padding:8px 16px;}
 .lh-btn.pri:hover{background:var(--card);color:var(--ink);border-color:var(--mut);}
 /* Toolbar */
-.tb{max-width:1400px;margin:0 auto;padding:26px 34px 8px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.tb{max-width:none;margin:0;padding:24px 30px 8px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
 .tb-sep{width:1px;height:15px;background:var(--line);margin:0 3px;}
 .cats{display:flex;gap:2px;flex-wrap:wrap;}
 .cat{border:none;background:none;font-family:inherit;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut2);padding:7px 13px;cursor:pointer;border-radius:20px;transition:.15s;position:relative;}
@@ -46,7 +46,7 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
 .vtog button{border:none;background:none;cursor:pointer;color:var(--mut2);padding:6px;font-size:15px;line-height:1;border-radius:6px;}
 .vtog button.on{color:var(--ink);background:rgba(0,0,0,0.05);}
 /* Grid */
-.wrap{max-width:1400px;margin:0 auto;padding:22px 34px 90px;}
+.wrap{max-width:none;margin:0;padding:20px 30px 80px;}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:38px 26px;}
 .card{cursor:pointer;}
 .card-img{position:relative;aspect-ratio:3/4;background:var(--card);overflow:hidden;}
@@ -75,7 +75,7 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
 .lsx td.price{text-align:right;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;}
 .lsx td.mat{font-size:11px;color:var(--mut);white-space:pre-line;max-width:220px;line-height:1.6;}
 .lsx td.code{font-size:11.5px;color:var(--mut);letter-spacing:.04em;white-space:nowrap;}
-.lsx td.desc{font-size:11px;color:var(--mut);min-width:240px;max-width:340px;}
+.lsx td.desc{font-size:11px;color:var(--mut);min-width:280px;width:auto;}
 .lsx td.desc .desc-in{line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
 .lsx td.lnk a{color:var(--ink);font-size:11px;letter-spacing:.06em;text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:1px;}
 .lsx td.lnk a:hover{opacity:.6;}
