@@ -652,7 +652,7 @@ Andneeds@gmail.com
 const SB = 'https://nifytqcqfattzpwlzpmb.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs';
 async function sb(path, opts={}) {
-  const res = await fetch(SB+'/rest/v1/'+path, {...opts, headers:{'apikey':KEY,'Authorization':'Bearer '+((window.__anvTok&&window.__anvTok())||KEY),'Content-Type':'application/json','Prefer':opts.prefer||'return=representation',...opts.headers}});
+  const res = await fetch(SB+'/rest/v1/'+path, {...opts, headers:{'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json','Prefer':opts.prefer||'return=representation',...opts.headers}});
   if(!res.ok) throw new Error(await res.text());
   const t = await res.text();
   if(!t||!t.trim()) return null;
