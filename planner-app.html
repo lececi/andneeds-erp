@@ -39,10 +39,13 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
 .pa{border:none;background:none;cursor:pointer;color:var(--mut2);font-size:12px;padding:3px 5px;border-radius:5px;line-height:1;font-family:inherit;}
 .pa:hover{background:var(--hover);color:var(--ink);}
 .pa.del:hover{color:#B04A3C;}
+.proj-item.dragging{opacity:.4;}
+.proj-item.drop-above{box-shadow:inset 0 2px 0 0 var(--ink);}
+.proj-item.drop-below{box-shadow:inset 0 -2px 0 0 var(--ink);}
 .side-div{height:1px;background:var(--line);margin:12px 4px;}
 /* ===== 메인 ===== */
 .main{display:flex;flex-direction:column;overflow:hidden;}
-.top{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+.top{display:flex;align-items:center;gap:14px;padding:14px 22px;flex-wrap:wrap;}
 .mtitle{font-size:19px;font-weight:700;letter-spacing:-.01em;min-width:130px;}
 .navbtn{border:1px solid var(--line);background:#fff;width:30px;height:30px;border-radius:8px;cursor:pointer;color:var(--mut);font-size:14px;}
 .navbtn:hover{border-color:var(--mut2);}
@@ -276,7 +279,7 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
       CATS.map(function(c){var n=state.items.filter(function(it){return it.cat===c.name&&!it.done;}).length;
         return '<div class="cat-item'+(filterCat===c.name?" on":"")+'" data-cat="'+esc(c.name)+'"><span class="dot" style="background:'+c.color+'"></span>'+esc(c.name)+'<span class="cnt">'+(n||"")+'</span></div>';}).join("");
     var pl=document.getElementById("projList");
-    pl.innerHTML=state.projects.map(function(p,i){return '<div class="proj-item'+(filterProj===p?" on":"")+'" data-proj="'+esc(p)+'"><span class="pname">'+esc(p)+'</span><span class="proj-acts"><button class="pa" data-pedit="'+i+'" title="이름 변경">✎</button><button class="pa del" data-pdel="'+i+'" title="삭제">✕</button></span></div>';}).join("");
+    pl.innerHTML=state.projects.map(function(p,i){return '<div class="proj-item'+(filterProj===p?" on":"")+'" data-proj="'+esc(p)+'" data-pi="'+i+'"><span class="pname">'+esc(p)+'</span><span class="proj-acts"><button class="pa" data-pedit="'+i+'" title="이름 변경">✎</button><button class="pa del" data-pdel="'+i+'" title="삭제">✕</button></span></div>';}).join("");
   }
 
   /* ---- 렌더: 메인 ---- */
@@ -447,21 +450,48 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
     if(e.target.closest(".dock-h")){var d=document.getElementById("dock");d.classList.toggle("collapsed");renderDock();return;}
     var c=e.target.closest(".chip");if(c)openDetail(c.getAttribute("data-id"));
   });
-  /* 포인터 기반 드래그: 미배정 업무 → 캘린더 날짜 */
-  var pDrag=null, ghost=null, justDragged=false;
+  /* 포인터 기반 드래그: ① 미배정 업무 → 캘린더 날짜  ② 프로젝트 순서 변경 */
+  var pDrag=null, ghost=null, projDrag=null, justDragged=false;
   function clearOver(){[].forEach.call(document.querySelectorAll(".dragover"),function(c){c.classList.remove("dragover");});}
-  document.addEventListener("mousedown",function(e){justDragged=false;var chip=e.target.closest(".chip,.task");if(!chip)return;pDrag={id:chip.getAttribute("data-id"),sx:e.clientX,sy:e.clientY,started:false,label:chip.textContent.trim()};});
+  function clearProjMark(){[].forEach.call(document.querySelectorAll(".proj-item"),function(c){c.classList.remove("drop-above","drop-below","dragging");});}
+  document.addEventListener("mousedown",function(e){
+    justDragged=false;
+    var pit=e.target.closest(".proj-item");
+    if(pit && !e.target.closest(".pa")){ projDrag={from:+pit.getAttribute("data-pi"),sx:e.clientX,sy:e.clientY,started:false}; return; }
+    var chip=e.target.closest(".chip,.task"); if(chip){ pDrag={id:chip.getAttribute("data-id"),sx:e.clientX,sy:e.clientY,started:false,label:chip.textContent.trim()}; }
+  });
   document.addEventListener("mousemove",function(e){
+    if(projDrag){
+      if(!projDrag.started){ if(Math.abs(e.clientX-projDrag.sx)+Math.abs(e.clientY-projDrag.sy)<5)return; projDrag.started=true; document.body.style.userSelect="none"; var dr=document.querySelector('.proj-item[data-pi="'+projDrag.from+'"]'); if(dr)dr.classList.add("dragging"); }
+      clearProjMark(); var dr2=document.querySelector('.proj-item[data-pi="'+projDrag.from+'"]'); if(dr2)dr2.classList.add("dragging");
+      var el=document.elementFromPoint(e.clientX,e.clientY); var over=el&&el.closest(".proj-item");
+      if(over && +over.getAttribute("data-pi")!==projDrag.from){ var r=over.getBoundingClientRect(); over.classList.add(e.clientY>r.top+r.height/2?"drop-below":"drop-above"); }
+      return;
+    }
     if(!pDrag)return;
     if(!pDrag.started){ if(Math.abs(e.clientX-pDrag.sx)+Math.abs(e.clientY-pDrag.sy)<5)return; pDrag.started=true; ghost=document.createElement("div"); ghost.className="drag-ghost"; ghost.textContent=pDrag.label; document.body.appendChild(ghost); document.body.style.userSelect="none"; }
     ghost.style.left=(e.clientX+10)+"px"; ghost.style.top=(e.clientY+10)+"px";
-    clearOver(); var el=document.elementFromPoint(e.clientX,e.clientY); var cell=el&&el.closest(".mcell,.wcol"); if(cell)cell.classList.add("dragover");
+    clearOver(); var el2=document.elementFromPoint(e.clientX,e.clientY); var cell=el2&&el2.closest(".mcell,.wcol"); if(cell)cell.classList.add("dragover");
   });
   document.addEventListener("mouseup",function(e){
+    if(projDrag){
+      if(projDrag.started){
+        var el=document.elementFromPoint(e.clientX,e.clientY); var over=el&&el.closest(".proj-item");
+        if(over){ var oi=+over.getAttribute("data-pi"); if(oi!==projDrag.from){ var r=over.getBoundingClientRect(); reorderProj(projDrag.from, oi, e.clientY>r.top+r.height/2); } }
+        document.body.style.userSelect=""; clearProjMark(); justDragged=true;
+      }
+      projDrag=null; return;
+    }
     if(!pDrag)return;
-    if(pDrag.started){ var el=document.elementFromPoint(e.clientX,e.clientY); var cell=el&&el.closest(".mcell,.wcol"); if(cell&&cell.getAttribute("data-date")){ var it=state.items.find(function(x){return x.id===pDrag.id;}); if(it){it.date=cell.getAttribute("data-date");save();render();toast("일정으로 옮겼어요");} } if(ghost){ghost.remove();ghost=null;} document.body.style.userSelect=""; clearOver(); justDragged=true; }
+    if(pDrag.started){ var el3=document.elementFromPoint(e.clientX,e.clientY); var cell=el3&&el3.closest(".mcell,.wcol"); if(cell&&cell.getAttribute("data-date")){ var it=state.items.find(function(x){return x.id===pDrag.id;}); if(it){it.date=cell.getAttribute("data-date");save();render();toast("일정으로 옮겼어요");} } if(ghost){ghost.remove();ghost=null;} document.body.style.userSelect=""; clearOver(); justDragged=true; }
     pDrag=null;
   });
+  function reorderProj(from,overIdx,after){
+    var arr=state.projects; var moved=arr[from]; arr.splice(from,1);
+    var target=(from<overIdx)?overIdx-1:overIdx; if(after)target+=1;
+    if(target<0)target=0; if(target>arr.length)target=arr.length;
+    arr.splice(target,0,moved); save(); render();
+  }
   document.addEventListener("click",function(e){ if(justDragged){justDragged=false;e.stopPropagation();e.preventDefault();} },true);
 
   /* 사이드바 */
