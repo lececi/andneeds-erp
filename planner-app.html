@@ -32,6 +32,13 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
 .cat-item .cnt{margin-left:auto;font-size:11px;color:var(--mut2);}
 .add-proj{color:var(--mut2);font-size:12px;padding:8px 10px;cursor:pointer;border-radius:8px;}
 .add-proj:hover{background:var(--hover);color:var(--ink);}
+.proj-item{justify-content:space-between;}
+.proj-item .pname{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.proj-acts{display:flex;gap:1px;opacity:0;flex:none;}
+.proj-item:hover .proj-acts{opacity:1;}
+.pa{border:none;background:none;cursor:pointer;color:var(--mut2);font-size:12px;padding:3px 5px;border-radius:5px;line-height:1;font-family:inherit;}
+.pa:hover{background:var(--hover);color:var(--ink);}
+.pa.del:hover{color:#B04A3C;}
 .side-div{height:1px;background:var(--line);margin:12px 4px;}
 /* ===== 메인 ===== */
 .main{display:flex;flex-direction:column;overflow:hidden;}
@@ -269,7 +276,7 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
       CATS.map(function(c){var n=state.items.filter(function(it){return it.cat===c.name&&!it.done;}).length;
         return '<div class="cat-item'+(filterCat===c.name?" on":"")+'" data-cat="'+esc(c.name)+'"><span class="dot" style="background:'+c.color+'"></span>'+esc(c.name)+'<span class="cnt">'+(n||"")+'</span></div>';}).join("");
     var pl=document.getElementById("projList");
-    pl.innerHTML=state.projects.map(function(p){return '<div class="proj-item'+(filterProj===p?" on":"")+'" data-proj="'+esc(p)+'">'+esc(p)+'</div>';}).join("");
+    pl.innerHTML=state.projects.map(function(p,i){return '<div class="proj-item'+(filterProj===p?" on":"")+'" data-proj="'+esc(p)+'"><span class="pname">'+esc(p)+'</span><span class="proj-acts"><button class="pa" data-pedit="'+i+'" title="이름 변경">✎</button><button class="pa del" data-pdel="'+i+'" title="삭제">✕</button></span></div>';}).join("");
   }
 
   /* ---- 렌더: 메인 ---- */
@@ -461,6 +468,8 @@ body{font-family:"Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)
   document.querySelector(".side").addEventListener("click",function(e){
     var nv=e.target.closest(".nav-item"); if(nv){ view=nv.getAttribute("data-view"); [].forEach.call(document.querySelectorAll(".nav-item"),function(x){x.classList.toggle("on",x===nv);}); setSeg(); render(); return; }
     var ci=e.target.closest(".cat-item"); if(ci){ filterCat=ci.getAttribute("data-cat"); filterProj=""; render(); return; }
+    var pe=e.target.closest("[data-pedit]"); if(pe){ var ei=+pe.getAttribute("data-pedit"); var oldN=state.projects[ei]; var nn=prompt("프로젝트 이름 변경", oldN); if(nn&&nn.trim()&&nn.trim()!==oldN){ var newN=nn.trim(); state.items.forEach(function(it){if(it.project===oldN)it.project=newN;}); if(filterProj===oldN)filterProj=newN; state.projects[ei]=newN; save(); render(); } return; }
+    var pd=e.target.closest("[data-pdel]"); if(pd){ var di=+pd.getAttribute("data-pdel"); var pn=state.projects[di]; var cnt=state.items.filter(function(it){return it.project===pn;}).length; if(!confirm('"'+pn+'" 프로젝트를 삭제할까요?'+(cnt?("\n연결된 일정 "+cnt+"건은 \"프로젝트 없음\"으로 바뀝니다."):""))) return; state.items.forEach(function(it){if(it.project===pn)it.project="";}); if(filterProj===pn)filterProj=""; state.projects.splice(di,1); save(); render(); return; }
     var pi=e.target.closest(".proj-item"); if(pi){ var p=pi.getAttribute("data-proj"); filterProj=(filterProj===p?"":p); filterCat=""; render(); return; }
     if(e.target.id==="addProj"){ var n=prompt("새 프로젝트 이름"); if(n&&n.trim()){state.projects.push(n.trim());save();render();} }
   });
