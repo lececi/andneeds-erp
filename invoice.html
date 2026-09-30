@@ -506,6 +506,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
       <button class="btn" onclick="openLoadModal()">📂 불러오기</button>
       <button class="btn" onclick="saveInvoice()">💾 저장</button>
       <button class="btn" onclick="resetInvoice()">초기화</button>
+      <button class="btn" id="invExcelBtn" onclick="exportInvoiceExcel()">📊 엑셀</button>
       <button class="btn primary" onclick="printInvoice()">🖨️ PDF</button>
     </div>
   </div>
@@ -1196,5 +1197,234 @@ if(document.readyState!=='loading')setup();else document.addEventListener('DOMCo
 </style>
 <style id="submenu-size">.anv-panel-inner a{font-size:13px !important;}</style>
 <style id="menu-gap">.anv-panel-inner{margin-top:18px !important;}</style>
+<script>
+/* 인보이스 → 엑셀(.xlsx) 저장 — PDF와 같은 내용·순서, 금액은 수식(엑셀에서 수량·단가를 고치면 자동 재계산) */
+(function () {
+  var EXCELJS = "https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js";
+  function loadLib() {
+    if (window.ExcelJS) return Promise.resolve();
+    return new Promise(function (ok, fail) {
+      var s = document.createElement("script");
+      s.src = EXCELJS; s.onload = ok; s.onerror = function () { fail(new Error("엑셀 기능을 불러오지 못했어요 (인터넷 연결 확인)")); };
+      document.head.appendChild(s);
+    });
+  }
+  function val(id) { var el = document.getElementById(id); return el ? (el.value || "").trim() : ""; }
+  // 이미지 → PNG base64 (다른 사이트 사진이 막혀 있으면 건너뜀)
+  function toPng(src, maxPx) {
+    return new Promise(function (ok) {
+      if (!src) return ok(null);
+      var img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = function () {
+        try {
+          var k = Math.min(1, maxPx / Math.max(img.naturalWidth, img.naturalHeight));
+          var c = document.createElement("canvas");
+          c.width = Math.max(1, Math.round(img.naturalWidth * k)); c.height = Math.max(1, Math.round(img.naturalHeight * k));
+          c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+          ok({ base64: c.toDataURL("image/png").split(",")[1], w: c.width, h: c.height });
+        } catch (e) { ok(null); }
+      };
+      img.onerror = function () { ok(null); };
+      img.src = src;
+    });
+  }
+
+  window.exportInvoiceExcel = async function () {
+    var btn = document.getElementById("invExcelBtn");
+    if (btn) { btn.disabled = true; btn.textContent = "⏳ 만드는 중…"; }
+    try {
+      await loadLib();
+      var lb = labels[lang] || labels.ko;
+      var CUR = lang === "en" ? '"KRW "#,##0' : '"₩"#,##0';
+      var d = collectInvoiceData();
+      var rows = (d.rows || []).filter(function (x) { return (x.desc || "").trim() || x.price; }); // 빈 줄 제외
+      var hasImg = rows.some(function (r) { return r.imgUrl; });
+
+      var wb = new ExcelJS.Workbook();
+      wb.creator = "ANDNEEDS ERP";
+      var ws = wb.addWorksheet("Invoice", {
+        pageSetup: { paperSize: 9, orientation: "portrait", fitToPage: true, fitToWidth: 1, fitToHeight: 0, margins: { left: 0.4, right: 0.4, top: 0.5, bottom: 0.5, header: 0.2, footer: 0.2 } },
+        views: [{ showGridLines: false }]
+      });
+      // 열: [사진] 품목 | 수량 | 원가 | 할인율 | 할인가 | 금액 | 부가세
+      var cols = [];
+      if (hasImg) cols.push({ key: "img", width: 11 });
+      cols.push({ key: "desc", width: 36 }, { key: "qty", width: 8 }, { key: "price", width: 13 }, { key: "disc", width: 9 },
+        { key: "dprice", width: 13 }, { key: "total", width: 15 }, { key: "vat", width: 13 });
+      ws.columns = cols;
+      var N = cols.length, L = function (i) { return String.fromCharCode(64 + i); }; // 1 → A
+      var C = {}; cols.forEach(function (c, i) { C[c.key] = L(i + 1); });
+      var first = "A", last = L(N), half = Math.ceil(N / 2);
+      var thin = { style: "thin", color: { argb: "FFD9D5D0" } };
+      var dark = { style: "medium", color: { argb: "FF2E2E2E" } };
+      var FONT = "맑은 고딕";
+      function cell(ref, v, o) {
+        var c = ws.getCell(ref); c.value = v; o = o || {};
+        c.font = Object.assign({ name: FONT, size: 10, color: { argb: "FF1A1714" } }, o.font || {});
+        if (o.align) c.alignment = o.align;
+        if (o.fmt) c.numFmt = o.fmt;
+        if (o.fill) c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: o.fill } };
+        if (o.border) c.border = o.border;
+        return c;
+      }
+      var r = 1;
+
+      // ── 헤더: 로고 + INVOICE + 번호·날짜
+      var logo = await toPng((document.querySelector(".inv-logo img") || {}).src, 400);
+      if (logo) {
+        var lid = wb.addImage({ base64: logo.base64, extension: "png" });
+        var lh = 34, lw = Math.round(lh * logo.w / logo.h);
+        ws.addImage(lid, { tl: { col: 0.1, row: 0.3 }, ext: { width: lw, height: lh } });
+      }
+      ws.mergeCells(L(half + 1) + "1:" + last + "1");
+      cell(L(half + 1) + "1", lb.title || "INVOICE", { font: { size: 22, bold: true }, align: { horizontal: "right", vertical: "middle" } });
+      ws.getRow(1).height = 36;
+      [[lb.no, d.invoiceNumber], [lb.date, d.date], [lb.due, d.due]].forEach(function (p, i) {
+        var rr = 2 + i;
+        ws.mergeCells(L(N - 2) + rr + ":" + L(N - 1) + rr);
+        cell(L(N - 2) + rr, p[0], { font: { color: { argb: "FF8A8A8A" } }, align: { horizontal: "right" } });
+        cell(last + rr, p[1] || "", { align: { horizontal: "right" } });
+      });
+      r = 6;
+
+      // ── 공급자 / 청구처
+      var fromLines = (d.fromDetail || "").split("\n").filter(Boolean), toLines = (d.toDetail || "").split("\n").filter(Boolean);
+      var leftEnd = L(half - 1 > 0 ? half - 1 : 1), rightStart = L(half + 1);
+      ws.mergeCells(first + r + ":" + leftEnd + r); ws.mergeCells(rightStart + r + ":" + last + r);
+      cell(first + r, lb.from, { font: { size: 9, color: { argb: "FF8A8A8A" }, bold: true } });
+      cell(rightStart + r, lb.to, { font: { size: 9, color: { argb: "FF8A8A8A" }, bold: true } });
+      [first, rightStart].forEach(function (col) { ws.getCell(col + r).border = { bottom: thin }; });
+      r++;
+      ws.mergeCells(first + r + ":" + leftEnd + r); ws.mergeCells(rightStart + r + ":" + last + r);
+      cell(first + r, d.fromName || "", { font: { size: 12, bold: true } });
+      cell(rightStart + r, d.toName || "", { font: { size: 12, bold: true } });
+      r++;
+      for (var k = 0; k < Math.max(fromLines.length, toLines.length); k++) {
+        ws.mergeCells(first + r + ":" + leftEnd + r); ws.mergeCells(rightStart + r + ":" + last + r);
+        cell(first + r, fromLines[k] || "", { font: { color: { argb: "FF6B6560" } } });
+        cell(rightStart + r, toLines[k] || "", { font: { color: { argb: "FF6B6560" } } });
+        r++;
+      }
+      r++;
+
+      // ── 품목 표
+      var head = [];
+      if (hasImg) head.push("");
+      head.push(lb.desc, lb.qty, lb.price, lb.discount, lb.discprice, lb.total, lb.vat);
+      head.forEach(function (h, i) {
+        cell(L(i + 1) + r, h, { font: { bold: true, color: { argb: "FFFFFFFF" } }, fill: "FF2E2E2E", align: { horizontal: "center", vertical: "middle" } });
+      });
+      ws.getRow(r).height = 22;
+      var firstItem = r + 1;
+      r++;
+      for (var i = 0; i < rows.length; i++) {
+        var it = rows[i], rr = r;
+        var dprice = it.price * (1 - it.discount / 100), total = it.qty * dprice, vat = Math.round(total * it.vatRate / 100);
+        if (hasImg) cell(C.img + rr, "");
+        cell(C.desc + rr, it.desc || "", { align: { vertical: "middle", wrapText: true } });
+        cell(C.qty + rr, it.qty, { align: { horizontal: "center", vertical: "middle" }, fmt: "#,##0" });
+        cell(C.price + rr, it.price, { align: { vertical: "middle" }, fmt: CUR });
+        cell(C.disc + rr, it.discount / 100, { align: { horizontal: "center", vertical: "middle" }, fmt: "0%" });
+        cell(C.dprice + rr, { formula: C.price + rr + "*(1-" + C.disc + rr + ")", result: dprice }, { align: { vertical: "middle" }, fmt: CUR });
+        cell(C.total + rr, { formula: C.qty + rr + "*" + C.dprice + rr, result: total }, { align: { vertical: "middle" }, fmt: CUR, font: { bold: true } });
+        cell(C.vat + rr, { formula: "ROUND(" + C.total + rr + "*" + (it.vatRate / 100) + ",0)", result: vat }, { align: { vertical: "middle" }, fmt: CUR });
+        for (var cc = 1; cc <= N; cc++) ws.getCell(L(cc) + rr).border = { bottom: thin };
+        if (hasImg && it.imgUrl) {
+          var im = await toPng(it.imgUrl, 160);
+          if (im) {
+            var iid = wb.addImage({ base64: im.base64, extension: "png" });
+            ws.addImage(iid, { tl: { col: 0.12, row: rr - 1 + 0.08 }, ext: { width: 52, height: 52 } });
+          }
+          ws.getRow(rr).height = 46;
+        } else ws.getRow(rr).height = hasImg ? 46 : 22;
+        r++;
+      }
+      var lastItem = r - 1;
+      r++;
+
+      // ── 합계 (수식)
+      var sub = 0, vt = 0;
+      rows.forEach(function (it) { var t = it.qty * it.price * (1 - it.discount / 100); sub += t; vt += Math.round(t * it.vatRate / 100); });
+      var sums = [
+        [lb.subtotal, rows.length ? "SUM(" + C.total + firstItem + ":" + C.total + lastItem + ")" : "0", sub],
+        [lb.vatLbl, rows.length ? "SUM(" + C.vat + firstItem + ":" + C.vat + lastItem + ")" : "0", vt]
+      ];
+      var subRow = r;
+      sums.forEach(function (sm) {
+        ws.mergeCells(L(N - 2) + r + ":" + L(N - 1) + r);
+        cell(L(N - 2) + r, sm[0], { align: { horizontal: "right" }, font: { color: { argb: "FF6B6560" } } });
+        cell(last + r, { formula: sm[1], result: sm[2] }, { fmt: CUR, align: { horizontal: "right" } });
+        r++;
+      });
+      ws.mergeCells(L(N - 2) + r + ":" + L(N - 1) + r);
+      cell(L(N - 2) + r, lb.grand, { align: { horizontal: "right" }, font: { bold: true, size: 12 }, border: { top: dark } });
+      cell(last + r, { formula: last + subRow + "+" + last + (subRow + 1), result: sub + vt }, { fmt: CUR, align: { horizontal: "right" }, font: { bold: true, size: 12 }, border: { top: dark } });
+      ws.getCell(L(N - 1) + r).border = { top: dark };
+      r += 2;
+
+      // ── 입금 계좌
+      ws.mergeCells(first + r + ":" + last + r);
+      cell(first + r, lb.bank, { font: { size: 9, bold: true, color: { argb: "FF8A8A8A" } }, border: { bottom: thin } });
+      r++;
+      [[lb.bankname, d.bankName], [lb.account, d.bankAccount], [lb.holder, d.bankHolder], [lb.swift, d.bankSwift]].forEach(function (p) {
+        if (!p[1]) return;
+        cell(first + r, p[0], { font: { color: { argb: "FF8A8A8A" } } });
+        ws.mergeCells(L(2) + r + ":" + last + r);
+        cell(L(2) + r, p[1], { font: { bold: true } });
+        r++;
+      });
+      r++;
+
+      // ── 결제 조건 / 비고
+      [[lb.terms, val("terms-text")], [lb.notes, val("notes-text")]].forEach(function (p) {
+        if (!p[1]) return;
+        ws.mergeCells(first + r + ":" + last + r);
+        cell(first + r, p[0], { font: { size: 9, bold: true, color: { argb: "FF8A8A8A" } } });
+        r++;
+        p[1].split("\n").forEach(function (line) {
+          ws.mergeCells(first + r + ":" + last + r);
+          cell(first + r, line, { align: { wrapText: true } });
+          r++;
+        });
+        r++;
+      });
+
+      // ── 서명 (도장 포함)
+      var sigNames = Array.prototype.map.call(document.querySelectorAll(".inv-sig-box input[type=text]"), function (x) { return (x.value || "").trim(); });
+      ws.mergeCells(first + r + ":" + leftEnd + r); ws.mergeCells(rightStart + r + ":" + last + r);
+      cell(first + r, lb.sig1, { font: { size: 9, bold: true, color: { argb: "FF8A8A8A" } } });
+      cell(rightStart + r, lb.sig2, { font: { size: 9, bold: true, color: { argb: "FF8A8A8A" } } });
+      var sealRow = r;
+      r += 4;
+      ws.mergeCells(first + r + ":" + leftEnd + r); ws.mergeCells(rightStart + r + ":" + last + r);
+      cell(first + r, sigNames[0] || "", { border: { bottom: { style: "thin", color: { argb: "FF1A1714" } } } });
+      cell(rightStart + r, sigNames[1] || "", { border: { bottom: { style: "thin", color: { argb: "FF1A1714" } } } });
+      var sealEl = document.getElementById("sealImg");
+      var sealVisible = sealEl && sealEl.offsetParent !== null && getComputedStyle(sealEl).display !== "none";
+      if (sealVisible) {
+        var seal = await toPng(sealEl.src, 200);
+        if (seal) {
+          var sid = wb.addImage({ base64: seal.base64, extension: "png" });
+          ws.addImage(sid, { tl: { col: hasImg ? 1.2 : 0.6, row: sealRow + 0.2 }, ext: { width: 70, height: 70 } });
+        }
+      }
+
+      var buf = await wb.xlsx.writeBuffer();
+      var name = ("인보이스_" + (d.invoiceNumber || "") + (d.toName ? "_" + d.toName : "")).replace(/[\\/:*?"<>|]/g, "_") + ".xlsx";
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([buf], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }));
+      a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+      if (typeof showToast === "function") showToast("엑셀로 저장했어요 ✓");
+    } catch (e) {
+      alert("엑셀 저장 실패: " + ((e && e.message) || e));
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = "📊 엑셀"; }
+    }
+  };
+})();
+</script>
 </body>
 </html>
