@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<script>/*anniz-auth-guard*/window.__anvTok=function(){try{var a=JSON.parse(localStorage.getItem("anniz_auth")||"null");var t=a&&a.access_token;return (t&&typeof t==="string"&&t.slice(0,3)==="eyJ")?t:null;}catch(e){return null;}};(function(){var SBA="https://nifytqcqfattzpwlzpmb.supabase.co";var ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs";var K="anniz_auth";var s=null;try{s=JSON.parse(localStorage.getItem(K)||"null");}catch(e){}if(!s||!s.access_token){location.replace("login.html");return;}var now=Math.floor(Date.now()/1000);if(s.expires_at&&now>s.expires_at-60&&s.refresh_token){fetch(SBA+"/auth/v1/token?grant_type=refresh_token",{method:"POST",headers:{apikey:ANON,"Content-Type":"application/json"},body:JSON.stringify({refresh_token:s.refresh_token})}).then(function(r){return r.json();}).then(function(d){if(d&&d.access_token){localStorage.setItem(K,JSON.stringify({access_token:d.access_token,refresh_token:d.refresh_token,expires_at:d.expires_at,email:(d.user&&d.user.email)||s.email}));}else{localStorage.removeItem(K);location.replace("login.html");}}).catch(function(){});}window.annizLogout=function(){try{localStorage.removeItem(K);}catch(e){}location.replace("login.html");};})();</script>
+<script>/*anniz-auth-guard*/window.__anvTok=function(){try{var a=JSON.parse(localStorage.getItem("anniz_auth")||"null");var t=a&&a.access_token;return (t&&typeof t==="string"&&t.slice(0,3)==="eyJ")?t:null;}catch(e){return null;}};(function(){var SBA="https://nifytqcqfattzpwlzpmb.supabase.co";var ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs";var K="anniz_auth";var s=null;try{s=JSON.parse(localStorage.getItem(K)||"null");}catch(e){}if(!s||!s.access_token){location.replace("login.html");return;}var now=Math.floor(Date.now()/1000);if(s.expires_at&&now>s.expires_at-60&&s.refresh_token){fetch(SBA+"/auth/v1/token?grant_type=refresh_token",{method:"POST",headers:{apikey:ANON,"Content-Type":"application/json"},body:JSON.stringify({refresh_token:s.refresh_token})}).then(function(r){return r.json();}).then(function(d){if(d&&d.access_token){localStorage.setItem(K,JSON.stringify({access_token:d.access_token,refresh_token:d.refresh_token,expires_at:d.expires_at,email:(d.user&&d.user.email)||s.email}));}else{localStorage.removeItem(K);location.replace("login.html");}}).catch(function(){});}window.annizLogout=function(){try{localStorage.removeItem(K);}catch(e){}location.replace("login.html");};})();</script><script src="/erp-roles.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>상품별 마진 · Andneeds</title>
@@ -514,7 +514,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
   <a href="vault.html" class="mobile-menu-item">증빙보관함</a>
   <div class="mobile-menu-section">MARKETING</div>
   <a href="marketing.html" class="mobile-menu-item">마케팅 비용</a>
-  <a href="/crm" class="mobile-menu-item">Influencer CRM</a>
+  <a href="/app/influencers" class="mobile-menu-item">Influencer CRM</a>
 </div>
 
 <div class="layout">
@@ -547,7 +547,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
     collection:[["\uC0DD\uC0B0\uAD00\uB9AC","production.html"],["\uC774\uBBF8\uC9C0","studio.html"],["\uCF54\uB514 \uC2A4\uD29C\uB514\uC624","cody.html"],["영상 메이커","video.html"],["라인시트","linesheet.html"]],
     stock:[["\uC7AC\uACE0\uAD00\uB9AC","inventory.html"],["\uC0DD\uC0B0 MD","reorder.html"],["\uBC1C\uC8FC\uAD00\uB9AC","purchase.html"],["\uC8FC\uBB38\uD655\uC778","orders.html","disabled"]],
     business:[["세무비서","secretary.html"],["\uC778\uBCF4\uC774\uC2A4","invoice.html"],["\uBBF8\uC218\uAE08","receivables.html"],["\uBE44\uC6A9\uAD00\uB9AC","expenses.html"],["\uBD80\uAC00\uC138\uC13C\uD130","vat.html"],["\uC138\uBB34\uB9AC\uD3EC\uD2B8","taxreport.html"],["\uC99D\uBE59\uBCF4\uAD00\uD568","vault.html"]],
-    marketing:[["마케팅 비용","marketing.html"],["Influencer CRM","/crm"]]
+    marketing:[["마케팅 비용","marketing.html"],["Influencer CRM","/app/influencers"]]
   };
   var topLabels={performance:"PERFORMANCE",collection:"COLLECTION",stock:"STOCK",business:"BUSINESS",marketing:"MARKETING"};
   var bar=document.getElementById('anvBar'),menu=document.getElementById('anvMenu'),

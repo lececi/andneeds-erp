@@ -1,6 +1,11 @@
 {
   "rewrites": [
-    { "source": "/crm", "destination": "https://andneeds-crm.vercel.app/crm" },
-    { "source": "/crm/:path*", "destination": "https://andneeds-crm.vercel.app/crm/:path*" }
+    { "source": "/app", "destination": "https://andneeds-crm.vercel.app/app" },
+    { "source": "/app/:path*", "destination": "https://andneeds-crm.vercel.app/app/:path*" }
+  ],
+  "redirects": [
+    { "source": "/crm", "destination": "/app/influencers", "permanent": false },
+    { "source": "/crm/seeding", "destination": "/app/influencers/seeding", "permanent": false },
+    { "source": "/crm/:path*", "destination": "/app/influencers", "permanent": false }
   ]
 }
