@@ -50,7 +50,18 @@
     }
     function tidy() {
       var name = m.name || email.split("@")[0];
-      document.querySelectorAll(".anv-rlabel").forEach(function (el) { if (el.textContent !== name) el.textContent = name; });
+      document.querySelectorAll(".anv-rlabel").forEach(function (el) {
+        if (el.textContent !== name) el.textContent = name;
+        if (!el.getAttribute("data-acct")) {
+          el.setAttribute("data-acct", "1"); el.style.cursor = "pointer"; el.title = "내 계정 · 비밀번호 변경";
+          el.addEventListener("click", function () { location.href = "/app/account"; });
+        }
+      });
+      var mp = document.getElementById("mobileMenuPanel");
+      if (mp && !document.getElementById("anvAcctLink")) {
+        var a = document.createElement("a"); a.id = "anvAcctLink"; a.href = "/app/account"; a.className = "mobile-menu-item"; a.textContent = "내 계정 · 비밀번호 변경";
+        mp.appendChild(a);
+      }
       if (owner) return;
       document.querySelectorAll(".anv-tn[data-key]").forEach(function (b) { if (!ok(b.getAttribute("data-key"))) b.style.display = "none"; });
       document.querySelectorAll("a[href]").forEach(function (a) {
