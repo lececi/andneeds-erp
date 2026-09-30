@@ -78,15 +78,39 @@
   var fresh = cached && cached.email === email && Date.now() - cached.t < 5 * 60 * 1000;
   if (fresh) apply(cached.member);
   else document.documentElement.style.visibility = "hidden";
-  var failSafe = setTimeout(function () { document.documentElement.style.visibility = ""; }, 4000); // 네트워크 문제 시 화면은 보이게
-  fetch(SB + "/rest/v1/erp_members?select=email,name,role,menus,active&email=eq." + encodeURIComponent(email), {
-    headers: { apikey: ANON, Authorization: "Bearer " + auth.access_token }
-  }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(function (rows) {
-      clearTimeout(failSafe);
-      var m = rows && rows[0] ? rows[0] : null;
-      try { sessionStorage.setItem(CK, JSON.stringify({ email: email, member: m, t: Date.now() })); } catch (e) {}
-      if (!fresh || JSON.stringify(m) !== JSON.stringify(cached.member)) apply(m);
-    })
-    .catch(function () { clearTimeout(failSafe); document.documentElement.style.visibility = ""; });
+  var failSafe = setTimeout(function () { document.documentElement.style.visibility = ""; }, 9000); // 네트워크 문제 시 화면은 보이게
+  function currentToken() {
+    try { var x = JSON.parse(localStorage.getItem("anniz_auth") || "null"); return x && x.access_token; } catch (e) { return null; }
+  }
+  function lookup(token) {
+    return fetch(SB + "/rest/v1/erp_members?select=email,name,role,menus,active&email=eq." + encodeURIComponent(email), {
+      headers: { apikey: ANON, Authorization: "Bearer " + token }
+    });
+  }
+  function done(m) {
+    clearTimeout(failSafe);
+    try { sessionStorage.setItem(CK, JSON.stringify({ email: email, member: m, t: Date.now() })); } catch (e) {}
+    if (!fresh || JSON.stringify(m) !== JSON.stringify(cached.member)) apply(m);
+  }
+  function fallback() {
+    // 확인 실패: 예전에 확인한 권한이 있으면 그걸로, 없으면 화면만 보이게
+    clearTimeout(failSafe);
+    if (cached && cached.email === email) apply(cached.member);
+    else document.documentElement.style.visibility = "";
+  }
+  function attempt(token, tries) {
+    lookup(token).then(function (r) {
+      if (r.status === 401 && tries > 0) {
+        // 로그인 토큰이 막 만료된 경우: 로그인 확인 스크립트가 새 토큰을 받을 때까지 기다렸다가 다시
+        var waited = 0, iv = setInterval(function () {
+          var t = currentToken(); waited += 300;
+          if ((t && t !== token) || waited >= 6000) { clearInterval(iv); attempt(t || token, tries - 1); }
+        }, 300);
+        return;
+      }
+      if (!r.ok) throw new Error(r.status);
+      return r.json().then(function (rows) { done(rows && rows[0] ? rows[0] : null); });
+    }).catch(fallback);
+  }
+  attempt(auth.access_token, 1);
 })();
