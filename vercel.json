@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/crm", "destination": "https://andneeds-crm.vercel.app/crm" },
+    { "source": "/crm/:path*", "destination": "https://andneeds-crm.vercel.app/crm/:path*" }
+  ]
+}
