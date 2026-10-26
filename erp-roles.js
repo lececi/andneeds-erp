@@ -15,7 +15,7 @@
     "expenses.html": "business", "vat.html": "business", "taxreport.html": "business", "vault.html": "business",
     "marketing.html": "marketing"
   };
-  var FIRST = [["home", "home.html"], ["calendar", "calendar.html"], ["performance", "sales.html"], ["collection", "production.html"],
+  var FIRST = [["home", "home.html"], ["calendar", "/app/calendar"], ["performance", "sales.html"], ["collection", "production.html"],
     ["stock", "inventory.html"], ["business", "secretary.html"], ["marketing", "/app/influencers"]];
   var GROUP_LABEL = { performance: "PERFORMANCE", collection: "COLLECTION", stock: "STOCK", business: "BUSINESS", marketing: "MARKETING" };
 
@@ -31,7 +31,7 @@
   }
   function menuOf(href) {
     var f = fileOf(href);
-    if (f === "@app") return href.indexOf("/app/members") === 0 ? "owner" : "marketing";
+    if (f === "@app") return href.indexOf("/app/members") === 0 ? "owner" : href.indexOf("/app/calendar") === 0 ? "calendar" : "marketing";
     return PAGE_MENU[f] || null;
   }
 
