@@ -5,7 +5,7 @@
   var SB = "https://nifytqcqfattzpwlzpmb.supabase.co";
   var ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs";
   var PAGE_MENU = {
-    "home.html": "home", "calendar.html": "calendar", "calendar-legacy.html": "calendar", "planner-app.html": "calendar",
+    "home.html": "home", "calendar.html": "calendar", "calendar-legacy.html": "calendar", "planner-app.html": "calendar", "calendar-planner-shell.html": "calendar",
     "sales.html": "performance", "index.html": "performance", "sku.html": "performance", "margin.html": "performance",
     "unitmargin.html": "performance", "cafe24.html": "performance", "29cm.html": "performance", "influencer.html": "performance", "seongsu.html": "performance",
     "production.html": "collection", "studio.html": "collection", "cody.html": "collection", "cody-tool.html": "collection",
