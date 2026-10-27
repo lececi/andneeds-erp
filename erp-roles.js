@@ -5,7 +5,7 @@
   var SB = "https://nifytqcqfattzpwlzpmb.supabase.co";
   var ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pZnl0cWNxZmF0dHpwd2x6cG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTQxMzQsImV4cCI6MjA5NjQzMDEzNH0.0kE9ypuxzVNLuXwjHRTEsMxQ80vitqXjTUretQKXHUs";
   var PAGE_MENU = {
-    "home.html": "home", "calendar.html": "calendar", "calendar-legacy.html": "calendar", "planner-app.html": "calendar", "calendar-planner-shell.html": "calendar",
+    "home.html": "home", "home-legacy.html": "home", "calendar.html": "calendar", "calendar-legacy.html": "calendar", "planner-app.html": "calendar", "calendar-planner-shell.html": "calendar",
     "sales.html": "performance", "index.html": "performance", "sku.html": "performance", "margin.html": "performance",
     "unitmargin.html": "performance", "cafe24.html": "performance", "29cm.html": "performance", "influencer.html": "performance", "seongsu.html": "performance",
     "production.html": "collection", "studio.html": "collection", "cody.html": "collection", "cody-tool.html": "collection",
@@ -15,7 +15,7 @@
     "expenses.html": "business", "vat.html": "business", "taxreport.html": "business", "vault.html": "business",
     "marketing.html": "marketing"
   };
-  var FIRST = [["home", "home.html"], ["calendar", "/app/calendar"], ["performance", "sales.html"], ["collection", "production.html"],
+  var FIRST = [["home", "/app/home"], ["calendar", "/app/calendar"], ["performance", "sales.html"], ["collection", "production.html"],
     ["stock", "inventory.html"], ["business", "secretary.html"], ["marketing", "/app/influencers"]];
   var GROUP_LABEL = { performance: "PERFORMANCE", collection: "COLLECTION", stock: "STOCK", business: "BUSINESS", marketing: "MARKETING" };
 
@@ -31,7 +31,7 @@
   }
   function menuOf(href) {
     var f = fileOf(href);
-    if (f === "@app") return href.indexOf("/app/members") === 0 ? "owner" : href.indexOf("/app/calendar") === 0 ? "calendar" : "marketing";
+    if (f === "@app") return href.indexOf("/app/members") === 0 ? "owner" : href.indexOf("/app/calendar") === 0 ? "calendar" : href.indexOf("/app/home") === 0 ? "home" : "marketing";
     return PAGE_MENU[f] || null;
   }
 

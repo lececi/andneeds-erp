@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <script>
-try{var _s=JSON.parse(localStorage.getItem('anniz_auth')||'null');if(_s&&_s.access_token){location.replace('home.html');}}catch(e){}
+try{var _s=JSON.parse(localStorage.getItem('anniz_auth')||'null');if(_s&&_s.access_token){location.replace('/app/home');}}catch(e){}
 </script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -125,7 +125,7 @@ async function doLogin(){
     var d=await r.json();
     if(d&&d.access_token){
       localStorage.setItem('anniz_auth',JSON.stringify({access_token:d.access_token,refresh_token:d.refresh_token,expires_at:d.expires_at,email:(d.user&&d.user.email)||email}));
-      location.replace('home.html');
+      location.replace('/app/home');
     }else{
       err.textContent='이메일 또는 비밀번호가 올바르지 않아요.';
       btn.disabled=false;btn.textContent='로그인';
