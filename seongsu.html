@@ -1260,7 +1260,8 @@ function ssLoadSchedLocal(){ try{var a=localStorage.getItem('anniz_seongsu_roste
 async function ssSaveCloud(){ try{await sbFetch('sku_state',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify([{id:'seongsu_sales',payload:ssSales}])});}catch(e){} }
 async function ssSaveRosterCloud(){ try{await sbFetch('sku_state',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify([{id:'seongsu_roster',payload:ssRoster}])});}catch(e){} }
 async function ssSaveShiftCloud(){ try{await sbFetch('sku_state',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify([{id:'seongsu_shift',payload:ssShift}])});}catch(e){} }
-async function ssLoadCloud(){ try{var r=await sbFetch('sku_state?id=eq.seongsu_sales&select=payload'); if(r&&r[0]&&Array.isArray(r[0].payload)){var seen={}; ssSales.forEach(function(s){seen[s.id]=1;}); r[0].payload.forEach(function(s){if(s&&!seen[s.id]){ssSales.push(s);seen[s.id]=1;}});}}catch(e){} }
+// 클라우드가 기준 (2026-10-28~ 성수 매출은 로봇이 이지체인에서 매일 넣음). 브라우저에 남은 옛 데이터와 합치면 두 번 잡혀서 합치지 않는다
+async function ssLoadCloud(){ try{var r=await sbFetch('sku_state?id=eq.seongsu_sales&select=payload'); if(r&&r[0]&&Array.isArray(r[0].payload)){ssSales=r[0].payload.filter(function(s){return s;}); ssSaveLocal();}}catch(e){} }
 async function ssLoadSchedCloud(){ try{var r=await sbFetch('sku_state?id=eq.seongsu_roster&select=payload'); if(r&&r[0]&&Array.isArray(r[0].payload)&&r[0].payload.length){ if(!ssRoster.length)ssRoster=r[0].payload; }}catch(e){} try{var t=await sbFetch('sku_state?id=eq.seongsu_shift&select=payload'); if(t&&t[0]&&t[0].payload&&typeof t[0].payload==='object'){ if(!Object.keys(ssShift).length)ssShift=t[0].payload; }}catch(e){} }
 
 /* ===== 초기화 ===== */
