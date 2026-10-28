@@ -630,7 +630,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
 <script>
 (function(){
   var submenus={
-    performance:[["매출 대시보드","sales.html"],["\uB9E4\uCD9C\uD604\uD669","index.html"],["\uC190\uC775\uAD00\uB9AC","sku.html"],["PROFIT PREVIEW","margin.html"],["\uC0C1\uD488\uBCC4 \uB9C8\uC9C4","unitmargin.html"],["\uC790\uC0AC\uBAB0 \uB9E4\uCD9C","cafe24.html"],["29CM 매출","29cm.html"],["인플루언서 정산","influencer.html"],["\uC131\uC218\uC2A4\uD1A0\uC5B4","seongsu.html"]],
+    performance:[["매출 대시보드","sales.html"],["\uC190\uC775\uAD00\uB9AC","sku.html"],["PROFIT PREVIEW","margin.html"],["\uC0C1\uD488\uBCC4 \uB9C8\uC9C4","unitmargin.html"],["\uC790\uC0AC\uBAB0 \uB9E4\uCD9C","cafe24.html"],["29CM 매출","29cm.html"],["인플루언서 정산","influencer.html"],["\uC131\uC218\uC2A4\uD1A0\uC5B4","seongsu.html"]],
     collection:[["\uC0DD\uC0B0\uAD00\uB9AC","production.html"],["\uC774\uBBF8\uC9C0","studio.html"],["\uCF54\uB514 \uC2A4\uD29C\uB514\uC624","cody.html"],["영상 메이커","video.html"],["라인시트","linesheet.html"]],
     stock:[["\uC7AC\uACE0\uAD00\uB9AC","inventory.html"],["\uC0DD\uC0B0 MD","reorder.html"],["\uBC1C\uC8FC\uAD00\uB9AC","purchase.html"],["\uC8FC\uBB38\uD655\uC778","orders.html","disabled"]],
     business:[["세무비서","secretary.html"],["\uC778\uBCF4\uC774\uC2A4","invoice.html"],["\uBBF8\uC218\uAE08","receivables.html"],["\uBE44\uC6A9\uAD00\uB9AC","expenses.html"],["\uBD80\uAC00\uC138\uC13C\uD130","vat.html"],["\uC138\uBB34\uB9AC\uD3EC\uD2B8","taxreport.html"],["\uC99D\uBE59\uBCF4\uAD00\uD568","vault.html"]],
@@ -754,6 +754,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
         <button class="input-tab active" onclick="switchTab('manual',this)">직접 입력</button>
         <button class="input-tab" onclick="switchTab('upload',this)">파일 업로드</button>
       </div>
+      <div style="font-size:12.5px;color:#8A8A8A;background:#F6F5F3;border-radius:8px;padding:10px 14px;margin-bottom:14px;line-height:1.6;">29CM·무신사·자사몰·성수 매출은 <b>매일 자동으로</b> 들어와요. 여기서는 그 밖의 매출(기타)만 넣을 수 있어요. 매출 보기는 <a href="/app/sales" style="color:#1A1714;text-decoration:underline;">매출 대시보드</a>에서.</div>
       <div class="input-panel active" id="panel-manual">
         <div class="form-grid">
           <div class="form-group"><label class="form-label">날짜</label><input type="date" id="inp-date"></div>
@@ -1400,9 +1401,17 @@ function toggleCalendar(btn){
   render();
 }
 
+// 2026-10-28~ 이 채널들은 로봇이 매일 자동으로 넣는다 → 여기서 또 넣으면 매출이 두 번 잡혀서 막는다
+const AUTO_PLATFORMS=['29CM','무신사','자사몰','성수'];
+function autoBlocked(platform){
+  if(AUTO_PLATFORMS.indexOf(platform)<0) return false;
+  showToast(platform+' 매출은 매일 자동으로 들어와요. 여기서 넣으면 두 번 잡혀서 막았어요.');
+  return true;
+}
 async function addManual(){
   const date=document.getElementById('inp-date').value;
   const platform=document.getElementById('inp-platform').value;
+  if(autoBlocked(platform)) return;
   const original_sales=parseInt(document.getElementById('inp-sales').value)||0;
   const coupon=parseInt(document.getElementById('inp-coupon').value)||0;
   const net_sales=original_sales-coupon;
@@ -1448,6 +1457,7 @@ function selectPlat(name,btn){
 
 function handleFile(file){
   if(!file)return;
+  if(AUTO_PLATFORMS.indexOf(selectedPlatform)>=0){ document.getElementById('uploadResult').innerHTML='<span style="color:var(--danger)">'+selectedPlatform+' 매출은 매일 자동으로 들어와요. 파일을 올리면 두 번 잡혀서 업로드를 막았어요.</span>'; return; }
   const resultEl=document.getElementById('uploadResult');
   resultEl.textContent='파일 분석 중...';
   previewRows=[];
@@ -1633,6 +1643,7 @@ async function confirmSeongsu(){
 }
 async function confirmUpload(){
   if(previewRows.length===0)return;
+  if(previewRows.some(function(r){return AUTO_PLATFORMS.indexOf(r.platform)>=0;})){ showToast('자동으로 들어오는 채널이라 저장하지 않았어요.'); return; }
   if(seongsuPending && seongsuPending.length){ await confirmSeongsu(); return; }
   const btn=document.getElementById('confirmBtn');
   const total=previewRows.length;
@@ -1672,7 +1683,7 @@ loadData();
   <a href="/app/home" class="mobile-menu-item">HOME</a>
   <a href="/app/calendar" class="mobile-menu-item">CALENDAR</a>
   <div class="mobile-menu-section">PERFORMANCE</div>
-  <a href="index.html" class="mobile-menu-item">매출현황</a>
+  
   <a href="sku.html" class="mobile-menu-item">손익관리</a><a href="margin.html" class="mobile-menu-item">PROFIT PREVIEW</a><a href="unitmargin.html" class="mobile-menu-item">상품별 마진</a><a href="cafe24.html" class="mobile-menu-item">자사몰 매출</a><a href="29cm.html" class="mobile-menu-item">29CM 매출</a><a href="influencer.html" class="mobile-menu-item">인플루언서 정산</a><a href="seongsu.html" class="mobile-menu-item">성수스토어</a>
   <div class="mobile-menu-section">COLLECTION</div>
   <a href="production.html" class="mobile-menu-item">생산관리</a>
