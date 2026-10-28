@@ -131,7 +131,7 @@
     '.chips{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0 14px}',
     '.chip{border:1px solid rgba(0,0,0,.16);background:#fff;color:#333;border-radius:999px;padding:8px 13px;font-size:12.5px;cursor:pointer;font-family:inherit;transition:all .15s}',
     '.chip:hover{border-color:' + CONFIG.accent + ';background:' + CONFIG.accent + ';color:#fff}',
-    '.notice{text-align:center;font-size:11.5px;color:#8A8A8A;margin:0 0 12px;line-height:1.6}',
+    '.notice{text-align:center;font-size:11.5px;color:#7C7C7C;margin:0 0 12px;line-height:1.6}',
     '.ft{flex:0 0 auto;border-top:1px solid rgba(0,0,0,.09);background:#fff;padding:10px 12px;display:flex;align-items:flex-end;gap:8px}',
     'textarea{flex:1;border:0;outline:0;resize:none;font-family:inherit;font-size:13.5px;line-height:1.5;max-height:96px;padding:8px 4px;color:#222;background:transparent}',
     'textarea::placeholder{color:#B0B0B0}',
