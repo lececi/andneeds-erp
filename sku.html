@@ -572,8 +572,8 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
     </div>
 
     <div class="fee-row" id="feeRow" style="display:none;">
-      <span>29CM 기본 수수료율 <input type="number" id="feeBase" value="30" min="0" max="100" step="0.5" onchange="recompute()">%</span>
-      <span style="color:var(--text-3);">할인 10%마다 −1% 자동 적용 · 주문별 적용 후 평균 <b id="effRate" style="color:#8A8A8A;">—</b></span>
+      <span>29CM 수수료율 <input type="number" id="feeBase" value="28" min="0" max="100" step="0.5" onchange="recompute()">%</span>
+      <span style="color:var(--text-3);">할인과 관계없이 고정 비율 · 적용 평균 <b id="effRate" style="color:#8A8A8A;">—</b></span>
       <button class="upload-btn" style="margin-left:auto;" onclick="resetSales()">매출 초기화</button>
     </div>
 
@@ -613,7 +613,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
     </div>
 
     <div style="font-size:12px;color:var(--text-3);line-height:1.7;margin-top:6px;">
-      · 순이익 = 실판매액 − 수수료 − (개당원가×수량) · 수수료 = 기본 30%에서 주문 할인 10%마다 −1% (주문별 자동 계산) · 배송비 미반영.<br>
+      · 순이익 = 실판매액 − 수수료 − (개당원가×수량) · 수수료 = 실판매액 × 수수료율(29CM·무신사 28%) · 배송비 미반영.<br>
       · 원가는 <b>시즌별 생산정보</b>와 <b>재고현황(단가)</b> 둘 다 인식해요. 둘 다 올리면 더 많은 상품의 원가가 채워져요.<br>
       · 매출↔원가는 <b>상품명</b>으로 자동 연결해요. 이름이 다르면 "원가 미등록"에 들어가요. 숫자가 이상하면 상품명이 잘못 연결된 건 아닌지 확인해주세요.<br>
       · 취소·취소준비중 주문은 자동 제외돼요. 모든 데이터는 클라우드에 자동 저장돼요(폰·다른 기기 공유).
@@ -757,9 +757,8 @@ function computeJoin(){
   Object.values(SALESFILES).forEach(f=>f.rows.forEach(r=>{
     const k=norm(r.name);
     if(!prod[k]) prod[k]={key:k,name:r.name,num:r.num,qty:0,net:0,fee:0};
-    const disc = r.gross>0 ? (r.gross-r.net)/r.gross*100 : 0;
-    let red = Math.floor(disc/10); if(red<0) red=0;
-    let rate = base-red; if(rate<0) rate=0;
+    // 수수료는 할인과 관계없이 고정 비율 (2026-10-28 대표 확인: 29CM·무신사 모두 28%)
+    let rate = base; if(rate<0) rate=0;
     prod[k].qty+=r.qty; prod[k].net+=r.net; prod[k].fee+=r.net*rate/100;
     totalRev+=r.net; feeBaseSum+=r.net; weighted+=r.net*rate;
   }));
