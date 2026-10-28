@@ -11,7 +11,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --ink:#1A1714;--paper:#FFFFFF;--board:#ECECEE;--panel:#FFFFFF;
+  --ink:#1A1A1A;--paper:#FFFFFF;--board:#ECECEE;--panel:#FFFFFF;
   --line:#ECECEC;--line2:rgba(0,0,0,0.08);--muted:#8E939B;--accent:#2B6CB8;--danger:#C0392B;
 }
 html,body{height:100%;}
@@ -184,7 +184,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
       <div id="colorTools">
         <div class="swatches" id="swatches"></div>
         <div class="customc">
-          <input type="color" id="customColor" value="#1A1714" oninput="setColor(this.value)">
+          <input type="color" id="customColor" value="#1A1A1A" oninput="setColor(this.value)">
           <label>색 직접 고르기</label>
         </div>
       </div>
@@ -270,7 +270,7 @@ var ACC={
 
 /* ---------- 팔레트 (26FW + 기본) ---------- */
 var PALETTE=[
- ['오프화이트','#EFE9DF'],['블랙','#1A1714'],['차콜','#3A3A3C'],['코발트블루','#2C4B9B'],['가지','#4A2E3A'],
+ ['오프화이트','#EFE9DF'],['블랙','#1A1A1A'],['차콜','#3A3A3C'],['코발트블루','#2C4B9B'],['가지','#4A2E3A'],
  ['초콜릿','#4B3A2C'],['카멜','#B0855A'],['베이지','#CDBBA0'],['그레이','#9A938C'],['아이보리','#F4EFE6']
 ];
 
@@ -325,7 +325,7 @@ function onUpload(e){
         var maxW=180; var ratio=img.height/img.width;
         var it={id:++uid,kind:'img',src:ev.target.result,
           w:maxW, aspect:ratio, cx:c.x+i*24, cy:c.y+i*24, rot:0,
-          tint:'#1A1714', tintAmt:0, hue:0, z:++zTop};
+          tint:'#1A1A1A', tintAmt:0, hue:0, z:++zTop};
         items.push(it); renderItem(it); select(it);
       };
       img.src=ev.target.result;

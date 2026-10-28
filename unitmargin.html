@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#FFFFFF;--surface:#FFFFFF;--surface2:#F5F5F5;--border:rgba(0,0,0,0.08);--border-mid:rgba(0,0,0,0.14);--text:#1A1714;--text-2:#6B6560;--text-3:#A09A94;--danger:#BD090A;--success:#2E2E2E;}
+:root{--bg:#FFFFFF;--surface:#FFFFFF;--surface2:#F5F5F5;--border:rgba(0,0,0,0.08);--border-mid:rgba(0,0,0,0.14);--text:#1A1A1A;--text-2:#666666;--text-3:#9B9B9B;--danger:#BD090A;--success:#2E2E2E;}
 body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:#8A8A8A;font-size:15px;}
 
   .layout{display:flex;min-height:100vh;}
@@ -119,8 +119,8 @@ input:focus,select:focus{border-color:var(--text);}
 .mobile-menu-panel{position:fixed;top:0;left:0;bottom:0;width:240px;background:#fff;z-index:200;padding:20px 16px;transform:translateX(-100%);transition:transform 0.25s;}
 .mobile-menu-panel.open{transform:translateX(0);}
 .mobile-menu-logo{height:40px;display:flex;align-items:center;margin-bottom:24px;}
-.mobile-menu-item{display:flex;align-items:center;gap:10px;padding:12px 10px;border-radius:8px;font-size:15px;color:#6B6560;text-decoration:none;margin-bottom:4px;}
-.mobile-menu-item.active{background:#F5F5F5;color:#1A1714;font-weight:500;}
+.mobile-menu-item{display:flex;align-items:center;gap:10px;padding:12px 10px;border-radius:8px;font-size:15px;color:#666666;text-decoration:none;margin-bottom:4px;}
+.mobile-menu-item.active{background:#F5F5F5;color:#1A1A1A;font-weight:500;}
 .mobile-menu-item-disabled{opacity:0.4;pointer-events:none;}
 
 @media(max-width:768px){
@@ -193,7 +193,7 @@ input:focus,select:focus{border-color:var(--text);}
 .g-A{background:#E8F0FA;color:#8A8A8A;}
 .g-B{background:#F5F5F5;color:#8A8A8A;}
 .g-C{background:#FBF5EB;color:#B8962B;}
-.g-D{background:#F3EFEA;color:#6B6560;}
+.g-D{background:#F3EFEA;color:#666666;}
 .g-적자{background:var(--danger);color:#fff;}
 .code-cell{font-variant-numeric:tabular-nums;color:var(--text-2);white-space:nowrap;}
 .status-row{display:flex;gap:18px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--text-2);margin-top:14px;}
@@ -243,8 +243,8 @@ table td{padding:16px 20px;font-size:14px;}
 @media(max-width:768px){main{padding:24px 16px 76px;}.topbar{padding:0 16px;}}
 </style>
 <style id="navcolor-v1">
-.nav-item{color:#1A1714;}
-.nav-item:hover{color:#1A1714;background:var(--surface2);}
+.nav-item{color:#1A1A1A;}
+.nav-item:hover{color:#1A1A1A;background:var(--surface2);}
 .nav-item.active{color:#8A8A8A;background:var(--surface2);font-weight:500;}
 .nav-item.active span{border-color:rgba(0,0,0,0.11) !important;}
 </style>
@@ -367,43 +367,43 @@ body{padding-bottom:34px;}
 .um-wrap{max-width:1180px;margin:0 auto;}
 .um-hero{padding:2px 0 20px;border-bottom:1px solid rgba(0,0,0,0.11);margin-bottom:22px;}
 .um-eyebrow{font-size:12px;letter-spacing:0.22em;color:#8A8A8A;text-transform:uppercase;margin-bottom:8px;}
-.um-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:35px;font-weight:600;letter-spacing:0.02em;line-height:1;color:#1A1714;}
-.um-sub{font-size:14px;color:#A09A94;margin-top:9px;line-height:1.6;}
+.um-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:35px;font-weight:600;letter-spacing:0.02em;line-height:1;color:#1A1A1A;}
+.um-sub{font-size:14px;color:#9B9B9B;margin-top:9px;line-height:1.6;}
 .um-tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
-.um-tab{border:1px solid rgba(0,0,0,0.11);background:#F6F6F4;color:#6B6560;padding:8px 18px;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;}
+.um-tab{border:1px solid rgba(0,0,0,0.11);background:#F6F6F4;color:#666666;padding:8px 18px;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;}
 .um-tab:hover{border-color:rgba(0,0,0,0.11);}
 .um-tab.active{background:#2E2E2E;border-color:rgba(0,0,0,0.11);color:#fff;}
 .um-set,.um-set2{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:12px;}
-.um-setbox{display:inline-flex;align-items:center;gap:7px;background:#F6F6F4;padding:6px 12px;border-radius:8px;font-size:13.5px;color:#6B6560;}
-.um-setbox b{font-weight:600;color:#1A1714;}
+.um-setbox{display:inline-flex;align-items:center;gap:7px;background:#F6F6F4;padding:6px 12px;border-radius:8px;font-size:13.5px;color:#666666;}
+.um-setbox b{font-weight:600;color:#1A1A1A;}
 .um-setbox input{width:58px;text-align:right;padding:5px 7px;border:1px solid rgba(0,0,0,0.11);border-radius:8px;font-family:inherit;font-size:14px;background:#fff;outline:none;}
 .um-setbox input:focus{border-color:rgba(0,0,0,0.11);}
-.um-setbox i{font-style:normal;color:#A09A94;font-size:12px;}
-.um-chnote{font-size:12.5px;color:#A09A94;}
+.um-setbox i{font-style:normal;color:#9B9B9B;font-size:12px;}
+.um-chnote{font-size:12.5px;color:#9B9B9B;}
 .um-spacer{flex:1;}
 .um-modebtn{border:1px solid rgba(0,0,0,0.11);background:#fff;color:#8A8A8A;padding:7px 15px;border-radius:8px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;}
 .um-modebtn:hover{background:#EAF1FA;}
-.um-set2 input,.um-set2 select{font-family:inherit;font-size:14px;padding:8px 11px;border:1px solid rgba(0,0,0,0.11);border-radius:8px;background:#fff;color:#1A1714;outline:none;}
+.um-set2 input,.um-set2 select{font-family:inherit;font-size:14px;padding:8px 11px;border:1px solid rgba(0,0,0,0.11);border-radius:8px;background:#fff;color:#1A1A1A;outline:none;}
 .um-set2 input:focus,.um-set2 select:focus{border-color:rgba(0,0,0,0.11);}
 .um-set2 #um_search{flex:1;min-width:130px;}
 .um-custom input{width:62px;}
-.um-count{font-size:13px;color:#A09A94;}
+.um-count{font-size:13px;color:#9B9B9B;}
 .um-tablecard{background:#fff;border:1px solid rgba(0,0,0,0.11);border-radius:8px;overflow:hidden;}
 .um-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .um-tbl{width:100%;border-collapse:collapse;font-size:13.5px;min-width:860px;}
-.um-tbl th{color:#A09A94;font-weight:400;text-align:left;padding:11px 12px;font-size:12px;letter-spacing:0.02em;border-bottom:1px solid rgba(0,0,0,0.11);background:#F6F6F4;white-space:nowrap;}
+.um-tbl th{color:#9B9B9B;font-weight:400;text-align:left;padding:11px 12px;font-size:12px;letter-spacing:0.02em;border-bottom:1px solid rgba(0,0,0,0.11);background:#F6F6F4;white-space:nowrap;}
 .um-tbl th.num,.um-tbl td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
 .um-tbl th.cust,.um-tbl td.cust{background:#EAF1FA;}
 .um-tbl td{padding:10px 12px;border-bottom:1px solid rgba(0,0,0,0.11);}
 .um-tbl tbody tr:hover{background:rgba(43,108,184,0.03);}
-.um-tbl .pname{font-weight:500;color:#1A1714;white-space:nowrap;}
-.um-tbl .sub{color:#A09A94;}
-.um-tbl .mcell{color:#1A1714;font-weight:500;}
+.um-tbl .pname{font-weight:500;color:#1A1A1A;white-space:nowrap;}
+.um-tbl .sub{color:#9B9B9B;}
+.um-tbl .mcell{color:#1A1A1A;font-weight:500;}
 .um-tbl .mcell.thin{color:#C2790A;}
 .um-tbl .mcell.neg{color:#C2453B;}
-.um-empty{text-align:center;color:#A09A94;padding:36px 14px !important;}
-.um-note{font-size:12.5px;color:#A09A94;line-height:1.8;margin-top:14px;}
-.um-note b{color:#6B6560;}
+.um-empty{text-align:center;color:#9B9B9B;padding:36px 14px !important;}
+.um-note{font-size:12.5px;color:#9B9B9B;line-height:1.8;margin-top:14px;}
+.um-note b{color:#666666;}
 @media(max-width:760px){.um-title{font-size:28px;}.um-spacer{display:none;}}
 </style>
 <style id="topnav-v1">
@@ -594,7 +594,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
     <div style="display:flex;align-items:center;gap:8px;">
       <div class="mobile-header">
         <button onclick="openMobileMenu()" style="background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1714" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
       </div>
       <span class="topbar-title">상품별 마진 · 채널·할인별 손익</span>
@@ -754,7 +754,7 @@ function showDialog(){
   var ov=document.createElement('div');
   ov.id='anniz-logout-dialog';
   ov.style.cssText='position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(26,23,20,0.42);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);';
-  ov.innerHTML="<div style='background:#F6F4F1;border-radius:8px;padding:34px 30px 24px;max-width:320px;width:100%;text-align:center;font-family:inherit;box-shadow:0 16px 48px rgba(0,0,0,0.22);'><div style='font-size:17px;font-weight:600;color:#1A1714;margin-bottom:7px;'>\uB85C\uADF8\uC544\uC6C3 \uD558\uC2DC\uACA0\uC5B4\uC694?</div><div style='font-size:13px;color:#9A938C;margin-bottom:26px;'>\uB2E4\uC2DC \uBCF4\uB824\uBA74 \uB85C\uADF8\uC778\uC774 \uD544\uC694\uD574\uC694</div><div style='display:flex;gap:10px;'><button id='anniz-lo-cancel' style='flex:1;padding:13px;border:1px solid rgba(0,0,0,0.11);background:transparent;border-radius:8px;font-family:inherit;font-size:14px;color:#1A1714;cursor:pointer;'>\uCDE8\uC18C</button><button id='anniz-lo-ok' style='flex:1;padding:13px;border:none;background:#2E2E2E;color:#fff;border-radius:8px;font-family:inherit;font-size:14px;cursor:pointer;'>\uB85C\uADF8\uC544\uC6C3</button></div></div>";
+  ov.innerHTML="<div style='background:#F6F4F1;border-radius:8px;padding:34px 30px 24px;max-width:320px;width:100%;text-align:center;font-family:inherit;box-shadow:0 16px 48px rgba(0,0,0,0.22);'><div style='font-size:17px;font-weight:600;color:#1A1A1A;margin-bottom:7px;'>\uB85C\uADF8\uC544\uC6C3 \uD558\uC2DC\uACA0\uC5B4\uC694?</div><div style='font-size:13px;color:#9A938C;margin-bottom:26px;'>\uB2E4\uC2DC \uBCF4\uB824\uBA74 \uB85C\uADF8\uC778\uC774 \uD544\uC694\uD574\uC694</div><div style='display:flex;gap:10px;'><button id='anniz-lo-cancel' style='flex:1;padding:13px;border:1px solid rgba(0,0,0,0.11);background:transparent;border-radius:8px;font-family:inherit;font-size:14px;color:#1A1A1A;cursor:pointer;'>\uCDE8\uC18C</button><button id='anniz-lo-ok' style='flex:1;padding:13px;border:none;background:#2E2E2E;color:#fff;border-radius:8px;font-family:inherit;font-size:14px;cursor:pointer;'>\uB85C\uADF8\uC544\uC6C3</button></div></div>";
   document.body.appendChild(ov);
   function close(){ov.style.display='none';}
   ov.addEventListener('click',function(e){if(e.target===ov)close();});

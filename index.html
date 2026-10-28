@@ -11,7 +11,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#FFFFFF;--surface:#FFFFFF;--surface2:#F5F5F5;--border:rgba(0,0,0,0.08);--border-mid:rgba(0,0,0,0.14);--text:#1A1714;--text-2:#6B6560;--text-3:#A09A94;--danger:#BD090A;--success:#2E2E2E;}
+:root{--bg:#FFFFFF;--surface:#FFFFFF;--surface2:#F5F5F5;--border:rgba(0,0,0,0.08);--border-mid:rgba(0,0,0,0.14);--text:#1A1A1A;--text-2:#666666;--text-3:#9B9B9B;--danger:#BD090A;--success:#2E2E2E;}
 body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:#8A8A8A;font-size:15px;}
 
   .layout{display:flex;min-height:100vh;}
@@ -121,8 +121,8 @@ input:focus,select:focus{border-color:var(--text);}
 .mobile-menu-panel{position:fixed;top:0;left:0;bottom:0;width:240px;background:#fff;z-index:200;padding:20px 16px;transform:translateX(-100%);transition:transform 0.25s;}
 .mobile-menu-panel.open{transform:translateX(0);}
 .mobile-menu-logo{height:40px;display:flex;align-items:center;margin-bottom:24px;}
-.mobile-menu-item{display:flex;align-items:center;gap:10px;padding:12px 10px;border-radius:8px;font-size:15px;color:#6B6560;text-decoration:none;margin-bottom:4px;}
-.mobile-menu-item.active{background:#F5F5F5;color:#1A1714;font-weight:500;}
+.mobile-menu-item{display:flex;align-items:center;gap:10px;padding:12px 10px;border-radius:8px;font-size:15px;color:#666666;text-decoration:none;margin-bottom:4px;}
+.mobile-menu-item.active{background:#F5F5F5;color:#1A1A1A;font-weight:500;}
 .mobile-menu-item-disabled{opacity:0.4;pointer-events:none;}
 
 @media(max-width:768px){
@@ -216,8 +216,8 @@ table td{padding:16px 20px;font-size:14px;}
 @media(max-width:768px){main{padding:24px 16px 76px;}.topbar{padding:0 16px;}}
 </style>
 <style id="navcolor-v1">
-.nav-item{color:#1A1714;}
-.nav-item:hover{color:#1A1714;background:var(--surface2);}
+.nav-item{color:#1A1A1A;}
+.nav-item:hover{color:#1A1A1A;background:var(--surface2);}
 .nav-item.active{color:#8A8A8A;background:var(--surface2);font-weight:500;}
 .nav-item.active span{border-color:rgba(0,0,0,0.11) !important;}
 </style>
@@ -338,9 +338,9 @@ body{padding-bottom:34px;}
 <style id="mvp-v1">
 .metrics{gap:14px !important;margin-bottom:18px !important;grid-template-columns:repeat(auto-fit,minmax(180px,1fr)) !important;}
 .metric-card{background:#fff !important;border:1px solid rgba(0,0,0,0.11) !important;border-radius:8px;padding:22px 24px !important;}
-.metric-label{font-size:12px !important;letter-spacing:0.1em !important;color:#A09A94 !important;margin-bottom:14px !important;}
-.metric-value{font-size:30px !important;font-weight:600 !important;letter-spacing:-0.02em !important;color:#1A1714 !important;}
-.metric-sub{font-size:13px !important;color:#A09A94 !important;margin-top:9px !important;}
+.metric-label{font-size:12px !important;letter-spacing:0.1em !important;color:#9B9B9B !important;margin-bottom:14px !important;}
+.metric-value{font-size:30px !important;font-weight:600 !important;letter-spacing:-0.02em !important;color:#1A1A1A !important;}
+.metric-sub{font-size:13px !important;color:#9B9B9B !important;margin-top:9px !important;}
 .metric-card.highlight{background:#2E2E2E !important;border-color:rgba(0,0,0,0.11) !important;}
 .metric-card.highlight .metric-label{color:rgba(255,255,255,0.5) !important;}
 .metric-card.highlight .metric-value{color:#fff !important;}
@@ -349,12 +349,12 @@ body{padding-bottom:34px;}
 .chart-card,.input-card{padding:24px !important;}
 .platforms{gap:14px !important;margin-bottom:24px !important;grid-template-columns:repeat(auto-fit,minmax(170px,1fr)) !important;}
 .plat-card{background:#fff !important;border:1px solid rgba(0,0,0,0.11) !important;border-radius:8px;padding:20px 22px !important;}
-.plat-name{font-size:12px !important;letter-spacing:0.1em !important;color:#A09A94 !important;margin-bottom:10px !important;}
-.plat-val{font-size:21px !important;font-weight:600 !important;color:#1A1714 !important;}
-.plat-net{font-size:13px !important;color:#A09A94 !important;margin-top:3px !important;}
+.plat-name{font-size:12px !important;letter-spacing:0.1em !important;color:#9B9B9B !important;margin-bottom:10px !important;}
+.plat-val{font-size:21px !important;font-weight:600 !important;color:#1A1A1A !important;}
+.plat-net{font-size:13px !important;color:#9B9B9B !important;margin-top:3px !important;}
 .plat-bar{height:7px !important;background:#F0EFEC !important;border-radius:8px;margin-top:14px !important;}
 .plat-fill{background:#2E2E2E !important;border-radius:8px;}
-.sec-title{color:#A09A94 !important;letter-spacing:0.1em !important;}
+.sec-title{color:#9B9B9B !important;letter-spacing:0.1em !important;}
 .plat-filter-btn.active{background:#2E2E2E !important;border-color:rgba(0,0,0,0.11) !important;color:#fff !important;}
 .tab-btn.active{background:#2E2E2E !important;border-color:rgba(0,0,0,0.11) !important;color:#fff !important;}
 .btn-primary{background:#2E2E2E !important;border-radius:8px;}
@@ -364,29 +364,29 @@ body{padding-bottom:34px;}
 <style id="mvp-v2">
 .iv-info{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:24px;}
 .iv-icard{background:#fff;border:1px solid rgba(0,0,0,0.11);border-radius:8px;padding:22px 24px;}
-.iv-ititle{font-size:14px;font-weight:600;color:#1A1714;margin-bottom:14px;}
-.iv-lead{font-size:14px;color:#6B6560;margin-bottom:12px;}
+.iv-ititle{font-size:14px;font-weight:600;color:#1A1A1A;margin-bottom:14px;}
+.iv-lead{font-size:14px;color:#666666;margin-bottom:12px;}
 .iv-lead b{color:#8A8A8A;font-weight:700;}
 .iv-track{height:8px;background:#F0EFEC;border-radius:8px;overflow:hidden;margin-bottom:12px;}
 .iv-fill{height:100%;background:#2E2E2E;border-radius:8px;}
-.iv-row{display:flex;justify-content:space-between;font-size:13.5px;color:#6B6560;padding:5px 0;}
-.iv-row b{color:#1A1714;font-weight:600;}
-.iv-bignum{font-size:27px;font-weight:600;letter-spacing:-0.02em;color:#1A1714;}
-.iv-sub{font-size:13px;color:#A09A94;margin-top:8px;}
+.iv-row{display:flex;justify-content:space-between;font-size:13.5px;color:#666666;padding:5px 0;}
+.iv-row b{color:#1A1A1A;font-weight:600;}
+.iv-bignum{font-size:27px;font-weight:600;letter-spacing:-0.02em;color:#1A1A1A;}
+.iv-sub{font-size:13px;color:#9B9B9B;margin-top:8px;}
 .platforms{display:block !important;}
 .iv-toprow{display:flex;align-items:center;gap:14px;padding:9px 0;}
-.iv-rank{width:18px;text-align:center;color:#C4BDB4;font-size:14px;font-variant-numeric:tabular-nums;}
+.iv-rank{width:18px;text-align:center;color:#A7A7A7;font-size:14px;font-variant-numeric:tabular-nums;}
 .iv-tp{flex:1;min-width:0;}
 .iv-tpname{font-size:14px;margin-bottom:6px;display:flex;justify-content:space-between;gap:10px;}
 .iv-tpname .amt{font-weight:700;font-variant-numeric:tabular-nums;}
 .iv-tpbarwrap{display:flex;align-items:center;gap:10px;}
 .iv-tpbar{flex:1;height:7px;background:#F0EFEC;border-radius:8px;overflow:hidden;}
 .iv-tpbar>span{display:block;height:100%;background:#2E2E2E;border-radius:8px;}
-.iv-tpqty{font-size:12px;color:#A09A94;white-space:nowrap;}
+.iv-tpqty{font-size:12px;color:#9B9B9B;white-space:nowrap;}
 .iv-wdbars{display:flex;align-items:flex-end;gap:10px;height:160px;}
 .iv-wdcol{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;}
 .iv-wdbar{width:100%;background:#2E2E2E;border-radius:8px;}
-.iv-wdname{font-size:12px;color:#A09A94;margin-top:8px;}
+.iv-wdname{font-size:12px;color:#9B9B9B;margin-top:8px;}
 @media(max-width:760px){.iv-info{grid-template-columns:1fr;}}
 </style>
 <style id="mvp-v3">
@@ -403,53 +403,53 @@ body{padding-bottom:34px;}
 <style id="mvp-v4">
 .iv-chead,.iv-shead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;}
 .iv-shead{margin-bottom:14px;}
-.iv-ctitle{font-size:16px;font-weight:600;color:#1A1714;}
+.iv-ctitle{font-size:16px;font-weight:600;color:#1A1A1A;}
 .iv-seg{display:inline-flex;background:#F0EFEC;border-radius:8px;padding:3px;gap:2px;}
-.iv-tpqty.qty-strong{color:#1A1714;font-weight:700;}
-.iv-tpname .amt.amt-strong{color:#1A1714;}
-.iv-segbtn{border:none;background:transparent;color:#6B6560;font-size:13px;font-weight:500;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;}
+.iv-tpqty.qty-strong{color:#1A1A1A;font-weight:700;}
+.iv-tpname .amt.amt-strong{color:#1A1A1A;}
+.iv-segbtn{border:none;background:transparent;color:#666666;font-size:13px;font-weight:500;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;}
 .iv-segbtn.active{background:#2E2E2E;color:#fff;}
 @media(max-width:600px){.iv-chead,.iv-shead{flex-direction:column;align-items:flex-start;}.iv-seg{width:100%;}.iv-segbtn{flex:1;text-align:center;}}
 </style>
 <style id="mvp-v5">
-.iv-nrnote{font-size:13px;color:#6B6560;font-weight:500;}
+.iv-nrnote{font-size:13px;color:#666666;font-weight:500;}
 .iv-nrbar{display:flex;height:12px;border-radius:8px;overflow:hidden;margin-bottom:18px;background:#F0EFEC;}
 .iv-nrnew{background:#2E2E2E;}.iv-nrre{background:#2E2E2E;}
 .iv-nrrow{display:flex;gap:16px;}
 .iv-nrcell{flex:1;display:flex;flex-direction:column;gap:4px;}
-.iv-nrk{font-size:13px;color:#6B6560;display:flex;align-items:center;gap:6px;}
+.iv-nrk{font-size:13px;color:#666666;display:flex;align-items:center;gap:6px;}
 .iv-nrk .dot{width:8px;height:8px;border-radius:8px;display:inline-block;}.dot.new{background:#2E2E2E;}.dot.re{background:#2E2E2E;}
-.iv-nrcell b{font-size:16px;color:#1A1714;font-weight:600;}
-.iv-nrsub{font-size:13px;color:#A09A94;}
-.iv-nrcaption{font-size:12px;color:#C4BDB4;margin-top:16px;line-height:1.5;}
+.iv-nrcell b{font-size:16px;color:#1A1A1A;font-weight:600;}
+.iv-nrsub{font-size:13px;color:#9B9B9B;}
+.iv-nrcaption{font-size:12px;color:#A7A7A7;margin-top:16px;line-height:1.5;}
 </style>
 <style id="mvp-v6">
 .mtblcard{padding:0 !important;overflow:hidden;}
 .mtbl{width:100%;border-collapse:collapse;font-size:14px;}
-.mtbl th{text-align:left;padding:13px 16px;font-size:12px;font-weight:600;color:#A09A94;border-bottom:1px solid rgba(0,0,0,0.11);background:#FAFAF8;}
+.mtbl th{text-align:left;padding:13px 16px;font-size:12px;font-weight:600;color:#9B9B9B;border-bottom:1px solid rgba(0,0,0,0.11);background:#FAFAF8;}
 .mtbl th.num,.mtbl td.num{text-align:right;}
-.mtbl td{padding:12px 16px;border-bottom:1px solid rgba(0,0,0,0.11);color:#1A1714;font-variant-numeric:tabular-nums;}
+.mtbl td{padding:12px 16px;border-bottom:1px solid rgba(0,0,0,0.11);color:#1A1A1A;font-variant-numeric:tabular-nums;}
 .mtbl td.mh{font-weight:600;}
 .mtbl td.b{font-weight:600;}
-.mtbl td.g{color:#A09A94;}
+.mtbl td.g{color:#9B9B9B;}
 .mtbl tr.mtot td{background:#FAFAF8;font-weight:700;border-top:1.5px solid rgba(0,0,0,0.11);border-bottom:none;}
 .mtbl tr.mtot td.g{font-weight:600;}
 </style>
 <style id="mvp-v7">
 .mnav{display:flex;align-items:center;justify-content:center;gap:22px;margin-bottom:22px;}
-.mnav-btn{width:38px;height:38px;border:1px solid rgba(0,0,0,0.11);background:#fff;border-radius:8px;font-size:19px;color:#1A1714;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.mnav-btn{width:38px;height:38px;border:1px solid rgba(0,0,0,0.11);background:#fff;border-radius:8px;font-size:19px;color:#1A1A1A;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;transition:all .15s;}
 .mnav-btn:hover:not(:disabled){background:#2E2E2E;color:#fff;border-color:rgba(0,0,0,0.11);}
 .mnav-btn:disabled{opacity:.28;cursor:default;}
-.mnav-label{font-size:18px;font-weight:600;color:#1A1714;min-width:128px;text-align:center;}
+.mnav-label{font-size:18px;font-weight:600;color:#1A1A1A;min-width:128px;text-align:center;}
 .mbig{text-align:center;padding:16px 0 22px;border-bottom:1px solid rgba(0,0,0,0.11);margin-bottom:18px;}
-.mbig-k{display:block;font-size:13px;color:#A09A94;margin-bottom:8px;}
-.mbig-v{display:block;font-size:33px;font-weight:600;letter-spacing:-0.02em;color:#1A1714;line-height:1;font-variant-numeric:tabular-nums;}
+.mbig-k{display:block;font-size:13px;color:#9B9B9B;margin-bottom:8px;}
+.mbig-v{display:block;font-size:33px;font-weight:600;letter-spacing:-0.02em;color:#1A1A1A;line-height:1;font-variant-numeric:tabular-nums;}
 .mbig i{display:inline-block;margin-top:10px;font-size:14px;font-style:normal;font-weight:600;}
-.mbig i.up{color:#2F8F5B;}.mbig i.down{color:#C2453B;}.mbig i.flat{color:#A09A94;font-weight:500;}
+.mbig i.up{color:#2F8F5B;}.mbig i.down{color:#C2453B;}.mbig i.flat{color:#9B9B9B;font-weight:500;}
 .mstat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
 .mstat{text-align:center;padding:12px 6px;background:#FAFAF8;border-radius:8px;}
-.mstat span{display:block;font-size:12px;color:#A09A94;margin-bottom:6px;}
-.mstat b{font-size:15px;font-weight:600;color:#1A1714;font-variant-numeric:tabular-nums;}
+.mstat span{display:block;font-size:12px;color:#9B9B9B;margin-bottom:6px;}
+.mstat b{font-size:15px;font-weight:600;color:#1A1A1A;font-variant-numeric:tabular-nums;}
 @media(max-width:600px){.mstat-grid{grid-template-columns:repeat(2,1fr);}.mnav-label{font-size:17px;}}
 </style>
 <style id="mvp-v8">
@@ -461,25 +461,25 @@ body{padding-bottom:34px;}
 <style id="mvp-v9">
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap;}
 .cal-nav-left{display:flex;align-items:center;gap:14px;}
-.cal-nav-btn{background:#fff;border:1px solid rgba(0,0,0,0.11);border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:17px;color:#1A1714;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.cal-nav-btn{background:#fff;border:1px solid rgba(0,0,0,0.11);border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:17px;color:#1A1A1A;display:flex;align-items:center;justify-content:center;transition:all .15s;}
 .cal-nav-btn:hover{background:#2E2E2E;color:#fff;border-color:rgba(0,0,0,0.11);}
-.cal-month-label{font-size:18px;font-weight:600;color:#1A1714;min-width:120px;text-align:center;}
-.cal-month-total{font-size:14px;color:#6B6560;}
+.cal-month-label{font-size:18px;font-weight:600;color:#1A1A1A;min-width:120px;text-align:center;}
+.cal-month-total{font-size:14px;color:#666666;}
 .cal-month-total b{color:#8A8A8A;font-weight:700;}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
-.cal-day-name{text-align:center;font-size:12px;font-weight:600;color:#A09A94;padding:4px 0 8px;letter-spacing:.02em;}
+.cal-day-name{text-align:center;font-size:12px;font-weight:600;color:#9B9B9B;padding:4px 0 8px;letter-spacing:.02em;}
 .cal-day-name.sun{color:#C2705A;}
 .cal-day-name.sat{color:#5B86B5;}
 .cal-cell{position:relative;border-radius:8px;min-height:76px;padding:9px;background:#FAFAF8;border:1px solid rgba(0,0,0,0.11);cursor:default;transition:transform .12s,box-shadow .12s;overflow:hidden;}
 .cal-cell.empty{background:transparent;border:none;}
 .cal-cell.has-data{cursor:pointer;}
 .cal-cell.has-data:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(43,108,184,0.22);}
-.cal-cell.today{outline:2px solid #1A1714;outline-offset:-2px;}
-.cal-date{position:relative;font-size:13px;font-weight:600;color:#1A1714;opacity:.5;line-height:1;}
+.cal-cell.today{outline:2px solid #1A1A1A;outline-offset:-2px;}
+.cal-date{position:relative;font-size:13px;font-weight:600;color:#1A1A1A;opacity:.5;line-height:1;}
 .cal-cell.heat-strong .cal-date{color:#fff;opacity:.92;}
-.cal-amt{position:absolute;left:8px;right:8px;bottom:8px;font-size:13px;font-weight:700;color:#1A1714;letter-spacing:-0.02em;white-space:nowrap;}
+.cal-amt{position:absolute;left:8px;right:8px;bottom:8px;font-size:13px;font-weight:700;color:#1A1A1A;letter-spacing:-0.02em;white-space:nowrap;}
 .cal-cell.heat-strong .cal-amt{color:#fff;}
-.cal-legend{display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-top:16px;font-size:12px;color:#A09A94;}
+.cal-legend{display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-top:16px;font-size:12px;color:#9B9B9B;}
 .cal-legend-bar{width:120px;height:8px;border-radius:8px;background:linear-gradient(90deg,rgba(43,108,184,0.12),#2E2E2E);}
 @media(max-width:600px){.cal-cell{min-height:56px;padding:5px;border-radius:8px;}.cal-amt{font-size:11px;left:5px;right:5px;bottom:5px;letter-spacing:-0.03em;}.cal-month-total{display:none;}}
 </style>
@@ -494,9 +494,9 @@ body{padding-bottom:34px;}
 .iv-wdtip .t2{font-size:11.5px;color:rgba(255,255,255,0.6);}
 .iv-wdtip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:rgba(26,23,20,0.96);}
 .iv-wdcol:hover .iv-wdtip{opacity:1;}
-.iv-wdcap{text-align:center;margin-top:16px;font-size:13.5px;color:#6B6560;}
+.iv-wdcap{text-align:center;margin-top:16px;font-size:13.5px;color:#666666;}
 .iv-wdcap b{color:#8A8A8A;font-weight:700;}
-.iv-wdcap .iv-wdper{color:#A09A94;font-weight:600;}
+.iv-wdcap .iv-wdper{color:#9B9B9B;font-weight:600;}
 </style>
 <style id="platlink-v1">
 #platFilters .plat-link{margin-left:10px;background:#2E2E2E;border-color:rgba(0,0,0,0.11);color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:3px;border-radius:8px;padding:5px 14px;font-size:13px;}
@@ -698,7 +698,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
     <div style="display:flex;align-items:center;gap:8px;">
       <div class="mobile-header">
         <button onclick="openMobileMenu()" style="background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1714" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
       </div>
       <span class="topbar-title">매출현황</span>
@@ -754,7 +754,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
         <button class="input-tab active" onclick="switchTab('manual',this)">직접 입력</button>
         <button class="input-tab" onclick="switchTab('upload',this)">파일 업로드</button>
       </div>
-      <div style="font-size:12.5px;color:#8A8A8A;background:#F6F5F3;border-radius:8px;padding:10px 14px;margin-bottom:14px;line-height:1.6;">29CM·무신사·자사몰·성수 매출은 <b>매일 자동으로</b> 들어와요. 여기서는 그 밖의 매출(기타)만 넣을 수 있어요. 매출 보기는 <a href="/app/sales" style="color:#1A1714;text-decoration:underline;">매출 대시보드</a>에서.</div>
+      <div style="font-size:12.5px;color:#8A8A8A;background:#F6F5F3;border-radius:8px;padding:10px 14px;margin-bottom:14px;line-height:1.6;">29CM·무신사·자사몰·성수 매출은 <b>매일 자동으로</b> 들어와요. 여기서는 그 밖의 매출(기타)만 넣을 수 있어요. 매출 보기는 <a href="/app/sales" style="color:#1A1A1A;text-decoration:underline;">매출 대시보드</a>에서.</div>
       <div class="input-panel active" id="panel-manual">
         <div class="form-grid">
           <div class="form-group"><label class="form-label">날짜</label><input type="date" id="inp-date"></div>
@@ -1020,8 +1020,8 @@ function renderChart() {
         }
       },
       scales:{
-        x:{ticks:{color:'#A09A94',font:{size:11},autoSkip:true,maxRotation:0},grid:{display:false},border:{display:false}},
-        y:{ticks:{color:'#A09A94',font:{size:11},callback:v=>v>=10000?(v/10000).toLocaleString()+'만':Math.round(v).toLocaleString()},grid:{color:'rgba(0,0,0,0.05)'},border:{display:false}}
+        x:{ticks:{color:'#9B9B9B',font:{size:11},autoSkip:true,maxRotation:0},grid:{display:false},border:{display:false}},
+        y:{ticks:{color:'#9B9B9B',font:{size:11},callback:v=>v>=10000?(v/10000).toLocaleString()+'만':Math.round(v).toLocaleString()},grid:{color:'rgba(0,0,0,0.05)'},border:{display:false}}
       }
     }
   });
@@ -1178,7 +1178,7 @@ function _ymd(dt){return dt.getFullYear()+'-'+('0'+(dt.getMonth()+1)).slice(-2)+
 function setTopSort(m){topSortMode=m;renderTopProducts();}
 function renderTopProducts(){
   var el=document.getElementById('ivTop'); if(!el) return;
-  if(!salesDetail.length && !seongsuSales.length){ el.innerHTML='<div class="iv-shead"><span class="sec-title">상품별 매출 TOP</span></div><div class="chart-card"><div style="color:#A09A94;font-size:14px;padding:10px 0;line-height:1.7;">29CM 주문상품 엑셀을 업로드하면<br>상품별 매출 TOP이 여기 표시돼요.</div></div>'; return; }
+  if(!salesDetail.length && !seongsuSales.length){ el.innerHTML='<div class="iv-shead"><span class="sec-title">상품별 매출 TOP</span></div><div class="chart-card"><div style="color:#9B9B9B;font-size:14px;padding:10px 0;line-height:1.7;">29CM 주문상품 엑셀을 업로드하면<br>상품별 매출 TOP이 여기 표시돼요.</div></div>'; return; }
   if(!ensurePer()){el.innerHTML='';return;}
   var w=perWindow();
   var src=salesDetail.concat(seongsuDetail()).filter(function(r){var p=(r.platform||'29CM'); if(platFilter==='전체')return true; if(platFilter==='온라인')return p!=='성수'; return p===platFilter;});
@@ -1187,7 +1187,7 @@ function renderTopProducts(){
   src.forEach(function(r){if(!pmap[r.product])pmap[r.product]={net:0,qty:0};pmap[r.product].net+=r.net;pmap[r.product].qty+=1;});
   var rows=Object.entries(pmap).sort(function(a,b){return topSortMode==='count'?(b[1].qty-a[1].qty)||(b[1].net-a[1].net):(b[1].net-a[1].net)||(b[1].qty-a[1].qty);}).slice(0,10);
   var inner;
-  if(!rows.length){ inner=''+(platFilter!=='전체'?'<div style="color:#A09A94;font-size:14px;padding:18px 0;text-align:center;line-height:1.7;">'+platFilter+' 상품 데이터가 없어요.<br><span style="color:#C4BDB4;">(상품·고객 분석은 29CM 상세 엑셀만 지원)</span></div>':'<div style="color:#A09A94;font-size:14px;padding:18px 0;text-align:center;line-height:1.7;">이 기간엔 상품 데이터가 없어요.<br><span style="color:#C4BDB4;">(해당 기간 29CM 엑셀을 올리면 표시돼요)</span></div>')+''; }
+  if(!rows.length){ inner=''+(platFilter!=='전체'?'<div style="color:#9B9B9B;font-size:14px;padding:18px 0;text-align:center;line-height:1.7;">'+platFilter+' 상품 데이터가 없어요.<br><span style="color:#A7A7A7;">(상품·고객 분석은 29CM 상세 엑셀만 지원)</span></div>':'<div style="color:#9B9B9B;font-size:14px;padding:18px 0;text-align:center;line-height:1.7;">이 기간엔 상품 데이터가 없어요.<br><span style="color:#A7A7A7;">(해당 기간 29CM 엑셀을 올리면 표시돼요)</span></div>')+''; }
   else { var _metric=function(v){return topSortMode==='count'?v.qty:v.net;}; var mx=_metric(rows[0][1])||1; inner='<div class="platforms">'+rows.map(function(e,i){var name=e[0],v=e[1];var amtCls=topSortMode==='count'?'':' amt-strong';var qtyCls=topSortMode==='count'?' qty-strong':'';return '<div class="iv-toprow"><div class="iv-rank">'+(i+1)+'</div><div class="iv-tp"><div class="iv-tpname"><span>'+esc(name)+'</span><span class="amt'+amtCls+'">'+fmt(v.net)+'</span></div><div class="iv-tpbarwrap"><div class="iv-tpbar"><span style="width:'+Math.round(_metric(v)/mx*100)+'%"></span></div><span class="iv-tpqty'+qtyCls+'">'+v.qty+'건</span></div></div></div>';}).join('')+'</div>'; }
   var _seg='<div class="iv-seg"><button class="iv-segbtn'+(topSortMode==='amount'?' active':'')+'" onclick="setTopSort(&#39;amount&#39;)">금액별</button><button class="iv-segbtn'+(topSortMode==='count'?' active':'')+'" onclick="setTopSort(&#39;count&#39;)">건수별</button></div>';
   el.innerHTML='<div class="iv-shead"><span class="sec-title">상품별 매출 TOP</span>'+_seg+'</div><div class="chart-card">'+inner+'</div>';
@@ -1197,9 +1197,9 @@ function renderNewReturning(){
   if(!salesDetail.length){el.innerHTML='';return;}
   if(!ensurePer()){el.innerHTML='';return;}
   var w=perWindow();
-  if(platFilter==='성수'){ el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span></div><div class="chart-card"><div style="text-align:center;color:#A09A94;font-size:14px;padding:18px 0;line-height:1.7;">오프라인(성수)은 재구매 추적이 안 돼요.<br><span style="color:#C4BDB4;">(매장은 고객 식별이 어려워요)</span></div></div>'; return; }
+  if(platFilter==='성수'){ el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span></div><div class="chart-card"><div style="text-align:center;color:#9B9B9B;font-size:14px;padding:18px 0;line-height:1.7;">오프라인(성수)은 재구매 추적이 안 돼요.<br><span style="color:#A7A7A7;">(매장은 고객 식별이 어려워요)</span></div></div>'; return; }
   var pool=salesDetail.filter(function(r){var p=(r.platform||'29CM'); if(p==='성수')return false; if(platFilter==='전체'||platFilter==='온라인')return true; return p===platFilter;});
-  if(!pool.length){ el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span></div><div class="chart-card"><div style="text-align:center;color:#A09A94;font-size:14px;padding:18px 0;line-height:1.7;">'+platFilter+' 고객 데이터가 없어요.<br><span style="color:#C4BDB4;">(신규/재구매 분석은 29CM 상세 엑셀만 지원)</span></div></div>'; return; }
+  if(!pool.length){ el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span></div><div class="chart-card"><div style="text-align:center;color:#9B9B9B;font-size:14px;padding:18px 0;line-height:1.7;">'+platFilter+' 고객 데이터가 없어요.<br><span style="color:#A7A7A7;">(신규/재구매 분석은 29CM 상세 엑셀만 지원)</span></div></div>'; return; }
   var orders={};
   pool.forEach(function(r){ if(!r.order)return; if(!orders[r.order])orders[r.order]={buyer:r.buyer,cust:(r.cust||r.buyer),date:r.date,net:0,onet:null}; if(r.onet!=null){orders[r.order].onet=r.onet;}else{orders[r.order].net+=r.net;} if(r.date<orders[r.order].date)orders[r.order].date=r.date; });
   var ol=Object.keys(orders).map(function(k){return {id:k,buyer:orders[k].buyer,cust:orders[k].cust,date:orders[k].date,net:(orders[k].onet!=null?orders[k].onet:orders[k].net)};}).filter(function(o){return o.net>0;});
@@ -1210,7 +1210,7 @@ function renderNewReturning(){
   var nNew=0,nRe=0,sNew=0,sRe=0;
   ol.forEach(function(o){ if(!inWin(o.date))return; var key=o.cust||o.buyer||o.id; if(first[key].id===o.id){nNew++;sNew+=o.net;}else{nRe++;sRe+=o.net;} });
   var realTot=nNew+nRe; var pNew=realTot?Math.round(nNew/realTot*100):0; var pRe=realTot?100-pNew:0;
-  if(!realTot){ el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span></div><div class="chart-card"><div style="text-align:center;color:#A09A94;font-size:14px;padding:18px 0;line-height:1.7;">이 기간엔 주문 데이터가 없어요.<br><span style="color:#C4BDB4;">(해당 기간 29CM 엑셀을 올리면 표시돼요)</span></div></div>'; return; }
+  if(!realTot){ el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span></div><div class="chart-card"><div style="text-align:center;color:#9B9B9B;font-size:14px;padding:18px 0;line-height:1.7;">이 기간엔 주문 데이터가 없어요.<br><span style="color:#A7A7A7;">(해당 기간 29CM 엑셀을 올리면 표시돼요)</span></div></div>'; return; }
   el.innerHTML='<div class="iv-shead"><span class="sec-title">신규 vs 재구매</span><span class="iv-nrnote">재구매율 '+pRe+'%</span></div>'+
    '<div class="chart-card"><div class="iv-nrbar"><span class="iv-nrnew" style="width:'+pNew+'%"></span><span class="iv-nrre" style="width:'+pRe+'%"></span></div>'+
    '<div class="iv-nrrow"><div class="iv-nrcell"><span class="iv-nrk"><i class="dot new"></i>신규</span><b>'+nNew+'건 ('+pNew+'%)</b><span class="iv-nrsub">'+fmt(sNew)+'</span></div>'+
@@ -1219,7 +1219,7 @@ function renderNewReturning(){
 }
 
 var platChart=null, oavChartI=null, cumChartI=null;
-function _lineOpts(legend){return {responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:legend,position:'bottom',labels:{boxWidth:8,boxHeight:8,usePointStyle:true,font:{size:11},color:'#6B6560'}},tooltip:{mode:'index',intersect:false,padding:12,cornerRadius:10,boxPadding:4,backgroundColor:'rgba(26,23,20,0.95)',titleColor:'#fff',bodyColor:'#E8E6E3',titleFont:{size:13,weight:'600'},bodyFont:{size:12},titleMarginBottom:8,callbacks:{label:function(c){return '  '+c.dataset.label+': '+fmt(c.parsed.y);}}}},scales:{x:{grid:{display:false},ticks:{color:'#A09A94',font:{size:10},maxRotation:0,autoSkip:true,maxTicksLimit:12}},y:{grid:{color:'rgba(26,23,20,0.06)'},ticks:{color:'#A09A94',font:{size:10},callback:function(v){return v>=10000?(v/10000).toLocaleString()+'만':Math.round(v).toLocaleString();}}}}};}
+function _lineOpts(legend){return {responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:legend,position:'bottom',labels:{boxWidth:8,boxHeight:8,usePointStyle:true,font:{size:11},color:'#666666'}},tooltip:{mode:'index',intersect:false,padding:12,cornerRadius:10,boxPadding:4,backgroundColor:'rgba(26,23,20,0.95)',titleColor:'#fff',bodyColor:'#E8E6E3',titleFont:{size:13,weight:'600'},bodyFont:{size:12},titleMarginBottom:8,callbacks:{label:function(c){return '  '+c.dataset.label+': '+fmt(c.parsed.y);}}}},scales:{x:{grid:{display:false},ticks:{color:'#9B9B9B',font:{size:10},maxRotation:0,autoSkip:true,maxTicksLimit:12}},y:{grid:{color:'rgba(26,23,20,0.06)'},ticks:{color:'#9B9B9B',font:{size:10},callback:function(v){return v>=10000?(v/10000).toLocaleString()+'만':Math.round(v).toLocaleString();}}}}};}
 function renderToday(){
   var el=document.getElementById('ivToday'); if(!el) return;
   var WN=['일','월','화','수','목','금','토'];
@@ -1253,7 +1253,7 @@ function renderPlatTrend(){
   var byKey={},plats={};
   records.forEach(function(r){var key=currentView==='monthly'?String(r.date).slice(0,7):String(r.date); byKey[key]=byKey[key]||{}; byKey[key][r.platform]=(byKey[key][r.platform]||0)+num(r.net_sales); plats[r.platform]=1;});
   var keys=Object.keys(byKey).sort();
-  var pal={'29CM':'#2E2E2E','무신사':'#1A1714','자사몰':'#7FA8C9','성수':'#C2705A'}; var ex=['#C2453B','#3E8E5A','#A09A94','#D98C2B']; var ei=0;
+  var pal={'29CM':'#2E2E2E','무신사':'#1A1A1A','자사몰':'#7FA8C9','성수':'#C2705A'}; var ex=['#C2453B','#3E8E5A','#9B9B9B','#D98C2B']; var ei=0;
   var datasets=Object.keys(plats).map(function(p){var c=pal[p]||ex[ei++%ex.length]; return {label:p,data:keys.map(function(k){return byKey[k][p]||0;}),borderColor:c,backgroundColor:'transparent',fill:false,tension:0.4,pointRadius:0,borderWidth:2};});
   var labels=keys.map(function(k){return currentView==='monthly'?k:k.slice(5);});
   var glabel=currentView==='monthly'?'monthly':'daily';
@@ -1269,7 +1269,7 @@ function renderOAV(){
   var labels=agg.map(function(r){return currentView==='monthly'?r.date:String(r.date).slice(5);});
   var orders=agg.map(function(r){return r.orders;});
   var aov=agg.map(function(r){return r.orders>0?Math.round(r.net_sales/r.orders):0;});
-  var o=_lineOpts(true); o.scales.y1={position:'right',grid:{display:false},ticks:{color:'#A09A94',font:{size:10},callback:function(v){return v>=10000?(v/10000).toLocaleString()+'만':Math.round(v).toLocaleString();}}};
+  var o=_lineOpts(true); o.scales.y1={position:'right',grid:{display:false},ticks:{color:'#9B9B9B',font:{size:10},callback:function(v){return v>=10000?(v/10000).toLocaleString()+'만':Math.round(v).toLocaleString();}}};
   var glabel=currentView==='monthly'?'monthly':'daily';
   o.plugins.tooltip.callbacks.title=function(items){return periodLabel(agg[items[0].dataIndex].date,glabel);};
   o.plugins.tooltip.callbacks.label=function(c){return '  '+c.dataset.label+': '+(c.dataset.label==='주문 건수'?c.parsed.y+'건':fmt(c.parsed.y));};
@@ -1277,7 +1277,7 @@ function renderOAV(){
   if(oavChartI)oavChartI.destroy();
   oavChartI=new Chart(cv,{type:'bar',data:{labels:labels,datasets:[
     {label:'주문 건수',data:orders,backgroundColor:'rgba(43,108,184,0.20)',borderRadius:4,yAxisID:'y'},
-    {type:'line',label:'객단가',data:aov,borderColor:'#1A1714',backgroundColor:'transparent',tension:0.4,pointRadius:0,borderWidth:2,yAxisID:'y1'}
+    {type:'line',label:'객단가',data:aov,borderColor:'#1A1A1A',backgroundColor:'transparent',tension:0.4,pointRadius:0,borderWidth:2,yAxisID:'y1'}
   ]},options:o});
 }
 function renderInfo(){
@@ -1316,7 +1316,7 @@ function renderWeekday(){
     return '<div class="iv-wdcol"><div class="iv-wdbar'+(best?' best':'')+'" style="height:'+h+'px">'+tip+'</div><div class="iv-wdname'+(best?' best':'')+'">'+wn[i]+'</div></div>';
   }).join('');
   var plabel=(perUnit==='all')?'전체 기간':w.label;
-  var cap = wd[bestIdx]>0 ? '<div class="iv-wdcap"><span class="iv-wdper">'+plabel+'</span> · 가장 잘 팔리는 요일 <b>'+wn[bestIdx]+'요일</b></div>' : '<div class="iv-wdcap" style="color:#A09A94;">'+plabel+' · 데이터가 없어요</div>';
+  var cap = wd[bestIdx]>0 ? '<div class="iv-wdcap"><span class="iv-wdper">'+plabel+'</span> · 가장 잘 팔리는 요일 <b>'+wn[bestIdx]+'요일</b></div>' : '<div class="iv-wdcap" style="color:#9B9B9B;">'+plabel+' · 데이터가 없어요</div>';
   el.innerHTML='<div class="iv-wdbars">'+bars+'</div>'+cap;
 }
 function renderTable(){
@@ -1751,7 +1751,7 @@ function showDialog(){
   var ov=document.createElement('div');
   ov.id='anniz-logout-dialog';
   ov.style.cssText='position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(26,23,20,0.42);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);';
-  ov.innerHTML="<div style='background:#F6F4F1;border-radius:8px;padding:34px 30px 24px;max-width:320px;width:100%;text-align:center;font-family:inherit;box-shadow:0 16px 48px rgba(0,0,0,0.22);'><div style='font-size:17px;font-weight:600;color:#1A1714;margin-bottom:7px;'>\uB85C\uADF8\uC544\uC6C3 \uD558\uC2DC\uACA0\uC5B4\uC694?</div><div style='font-size:13px;color:#9A938C;margin-bottom:26px;'>\uB2E4\uC2DC \uBCF4\uB824\uBA74 \uB85C\uADF8\uC778\uC774 \uD544\uC694\uD574\uC694</div><div style='display:flex;gap:10px;'><button id='anniz-lo-cancel' style='flex:1;padding:13px;border:1px solid rgba(0,0,0,0.11);background:transparent;border-radius:8px;font-family:inherit;font-size:14px;color:#1A1714;cursor:pointer;'>\uCDE8\uC18C</button><button id='anniz-lo-ok' style='flex:1;padding:13px;border:none;background:#2E2E2E;color:#fff;border-radius:8px;font-family:inherit;font-size:14px;cursor:pointer;'>\uB85C\uADF8\uC544\uC6C3</button></div></div>";
+  ov.innerHTML="<div style='background:#F6F4F1;border-radius:8px;padding:34px 30px 24px;max-width:320px;width:100%;text-align:center;font-family:inherit;box-shadow:0 16px 48px rgba(0,0,0,0.22);'><div style='font-size:17px;font-weight:600;color:#1A1A1A;margin-bottom:7px;'>\uB85C\uADF8\uC544\uC6C3 \uD558\uC2DC\uACA0\uC5B4\uC694?</div><div style='font-size:13px;color:#9A938C;margin-bottom:26px;'>\uB2E4\uC2DC \uBCF4\uB824\uBA74 \uB85C\uADF8\uC778\uC774 \uD544\uC694\uD574\uC694</div><div style='display:flex;gap:10px;'><button id='anniz-lo-cancel' style='flex:1;padding:13px;border:1px solid rgba(0,0,0,0.11);background:transparent;border-radius:8px;font-family:inherit;font-size:14px;color:#1A1A1A;cursor:pointer;'>\uCDE8\uC18C</button><button id='anniz-lo-ok' style='flex:1;padding:13px;border:none;background:#2E2E2E;color:#fff;border-radius:8px;font-family:inherit;font-size:14px;cursor:pointer;'>\uB85C\uADF8\uC544\uC6C3</button></div></div>";
   document.body.appendChild(ov);
   function close(){ov.style.display='none';}
   ov.addEventListener('click',function(e){if(e.target===ov)close();});

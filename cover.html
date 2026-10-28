@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#FFFFFF;--surface:#FFFFFF;--surface2:#F5F5F5;--border:rgba(0,0,0,0.08);--border-mid:rgba(0,0,0,0.14);--text:#1A1714;--text-2:#6B6560;--text-3:#A09A94;--danger:#BD090A;--success:#2B6CB8;}
+:root{--bg:#FFFFFF;--surface:#FFFFFF;--surface2:#F5F5F5;--border:rgba(0,0,0,0.08);--border-mid:rgba(0,0,0,0.14);--text:#1A1A1A;--text-2:#666666;--text-3:#9B9B9B;--danger:#BD090A;--success:#2B6CB8;}
 body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:#8A8A8A;font-size:15px;}
 
   .layout{display:flex;min-height:100vh;}
@@ -118,8 +118,8 @@ input:focus,select:focus{border-color:var(--text);}
 .mobile-menu-panel{position:fixed;top:0;left:0;bottom:0;width:240px;background:#fff;z-index:200;padding:20px 16px;transform:translateX(-100%);transition:transform 0.25s;}
 .mobile-menu-panel.open{transform:translateX(0);}
 .mobile-menu-logo{height:40px;display:flex;align-items:center;margin-bottom:24px;}
-.mobile-menu-item{display:flex;align-items:center;gap:10px;padding:12px 10px;border-radius:8px;font-size:15px;color:#6B6560;text-decoration:none;margin-bottom:4px;}
-.mobile-menu-item.active{background:#F5F5F5;color:#1A1714;font-weight:500;}
+.mobile-menu-item{display:flex;align-items:center;gap:10px;padding:12px 10px;border-radius:8px;font-size:15px;color:#666666;text-decoration:none;margin-bottom:4px;}
+.mobile-menu-item.active{background:#F5F5F5;color:#1A1A1A;font-weight:500;}
 .mobile-menu-item-disabled{opacity:0.4;pointer-events:none;}
 
 @media(max-width:768px){
@@ -192,7 +192,7 @@ input:focus,select:focus{border-color:var(--text);}
 .g-A{background:#E8F0FA;color:#2B6CB8;}
 .g-B{background:#F5F5F5;color:#8A8A8A;}
 .g-C{background:#FBF5EB;color:#B8962B;}
-.g-D{background:#F3EFEA;color:#6B6560;}
+.g-D{background:#F3EFEA;color:#666666;}
 .g-적자{background:var(--danger);color:#fff;}
 .code-cell{font-variant-numeric:tabular-nums;color:var(--text-2);white-space:nowrap;}
 .status-row{display:flex;gap:18px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--text-2);margin-top:14px;}
@@ -242,8 +242,8 @@ table td{padding:16px 20px;font-size:14px;}
 @media(max-width:768px){main{padding:24px 16px 76px;}.topbar{padding:0 16px;}}
 </style>
 <style id="navcolor-v1">
-.nav-item{color:#1A1714;}
-.nav-item:hover{color:#1A1714;background:var(--surface2);}
+.nav-item{color:#1A1A1A;}
+.nav-item:hover{color:#1A1A1A;background:var(--surface2);}
 .nav-item.active{color:#2B6CB8;background:var(--surface2);font-weight:500;}
 .nav-item.active span{border-color:#2B6CB8 !important;}
 </style>
@@ -365,9 +365,9 @@ body{padding-bottom:34px;}
 main{padding:0 !important;}
 .cover-wrap{display:flex;min-height:calc(100vh - 120px);}
 .cover-text{flex:1;padding:60px 56px;display:flex;flex-direction:column;}
-.cover-eyebrow{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:16px;color:#1A1714;}
-.cover-coll{font-family:Georgia,'Times New Roman',serif;font-size:17px;color:#1A1714;margin-top:3px;}
-.cover-desc{font-family:Georgia,'Times New Roman',serif;font-size:16px;line-height:1.75;color:#1A1714;margin-top:34px;max-width:540px;}
+.cover-eyebrow{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:16px;color:#1A1A1A;}
+.cover-coll{font-family:Georgia,'Times New Roman',serif;font-size:17px;color:#1A1A1A;margin-top:3px;}
+.cover-desc{font-family:Georgia,'Times New Roman',serif;font-size:16px;line-height:1.75;color:#1A1A1A;margin-top:34px;max-width:540px;}
 .cover-photo{flex:1;background-position:center top;background-size:cover;background-repeat:no-repeat;}
 @media(max-width:760px){.cover-wrap{flex-direction:column;min-height:0;}.cover-text{padding:34px 24px;}.cover-photo{min-height:62vh;}}
 </style>
@@ -485,7 +485,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
     <div style="display:flex;align-items:center;gap:8px;">
       <div class="mobile-header">
         <button onclick="openMobileMenu()" style="background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1714" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
       </div>
       <span class="topbar-title">26 HOT SUMMER · Lazy Summer Ritual</span>

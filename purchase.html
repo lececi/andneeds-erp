@@ -10,7 +10,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#fff;--surface:#fff;--surface2:#F5F5F5;--border:rgba(0,0,0,0.08);--border-mid:rgba(0,0,0,0.14);--text:#1A1714;--text-2:#6B6560;--text-3:#A09A94;--danger:#BD090A;--danger-bg:#FDF0ED;--warning:#7A5C1A;--warning-bg:#FDF7ED;--success:#2E2E2E;--success-bg:#EBF2FB;}
+:root{--bg:#fff;--surface:#fff;--surface2:#F5F5F5;--border:rgba(0,0,0,0.08);--border-mid:rgba(0,0,0,0.14);--text:#1A1A1A;--text-2:#666666;--text-3:#9B9B9B;--danger:#BD090A;--danger-bg:#FDF0ED;--warning:#7A5C1A;--warning-bg:#FDF7ED;--success:#2E2E2E;--success-bg:#EBF2FB;}
 body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:#8A8A8A;font-size:15px;}
 
   .layout{display:flex;min-height:100vh;}
@@ -135,8 +135,8 @@ input:focus,select:focus{border-color:var(--text);}
 .mobile-menu-panel{position:fixed;top:0;left:0;bottom:0;width:240px;background:#fff;z-index:200;padding:20px 16px;transform:translateX(-100%);transition:transform 0.25s;}
 .mobile-menu-panel.open{transform:translateX(0);}
 .mobile-menu-logo{height:40px;display:flex;align-items:center;margin-bottom:24px;}
-.mobile-menu-item{display:flex;align-items:center;gap:10px;padding:12px 10px;border-radius:8px;font-size:15px;color:#6B6560;text-decoration:none;margin-bottom:4px;}
-.mobile-menu-item.active{background:#F5F5F5;color:#1A1714;font-weight:500;}
+.mobile-menu-item{display:flex;align-items:center;gap:10px;padding:12px 10px;border-radius:8px;font-size:15px;color:#666666;text-decoration:none;margin-bottom:4px;}
+.mobile-menu-item.active{background:#F5F5F5;color:#1A1A1A;font-weight:500;}
 .mobile-menu-item-disabled{opacity:0.4;pointer-events:none;}
 
 @media(max-width:768px){
@@ -207,8 +207,8 @@ table td{padding:16px 20px;font-size:14px;}
 @media(max-width:768px){main{padding:24px 16px 76px;}.topbar{padding:0 16px;}}
 </style>
 <style id="navcolor-v1">
-.nav-item{color:#1A1714;}
-.nav-item:hover{color:#1A1714;background:var(--surface2);}
+.nav-item{color:#1A1A1A;}
+.nav-item:hover{color:#1A1A1A;background:var(--surface2);}
 .nav-item.active{color:#8A8A8A;background:var(--surface2);font-weight:500;}
 .nav-item.active span{border-color:rgba(0,0,0,0.11) !important;}
 </style>
@@ -486,7 +486,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
     <div style="display:flex;align-items:center;gap:10px;">
       <div class="mobile-header">
       <button onclick="openMobileMenu()" style="background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1714" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
       
     </div>
@@ -496,7 +496,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
     <style>
   .rp-head{margin:4px 0 18px;}
   .rp-eyebrow{font-size:12px;font-weight:600;letter-spacing:.16em;color:#8A8A8A;text-transform:uppercase;}
-  .rp-title{font-size:26px;font-weight:600;color:#1A1714;margin:5px 0 6px;letter-spacing:-.01em;}
+  .rp-title{font-size:26px;font-weight:600;color:#1A1A1A;margin:5px 0 6px;letter-spacing:-.01em;}
   .rp-sub{font-size:14px;color:#8E939B;line-height:1.6;max-width:640px;}
   .rp-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
   .rp-card{border-radius:8px;padding:15px 17px;}
@@ -514,7 +514,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
   .rp-settings input{width:58px;padding:6px 8px;border:1px solid rgba(0,0,0,0.11);border-radius:8px;font-family:inherit;font-size:13.5px;text-align:center;}
   .rp-row{background:#fff;border:1px solid rgba(0,0,0,0.11);border-radius:8px;padding:13px 16px;margin-bottom:9px;}
   .rp-r1{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px;}
-  .rp-name{font-size:16px;font-weight:500;color:#1A1714;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .rp-name{font-size:16px;font-weight:500;color:#1A1A1A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .rp-nl{display:flex;align-items:center;gap:11px;min-width:0;}
   .rp-thumb{width:44px;height:44px;border-radius:8px;border:1px solid rgba(0,0,0,0.11);background:#F2F1EF;flex-shrink:0;overflow:hidden;}
   .rp-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -525,7 +525,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
   .b-ok{color:#2E7D52;background:#E7F4EC;} .b-gray{color:#7A7A78;background:#F1F1F0;}
   .b-prod{color:#8A8A8A;background:#EAF1FA;}
   .rp-stats{display:flex;flex-wrap:wrap;gap:14px;font-size:13.5px;color:#8E939B;margin-bottom:10px;}
-  .rp-stats b{color:#1A1714;font-weight:500;}
+  .rp-stats b{color:#1A1A1A;font-weight:500;}
   .rp-stats .hot{color:#C0392B;}
   .rp-r3{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid rgba(0,0,0,0.11);padding-top:10px;flex-wrap:wrap;}
   .rp-cfg{display:flex;align-items:center;gap:14px;font-size:13px;color:#8E939B;flex-wrap:wrap;}
@@ -543,8 +543,8 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
   .rp-otoggle{font-family:inherit;font-size:13px;font-weight:500;color:#8E939B;background:none;border:none;cursor:pointer;padding:6px 0 0;}
   .rp-opanel{margin-top:11px;border-top:1px solid rgba(0,0,0,0.11);padding-top:11px;}
   .rp-obatch{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13.5px;color:#7A7A78;padding:7px 0;border-bottom:1px dashed rgba(0,0,0,0.11);}
-  .rp-obatch .cha{font-weight:500;color:#1A1714;}
-  .rp-obatch b{color:#1A1714;font-weight:500;}
+  .rp-obatch .cha{font-weight:500;color:#1A1A1A;}
+  .rp-obatch b{color:#1A1A1A;font-weight:500;}
   .rp-obatch input[type=date]{padding:4px 7px;border:1px solid rgba(0,0,0,0.11);border-radius:8px;font-family:inherit;font-size:13px;}
   .rp-obatch .rcv{display:inline-flex;align-items:center;gap:4px;cursor:pointer;}
   .rp-obatch .rcv.done{color:#2E7D52;}
@@ -920,7 +920,7 @@ function showDialog(){
   var ov=document.createElement('div');
   ov.id='anniz-logout-dialog';
   ov.style.cssText='position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(26,23,20,0.42);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);';
-  ov.innerHTML="<div style='background:#F6F4F1;border-radius:8px;padding:34px 30px 24px;max-width:320px;width:100%;text-align:center;font-family:inherit;box-shadow:0 16px 48px rgba(0,0,0,0.22);'><div style='font-size:17px;font-weight:600;color:#1A1714;margin-bottom:7px;'>\uB85C\uADF8\uC544\uC6C3 \uD558\uC2DC\uACA0\uC5B4\uC694?</div><div style='font-size:13px;color:#9A938C;margin-bottom:26px;'>\uB2E4\uC2DC \uBCF4\uB824\uBA74 \uB85C\uADF8\uC778\uC774 \uD544\uC694\uD574\uC694</div><div style='display:flex;gap:10px;'><button id='anniz-lo-cancel' style='flex:1;padding:13px;border:1px solid rgba(0,0,0,0.11);background:transparent;border-radius:8px;font-family:inherit;font-size:14px;color:#1A1714;cursor:pointer;'>\uCDE8\uC18C</button><button id='anniz-lo-ok' style='flex:1;padding:13px;border:none;background:#2E2E2E;color:#fff;border-radius:8px;font-family:inherit;font-size:14px;cursor:pointer;'>\uB85C\uADF8\uC544\uC6C3</button></div></div>";
+  ov.innerHTML="<div style='background:#F6F4F1;border-radius:8px;padding:34px 30px 24px;max-width:320px;width:100%;text-align:center;font-family:inherit;box-shadow:0 16px 48px rgba(0,0,0,0.22);'><div style='font-size:17px;font-weight:600;color:#1A1A1A;margin-bottom:7px;'>\uB85C\uADF8\uC544\uC6C3 \uD558\uC2DC\uACA0\uC5B4\uC694?</div><div style='font-size:13px;color:#9A938C;margin-bottom:26px;'>\uB2E4\uC2DC \uBCF4\uB824\uBA74 \uB85C\uADF8\uC778\uC774 \uD544\uC694\uD574\uC694</div><div style='display:flex;gap:10px;'><button id='anniz-lo-cancel' style='flex:1;padding:13px;border:1px solid rgba(0,0,0,0.11);background:transparent;border-radius:8px;font-family:inherit;font-size:14px;color:#1A1A1A;cursor:pointer;'>\uCDE8\uC18C</button><button id='anniz-lo-ok' style='flex:1;padding:13px;border:none;background:#2E2E2E;color:#fff;border-radius:8px;font-family:inherit;font-size:14px;cursor:pointer;'>\uB85C\uADF8\uC544\uC6C3</button></div></div>";
   document.body.appendChild(ov);
   function close(){ov.style.display='none';}
   ov.addEventListener('click',function(e){if(e.target===ov)close();});
