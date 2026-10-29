@@ -513,6 +513,134 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
 .anv-menu a,.anv-menu button{font-size:13.5px !important;}
 .anv-right .anv-rlink,.anv-right .anv-rlabel{font-size:13px !important;}
 </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style id="editorial-v1">
+/* 마케팅 비용 — HOME·매거진·인플루언서와 같은 에디토리얼 틀 (/app 의 home.css ed- 규칙을 이 페이지용으로 옮김). 옅은 글씨 하한 #999999, 중립 회색만 */
+.mkx{--ink:#1A1A1A;--mut:#5A5A5A;--mut2:#898989;--mut3:#999999;--hair:#EEEBE7;--red:#B04A3C;--en:"Helvetica Neue",Helvetica,Arial,"Pretendard",sans-serif;
+  font-family:"Pretendard",-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:var(--ink);background:#fff;margin-left:0 !important;
+  padding:48px clamp(24px,4.5vw,88px) 64px;-webkit-font-smoothing:antialiased;min-height:calc(100vh - 45px);}
+.mkx .topbar{display:none;}
+.mkx main{padding:0;max-width:none;}
+.mkx-head .ed-eyebrow{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--en);font-weight:500;font-size:13px;letter-spacing:.32em;color:var(--mut2);}
+.mkx-head .ed-meta{font-family:"Pretendard",sans-serif;letter-spacing:.02em;font-size:13px;font-weight:400;color:var(--mut2);}
+.mkx-head .ed-h1{font-weight:300;font-size:clamp(22px,2vw,30px);letter-spacing:-.02em;margin-top:12px;line-height:1.35;color:var(--ink);}
+.mkx-head .ed-h1 em{font-style:normal;color:var(--mut3);}
+.mkx-tabs{display:flex;gap:6px 28px;flex-wrap:wrap;margin-top:26px;}
+.mkx-tabs button{border:none;background:none;padding:0 0 6px;font-family:inherit;font-size:16px;color:var(--mut2);cursor:pointer;border-bottom:1px solid transparent;}
+.mkx-tabs button:hover{color:var(--ink);}
+.mkx-tabs button.on{color:var(--ink);border-bottom-color:var(--ink);}
+
+/* 연도 줄 */
+.mkx .mk-yearbar{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;margin:26px 0 0;}
+.mkx .mk-yearbar-lb{font-family:var(--en);font-weight:500;font-size:12px;letter-spacing:.24em;color:var(--mut2);}
+.mkx .mk-yearsel{font-family:var(--en);font-weight:300;font-size:15px;letter-spacing:.04em;color:var(--ink);border:none;border-bottom:1px solid #D9D9D9;border-radius:0;padding:3px 18px 3px 0;background:none;cursor:pointer;}
+.mkx .mkx-sp{flex:1;}
+.mkx .mk-upload,.mkx .mk-addyear,.mkx .mk-delyear{margin:0;min-width:0;font-family:inherit;font-size:13px;border-radius:3px;padding:8px 14px;cursor:pointer;}
+.mkx .mk-upload{background:var(--ink);border:1px solid var(--ink);color:#fff;}
+.mkx .mk-upload:hover{background:#333;}
+.mkx .mk-addyear{background:#fff;border:1px solid #DDD8D2;color:var(--mut);}
+.mkx .mk-addyear:hover{border-color:var(--ink);color:var(--ink);background:#fff;}
+.mkx .mk-delyear{background:none;border:1px solid transparent;color:var(--mut2);text-decoration:underline;text-underline-offset:3px;padding:8px 4px;}
+.mkx .mk-delyear:hover{color:var(--red);}
+
+/* 큰 숫자 4칸 */
+.mkx .ed-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:22px;border-top:1px solid var(--ink);}
+.mkx .ed-kpi{padding:22px 32px 0 0;min-width:0;}
+.mkx .ed-kpi + .ed-kpi{padding-left:32px;border-left:1px solid #E7E3DE;}
+.mkx .ed-kpi .lb{font-family:var(--en);font-weight:500;font-size:12.5px;letter-spacing:.24em;color:var(--mut2);}
+.mkx .ed-kpi .vl{font-family:var(--en);font-weight:200;font-size:clamp(28px,2.4vw,40px);letter-spacing:-.03em;margin:14px 0 10px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink);}
+.mkx .ed-kpi .vl small{font-family:"Pretendard",sans-serif;font-size:14px;margin-left:6px;color:var(--mut2);font-weight:300;letter-spacing:0;}
+.mkx .ed-kpi .vl.red{color:var(--red);}
+.mkx .ed-kpi .sb{font-size:13.5px;color:var(--mut);}
+.mkx .ed-kpi .sb2{display:block;margin-top:7px;font-size:12.5px;color:var(--mut2);font-variant-numeric:tabular-nums;}
+.mkx .ed-bar{position:relative;height:2px;background:var(--hair);margin:4px 0 12px;}
+.mkx .ed-bar i{position:absolute;left:0;top:0;bottom:0;background:var(--ink);}
+.mkx .ed-bar i.over{background:var(--red);}
+.mkx .mkx-bud{display:inline-flex;align-items:center;gap:6px;}
+.mkx .mkx-bud input{width:120px;border:none;border-bottom:1px solid #D9D9D9;border-radius:0;padding:2px 0;font-family:var(--en);font-weight:300;font-size:13.5px;text-align:right;background:none;color:var(--ink);outline:none;}
+.mkx .mkx-bud input:focus{border-color:var(--ink);}
+
+/* 요약 — 묶음별 목록 */
+.mkx .mkx-h2{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:56px;font-family:var(--en);font-weight:500;font-size:12.5px;letter-spacing:.24em;color:var(--mut2);padding-bottom:12px;border-bottom:1px solid var(--ink);}
+.mkx .mkx-h2 span{font-family:"Pretendard",sans-serif;letter-spacing:.06em;font-size:13px;color:var(--ink);font-weight:500;}
+.mkx .mkx-h2 a{font-family:"Pretendard",sans-serif;letter-spacing:0;font-size:12.5px;font-weight:400;color:var(--mut2);cursor:pointer;font-variant-numeric:tabular-nums;}
+.mkx .mkx-h2 a:hover{color:var(--ink);}
+.mkx .mk-row{gap:24px;padding:15px 0;border-top:none;border-bottom:1px solid var(--hair);}
+.mkx .mk-row:hover{background:none;}
+.mkx .mk-row:hover .mk-row-name{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;}
+.mkx .mk-row-name{font-size:14.5px;font-weight:500;color:var(--ink);}
+.mkx .mk-row.zero .mk-row-name{font-weight:400;color:var(--mut);}
+.mkx .mk-row-name .cnt{font-size:12.5px;color:var(--mut3);font-weight:400;}
+.mkx .mk-row-track{width:120px;background:var(--hair);border-radius:0;}
+.mkx .mk-row-track>div{background:var(--ink);}
+.mkx .mk-row.over .mk-row-track>div{background:var(--red);}
+.mkx .mk-row-amt{font-size:14px;min-width:160px;}
+.mkx .mk-row-amt .sp{color:var(--ink);font-family:var(--en);font-weight:400;}
+.mkx .mk-row-amt .bd{color:var(--mut3);font-family:var(--en);}
+.mkx .mk-row-rate{width:52px;font-family:var(--en);font-size:13px;color:var(--mut2);}
+.mkx .mk-row.over .mk-row-rate{color:var(--red);}
+.mkx .mk-row-arrow{color:var(--mut3);}
+
+/* 시즌 상세 */
+.mkx .mkx-details{margin-top:8px;}
+.mkx .mk-detail{margin:56px 0 0;}
+.mkx .mk-detail-head{padding-bottom:12px;border-bottom:1px solid var(--ink);margin-bottom:0;}
+.mkx .mk-detail-name{font-size:17px;font-weight:500;color:var(--ink);letter-spacing:-.01em;}
+.mkx .mk-detail-name span{color:var(--mut2) !important;font-weight:400;}
+.mkx .mk-detail-meta{font-size:13px;color:var(--mut2);}
+.mkx .mk-detail-meta b{color:var(--ink);font-weight:500;}
+.mkx .mk-detail-meta .over{color:var(--red);}
+.mkx .mk-detail-bud{font-size:12.5px;color:var(--mut2);margin:12px 0 6px;}
+.mkx .mk-detail-bud input{border:none;border-bottom:1px solid #D9D9D9;border-radius:0;padding:2px 0;font-family:var(--en);font-size:13px;color:var(--ink);background:none;}
+.mkx .item-tbl,.mkx .shoot-tbl{font-size:13.5px;color:var(--ink);}
+.mkx .item-tbl th,.mkx .shoot-tbl th{background:none;color:var(--mut2);font-weight:500;font-size:12px;letter-spacing:.04em;text-transform:none;padding:12px 10px;border-bottom:1px solid var(--hair);}
+.mkx .item-tbl td,.mkx .shoot-tbl td{color:var(--ink);border-bottom:1px solid #F0EEEA;padding:11px 10px;}
+.mkx .item-tbl td.num,.mkx .shoot-tbl td.num{font-family:var(--en);}
+.mkx tbody tr:hover td{background:#FAF9F8;}
+.mkx .shoot-scroll{border:none;border-radius:0;margin-top:0;}
+.mkx .item-edit,.mkx .item-del{color:var(--mut2);border-radius:3px;}
+.mkx .item-edit:hover{background:#F6F5F3;color:var(--ink);}
+.mkx .item-del:hover{background:#F6F5F3;color:var(--red);}
+.mkx .empty-it{color:var(--mut2);}
+.mkx .add-form,.mkx .shoot-add{margin-top:14px;gap:10px 14px;background:none !important;padding:0 !important;border:none !important;}
+.mkx .add-form input,.mkx .shoot-add input{border:none !important;border-bottom:1px solid #D9D9D9 !important;border-radius:0 !important;padding:7px 0 !important;font-family:inherit;font-size:13.5px;background:none !important;color:var(--ink);outline:none;}
+.mkx .add-form input:focus,.mkx .shoot-add input:focus{border-color:var(--ink) !important;}
+.mkx .add-form button,.mkx .shoot-add button,.mkx .shoot-fill{border-radius:3px !important;background:var(--ink) !important;border:1px solid var(--ink) !important;color:#fff !important;font-size:13px !important;padding:8px 16px !important;}
+.mkx .shoot-fill{background:#fff !important;color:var(--ink) !important;border-color:#DDD8D2 !important;margin-top:12px;}
+.mkx .shoot-tbl .sh-name,.mkx .shoot-tbl .sh-sum{background:none;color:var(--ink);}
+.mkx .shoot-tbl .sh-sum{font-family:var(--en);font-weight:500;}
+.mkx .shoot-tbl .sh-sub,.mkx .shoot-tbl .sh-line{color:var(--mut);}
+.mkx .shoot-tbl .sh-note{color:var(--mut2);}
+.mkx .shoot-tbl td.num{color:var(--ink);}
+.mkx .shoot-tbl tr.sh-first>td{border-top:1px solid #DDD8D2;}
+.mkx .mkx-foot{font-size:12.5px;color:var(--mut2);line-height:1.7;margin-top:48px;}
+
+/* 항목 수정 창 */
+.mk-modal{border-radius:4px !important;font-family:"Pretendard","Noto Sans KR",sans-serif;}
+.mk-modal-title{color:#1A1A1A !important;font-weight:500 !important;padding-bottom:14px;border-bottom:1px solid #1A1A1A;}
+.mk-field label{color:#5A5A5A !important;}
+.mk-field input{border-radius:3px !important;color:#1A1A1A !important;border-color:#DDD8D2 !important;}
+.mk-field input:focus{border-color:#1A1A1A !important;}
+.mk-btn-cancel,.mk-btn-save{border-radius:3px !important;}
+.mk-btn-save{background:#1A1A1A !important;}
+.mk-btn-save:hover{background:#333 !important;}
+
+@media(max-width:1000px){
+  .mkx .ed-kpis{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+  .mkx .ed-kpi,.mkx .ed-kpi + .ed-kpi{padding:20px 0;border-left:none;border-bottom:1px solid #E7E3DE;}
+  .mkx .ed-kpi:nth-child(even){padding-left:20px;border-left:1px solid #E7E3DE;}
+}
+@media(max-width:768px){
+  .mkx{padding:20px 16px 48px;}
+  .mkx .topbar{display:flex;height:auto !important;padding:0 0 12px !important;border:none;}
+  .mkx .mk-row{gap:12px;flex-wrap:wrap;}
+  .mkx .mk-row-name{flex-basis:100%;}
+  .mkx .mk-row-track{flex:1;width:auto;}
+  .mkx .mk-row-amt{min-width:0;}
+  .mkx .ed-kpi .vl{font-size:26px;}
+  .mkx .mkx-bud input{width:96px;}
+}
+</style>
 </head>
 <body>
 <div class="mobile-menu-overlay" id="mmOverlay" onclick="closeMobileMenu()"></div>
@@ -616,18 +744,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
 })();
 </script>
 
-<div class="page-content">
-  <div class="anv-filterstrip">
-    <div class="anv-fs-left">
-      <div class="anv-fs-h">마케팅 비용</div>
-      <div class="anv-fs-cap">시즌별 마케팅 예산·실집행을 한눈에 봅니다.<br>오른쪽에서 시즌을 선택하면 아래에 해당 시즌 상세가 펼쳐집니다.</div>
-    </div>
-    <div class="anv-fs-right">
-      <div class="anv-fs-h en">Season</div>
-      <div class="mk-tabs" id="tabs"></div>
-    </div>
-  </div>
-
+<div class="page-content mkx">
   <div class="topbar">
     <div style="display:flex;align-items:center;gap:14px;min-width:0;flex:1;">
       <div class="mobile-header">
@@ -638,14 +755,19 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
       <span class="topbar-title" style="white-space:nowrap;">마케팅 비용</span>
       <!-- tabs moved to strip -->
     </div>
-    <div style="font-size:13px;color:var(--text-3);" id="saveNote">—</div>
+  </div>
+
+  <div class="mkx-head">
+    <div class="ed-eyebrow"><span>MARKETING · BUDGET</span><span class="ed-meta" id="saveNote">—</span></div>
+    <h1 class="ed-h1" id="mkHeadline">&nbsp;</h1>
+    <div class="mkx-tabs" id="mkTabs"></div>
   </div>
 
   <main>
     <div id="yearBar"></div>
     <input type="file" id="mkFile" accept=".xlsx,.xls" style="display:none;">
     <div id="content"></div>
-    <div style="font-size:12px;color:var(--text-3);line-height:1.7;margin-top:30px;">
+    <div class="mkx-foot">
       위 메뉴로 시즌을 고르면 상세 내역이 펼쳐져요. 항목(내용·날짜·금액)을 추가·수정·삭제하면 금년 실제가 자동 합산되고, 클라우드에 자동 저장돼요.
     </div>
   </main>
@@ -767,16 +889,27 @@ async function load(){
 }
 
 function renderTabs(){
-  let h='<button class="tab-btn'+(activeTab==='summary'?' active':'')+'" onclick="switchTab(\'summary\')">요약</button>';
-  GROUPS.forEach((g,gi)=>{ h+='<button class="tab-btn'+(activeTab===gi?' active':'')+'" onclick="switchTab('+gi+')">'+esc(g.title)+'</button>'; });
-  document.getElementById('tabs').innerHTML=h;
+  let h='<button class="'+(activeTab==='summary'?'on':'')+'" onclick="switchTab(\'summary\')">요약</button>';
+  GROUPS.forEach((g,gi)=>{ h+='<button class="'+(activeTab===gi?'on':'')+'" onclick="switchTab('+gi+')">'+esc(g.title)+'</button>'; });
+  document.getElementById('mkTabs').innerHTML=h;
+}
+// 머리말 문장 + 큰 숫자 4칸 (HOME·매거진과 같은 에디토리얼 틀)
+function setHeadline(h){const e=document.getElementById('mkHeadline');if(e)e.innerHTML=h;}
+function kpiBlock(act,bud,label,budgetEdit){
+  const rate=bud>0?act/bud*100:0;const over=act>bud&&bud>0;const rest=bud-act;
+  return '<div class="ed-kpis mkx-kpis">'+
+    '<div class="ed-kpi"><div class="lb">SPENT</div><div class="vl">'+manwon(act)+'<small>원</small></div><div class="sb">'+esc(label)+' 실집행<span class="sb2">'+won(act)+'</span></div></div>'+
+    '<div class="ed-kpi"><div class="lb">BUDGET</div><div class="vl">'+manwon(bud)+'<small>원</small></div><div class="sb">'+(budgetEdit?'<span class="mkx-bud">예산 <input type="number" id="budgetInput" step="1000000" value="'+bud+'" onchange="setBudget()">원</span>':esc(label)+' 예산 합계')+'<span class="sb2">'+won(bud)+'</span></div></div>'+
+    '<div class="ed-kpi"><div class="lb">EXECUTION</div><div class="vl'+(over?' red':'')+'">'+rate.toFixed(1)+'<small>%</small></div><div class="ed-bar"><i style="width:'+Math.min(100,rate)+'%"'+(over?' class="over"':'')+'></i></div><div class="sb">예산 대비 집행률</div></div>'+
+    '<div class="ed-kpi"><div class="lb">'+(over?'OVER BUDGET':'REMAINING')+'</div><div class="vl'+(over?' red':'')+'">'+manwon(Math.abs(rest))+'<small>원</small></div><div class="sb">'+(over?'예산을 넘었어요':'남은 예산')+'<span class="sb2">'+won(Math.abs(rest))+'</span></div></div>'+
+  '</div>';
 }
 function switchTab(t){activeTab=t;renderTabs();renderContent();}
 
 function summaryRow(i){
   const c=cur().cats[i];const act=catActual(c);const bud=num(c.budget);
   const rate=bud>0?act/bud*100:0;const over=act>bud&&bud>0;const cnt=(c.items&&c.items.length)||0;
-  return '<div class="mk-row'+(over?' over':'')+'" onclick="switchTab('+groupOf(i)+')">'+
+  return '<div class="mk-row'+(over?' over':'')+(act?'':' zero')+'" onclick="switchTab('+groupOf(i)+')">'+
     '<div class="mk-row-name">'+esc(c.name)+(cnt?'<span class="cnt">'+cnt+'건</span>':'')+'</div>'+
     '<div class="mk-row-track"><div style="width:'+Math.min(100,rate)+'%"></div></div>'+
     '<div class="mk-row-amt"><span class="sp">'+(act?manwon(act):'0')+'</span> <span class="bd">/ '+manwon(bud)+'</span></div>'+
@@ -784,15 +917,14 @@ function summaryRow(i){
 }
 function groupOf(i){for(let g=0;g<GROUPS.length;g++)if(GROUPS[g].idx.includes(i))return g;return 0;}
 function renderSummaryView(){
-  const actual=cur().cats.reduce((s,c)=>s+catActual(c),0);
-  const rate=cur().budget>0?actual/cur().budget*100:0;const over=rate>100;
-  let h='<div class="mk-summary">'+
-    ''+
-    '<div class="mk-sum-line"><div class="mk-sum-num">'+manwon(actual)+'원<small>/ 예산 '+manwon(cur().budget)+'원</small></div>'+
-    '<div class="mk-sum-rate'+(over?' over':'')+'">집행률 '+rate.toFixed(1)+'%'+(over?'':'  ·  잔여 '+manwon(cur().budget-actual)+'원')+'</div></div>'+
-    '<div class="mk-sum-track'+(over?' over':'')+'"><div style="width:'+Math.min(100,rate)+'%"></div></div>'+
-    '<div class="mk-budget">26년 예산 수정 <input type="number" id="budgetInput" step="1000000" value="'+cur().budget+'" onchange="setBudget()">원</div></div>';
-  GROUPS.forEach(g=>{ h+='<div class="mk-section-label">'+esc(g.title)+'</div>'+g.idx.map(summaryRow).join(''); });
+  const cats=cur().cats;const actual=cats.reduce((s,c)=>s+catActual(c),0);const bud=num(cur().budget);
+  const rate=bud>0?actual/bud*100:0;const overN=cats.filter(c=>num(c.budget)>0&&catActual(c)>num(c.budget)).length;
+  setHeadline(state.currentYear+'년 마케팅 비용 '+manwon(actual)+'원, 예산의 '+rate.toFixed(1)+'%. <em>'+(rate>100?'예산을 '+manwon(actual-bud)+'원 넘었어요':'잔여 '+manwon(bud-actual)+'원')+(overN?' · 예산 초과 항목 '+overN+'개':'')+'.</em>');
+  let h=kpiBlock(actual,bud,state.currentYear+'년',true);
+  GROUPS.forEach((g,gi)=>{
+    const gAct=g.idx.reduce((s,i)=>s+catActual(cats[i]),0),gBud=g.idx.reduce((s,i)=>s+num(cats[i].budget),0);
+    h+='<h2 class="mkx-h2"><span>'+esc(g.title)+'</span><a onclick="switchTab('+gi+')">'+manwon(gAct)+' / '+manwon(gBud)+' · 상세 →</a></h2>'+g.idx.map(summaryRow).join('');
+  });
   document.getElementById('content').innerHTML=h;
 }
 
@@ -856,13 +988,13 @@ function detailBlockShoot(ci){
     '<div class="shoot-scroll"><table class="shoot-tbl"><thead><tr><th>\ucd2c\uc601\uba85</th><th>\uc9c4\ud589\ub0b4\uc6a9</th><th>\uc9c4\ud589\ub0a0\uc9dc</th><th>\ubd84\ub958</th><th>\ucd2c\uc601\uc2dc\uac04</th><th style="text-align:right;">\uc9c4\ud589\ube44\uc6a9</th><th style="text-align:right;">\ube44\uc6a9 \ud569\uacc4</th><th>\ube44\uace0</th><th></th></tr></thead><tbody>'+body+'</tbody></table></div>'+
     fillBtn+
     '<div class="shoot-add">'+
-      '<input class="sa-shoot" id="sa-shoot-'+ci+'" type="text" placeholder="SEARCH">'+
-      '<input class="sa-content" id="sa-content-'+ci+'" type="text" placeholder="SEARCH">'+
-      '<input class="sa-date" id="sa-date-'+ci+'" type="text" placeholder="SEARCH">'+
-      '<input class="sa-time" id="sa-time-'+ci+'" type="text" placeholder="SEARCH">'+
-      '<input class="sa-line" id="sa-line-'+ci+'" type="text" placeholder="SEARCH">'+
-      '<input class="sa-amt" id="sa-amt-'+ci+'" type="number" placeholder="SEARCH">'+
-      '<input class="sa-note" id="sa-note-'+ci+'" type="text" placeholder="SEARCH">'+
+      '<input class="sa-shoot" id="sa-shoot-'+ci+'" type="text" placeholder="촬영명">'+
+      '<input class="sa-content" id="sa-content-'+ci+'" type="text" placeholder="진행내용">'+
+      '<input class="sa-date" id="sa-date-'+ci+'" type="text" placeholder="날짜">'+
+      '<input class="sa-time" id="sa-time-'+ci+'" type="text" placeholder="촬영시간">'+
+      '<input class="sa-line" id="sa-line-'+ci+'" type="text" placeholder="분류 (스튜디오·모델…)">'+
+      '<input class="sa-amt" id="sa-amt-'+ci+'" type="number" placeholder="금액">'+
+      '<input class="sa-note" id="sa-note-'+ci+'" type="text" placeholder="비고(선택)">'+
       '<button onclick="addShootItem('+ci+')">\ucd94\uac00</button>'+
     '</div></div>';
 }
@@ -937,18 +1069,16 @@ function renderGroupView(g){
   const gAct=GROUPS[g].idx.reduce((s,i)=>s+catActual(cur().cats[i]),0);
   const gBud=GROUPS[g].idx.reduce((s,i)=>s+num(cur().cats[i].budget),0);
   const rate=gBud>0?gAct/gBud*100:0;
-  let h='<div class="mk-summary"><div class="mk-sum-label">'+esc(GROUPS[g].title)+'</div>'+
-    '<div class="mk-sum-line"><div class="mk-sum-num">'+manwon(gAct)+'원<small>/ 예산 '+manwon(gBud)+'원</small></div>'+
-    '<div class="mk-sum-rate'+(rate>100?' over':'')+'">집행률 '+rate.toFixed(1)+'%</div></div>'+
-    '<div class="mk-sum-track'+(rate>100?' over':'')+'"><div style="width:'+Math.min(100,rate)+'%"></div></div></div>'+
-    '<div style="margin-top:24px;">'+GROUPS[g].idx.map(detailBlock).join('')+'</div>';
+  setHeadline(esc(GROUPS[g].title)+' '+manwon(gAct)+'원, 예산의 '+rate.toFixed(1)+'%. <em>'+GROUPS[g].idx.length+'개 항목 · '+(rate>100?'예산 초과':'잔여 '+manwon(gBud-gAct)+'원')+'.</em>');
+  let h=kpiBlock(gAct,gBud,GROUPS[g].title,false)+
+    '<div class="mkx-details">'+GROUPS[g].idx.map(detailBlock).join('')+'</div>';
   document.getElementById('content').innerHTML=h;
 }
 function renderContent(){ if(activeTab==='summary')renderSummaryView(); else renderGroupView(activeTab); }
 function renderYearBar(){
   const years=Object.keys(state.years).sort();
   const opts=years.map(y=>'<option value="'+y+'"'+(String(y)===String(state.currentYear)?' selected':'')+'>'+y+'년</option>').join('');
-  document.getElementById('yearBar').innerHTML='<div class="mk-yearbar"><select class="mk-yearsel" id="yearSel" onchange="switchYear(this.value)">'+opts+'</select><span class="mk-yearbar-txt">마케팅 집행</span><button class="mk-upload" onclick="mkUploadClick()">엑셀 업로드</button><button class="mk-addyear" onclick="addYear()">+ 연도 추가</button><button class="mk-delyear" onclick="deleteYear()" title="현재 연도 삭제">연도 삭제</button></div>';
+  document.getElementById('yearBar').innerHTML='<div class="mk-yearbar"><span class="mk-yearbar-lb">YEAR</span><select class="mk-yearsel" id="yearSel" onchange="switchYear(this.value)">'+opts+'</select><span class="mkx-sp"></span><button class="mk-upload" onclick="mkUploadClick()">엑셀 업로드</button><button class="mk-addyear" onclick="addYear()">+ 연도 추가</button><button class="mk-delyear" onclick="deleteYear()" title="현재 연도 삭제">연도 삭제</button></div>';
 }
 function switchYear(v){state.currentYear=v;save();renderAll();}
 function deleteYear(){
