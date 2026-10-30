@@ -16,8 +16,8 @@
     "marketing.html": "marketing"
   };
   var FIRST = [["home", "/app/home"], ["calendar", "/app/calendar"], ["performance", "sales.html"], ["collection", "production.html"],
-    ["stock", "inventory.html"], ["business", "secretary.html"], ["marketing", "/app/influencers"]];
-  var GROUP_LABEL = { performance: "PERFORMANCE", collection: "COLLECTION", stock: "STOCK", business: "BUSINESS", marketing: "MARKETING" };
+    ["stock", "inventory.html"], ["business", "secretary.html"], ["marketing", "/app/influencers"], ["customer", "/app/customers"]];
+  var GROUP_LABEL = { performance: "PERFORMANCE", collection: "COLLECTION", stock: "STOCK", business: "BUSINESS", marketing: "MARKETING", customer: "CUSTOMER" };
 
   var auth = null;
   try { auth = JSON.parse(localStorage.getItem("anniz_auth") || "null"); } catch (e) {}
@@ -31,7 +31,7 @@
   }
   function menuOf(href) {
     var f = fileOf(href);
-    if (f === "@app") return href.indexOf("/app/members") === 0 ? "owner" : href.indexOf("/app/calendar") === 0 ? "calendar" : href.indexOf("/app/home") === 0 ? "home" : "marketing";
+    if (f === "@app") return href.indexOf("/app/members") === 0 ? "owner" : href.indexOf("/app/calendar") === 0 ? "calendar" : href.indexOf("/app/home") === 0 ? "home" : href.indexOf("/app/customers") === 0 ? "customer" : "marketing";
     return PAGE_MENU[f] || null;
   }
 

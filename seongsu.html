@@ -786,6 +786,7 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
       <button class="anv-tn" type="button" data-key="stock">STOCK</button>
       <button class="anv-tn" type="button" data-key="business">BUSINESS</button>
       <button class="anv-tn" type="button" data-key="marketing">MARKETING</button>
+      <button class="anv-tn" type="button" data-key="customer">CUSTOMER</button>
     </div>
     <div class="anv-right">
       <svg class="anv-ico" id="anvSearchBtn" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16" y1="16" x2="21" y2="21"/></svg>
@@ -803,9 +804,10 @@ body, body *, input, textarea, select, button { font-family: 'HelveticaLight','N
     collection:[["\uC0DD\uC0B0\uAD00\uB9AC","production.html"],["\uC774\uBBF8\uC9C0","studio.html"],["영상 메이커","video.html"]],
     stock:[["\uC7AC\uACE0\uAD00\uB9AC","inventory.html"],["리오더 관리","/app/reorder"],["\uC0DD\uC0B0 MD","reorder.html"],["\uBC1C\uC8FC\uAD00\uB9AC","purchase.html"],["\uC8FC\uBB38\uD655\uC778","orders.html","disabled"]],
     business:[["세무비서","secretary.html"],["\uC778\uBCF4\uC774\uC2A4","invoice.html"],["\uBBF8\uC218\uAE08","receivables.html"],["\uBE44\uC6A9\uAD00\uB9AC","expenses.html"],["\uBD80\uAC00\uC138\uC13C\uD130","vat.html"],["\uC138\uBB34\uB9AC\uD3EC\uD2B8","taxreport.html"],["\uC99D\uBE59\uBCF4\uAD00\uD568","vault.html"]],
-    marketing:[["매거진","/app/magazine"],["인플루언서","/app/influencers"],["블로그 스튜디오","/app/blog"],["경쟁사 분석","/app/competitors"],["마케팅 비용","marketing.html"]]
+    marketing:[["매거진","/app/magazine"],["인플루언서","/app/influencers"],["블로그 스튜디오","/app/blog"],["경쟁사 분석","/app/competitors"],["마케팅 비용","marketing.html"]],
+    customer:[[["고객 대시보드","/app/customers"],["VIP 고객","/app/customers/vip"],["재구매·이탈 분석","/app/customers/churn"],["고객 케어","/app/customers/care"]]]
   };
-  var topLabels={performance:"PERFORMANCE",collection:"COLLECTION",stock:"STOCK",business:"BUSINESS",marketing:"MARKETING"};
+  var topLabels={performance:"PERFORMANCE",collection:"COLLECTION",stock:"STOCK",business:"BUSINESS",marketing:"MARKETING",customer:"CUSTOMER"};
   var bar=document.getElementById('anvBar'),menu=document.getElementById('anvMenu'),
       panel=document.getElementById('anvPanel'),inner=document.getElementById('anvPanelInner'),current=null;
   function closeAll(){panel.classList.remove('anv-open');bar.classList.remove('anv-tinted');bar.classList.remove('anv-sub');inner.innerHTML='';current=null;}
@@ -1307,6 +1309,11 @@ if(document.readyState!=='loading')ssInit();else document.addEventListener('DOMC
   <a href="/app/blog" class="mobile-menu-item">블로그 스튜디오</a>
   <a href="/app/competitors" class="mobile-menu-item">경쟁사 분석</a>
   <a href="marketing.html" class="mobile-menu-item">마케팅 비용</a>
+  <div class="mobile-menu-section">CUSTOMER</div>
+  <a href="/app/customers" class="mobile-menu-item">고객 대시보드</a>
+  <a href="/app/customers/vip" class="mobile-menu-item">VIP 고객</a>
+  <a href="/app/customers/churn" class="mobile-menu-item">재구매·이탈 분석</a>
+  <a href="/app/customers/care" class="mobile-menu-item">고객 케어</a>
 </div>
 <script>
 
